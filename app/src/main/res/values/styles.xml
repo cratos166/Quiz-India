@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#98A8D0</item>
-        <item name="colorPrimaryDark">#98A8D0</item>
-        <item name="colorAccent">#98A8D0</item>
+        <item name="colorPrimary">@color/layer_1</item>
+        <item name="colorPrimaryDark">@color/layer_1</item>
+        <item name="colorAccent">@color/layer_1</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">

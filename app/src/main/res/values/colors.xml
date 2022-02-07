@@ -20,4 +20,9 @@
 
     <color name="mainmenubuttonback">#3D4352</color>
 
+
+    <color name="layer_1">#2A3551</color>
+    <color name="layer_2">#252E4B</color>
+    <color name="layer_3">#1C2140</color>
+
 </resources>

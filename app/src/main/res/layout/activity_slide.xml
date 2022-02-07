@@ -8,6 +8,23 @@
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     tools:context=".StartingPackage.SlideActivity">
 
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/backlitemodeanim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:scaleType="fitXY"
+        android:elevation="-20dp"
+        app:lottie_rawRes="@raw/background"
+        app:lottie_speed="1" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/slideViewPager"
         android:layout_width="0dp"
@@ -42,16 +59,17 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
         android:layout_marginBottom="25dp"
         android:clickable="true"
+        android:scaleY="0.95"
+        android:scaleX="0.95"
         android:foreground="?selectableItemBackground"
         android:outlineAmbientShadowColor="@color/level_0"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/slideViewPager"
-        cardview:cardCornerRadius="50dp">
+        cardview:cardCornerRadius="27dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,11 +96,13 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="25dp"
         android:clickable="true"
+        android:scaleY="0.95"
+        android:scaleX="0.95"
         android:foreground="?selectableItemBackground"
         android:outlineAmbientShadowColor="@color/level_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        cardview:cardCornerRadius="50dp">
+        cardview:cardCornerRadius="27dp">
 
         <LinearLayout
             android:layout_width="match_parent"
