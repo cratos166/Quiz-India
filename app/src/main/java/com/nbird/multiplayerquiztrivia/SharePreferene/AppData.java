@@ -30,7 +30,6 @@ public class AppData {
 
     public String getSharedPreferencesString(String stringA,String stringB, Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(stringA, 0);
-
         String value = sharedPreferences.getString(stringB,"");
         return value;
     }

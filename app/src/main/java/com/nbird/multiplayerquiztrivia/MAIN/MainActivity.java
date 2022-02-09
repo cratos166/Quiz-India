@@ -1,25 +1,31 @@
-package com.nbird.multiplayerquiztrivia;
+package com.nbird.multiplayerquiztrivia.MAIN;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +33,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +47,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -52,15 +63,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
+import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
 import com.nbird.multiplayerquiztrivia.Model.FirstTime;
+import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference table_user = database.getReference("NEW_APP");
@@ -70,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     AppData appData;
     Dialog loadingDialog;
     AlertDialog alertDialog;
-
+    int num=0;
 
     String urlAva1 = "https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/avatarIcons%2Fava1.png?alt=media&token=39fc4486-0021-443f-974d-daa3fc17bec2";
     String urlAva2 = "https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/avatarIcons%2Fava2.png?alt=media&token=e19cd95b-6012-4fe7-94bb-003c1b9f92c0";
@@ -127,7 +143,26 @@ public class MainActivity extends AppCompatActivity {
     AppString appString;
     String mailid123;
 
+    List<Modes> lstExam;
 
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    ActionBarDrawerToggle mToggle;
+    androidx.appcompat.widget.Toolbar toolbar;
+
+    public ViewPager slideViewPager;
+    private LinearLayout dotLayout;
+  //  private slideAdapterMainMenuHorizontalSlide sliderAdapter;
+    private TextView[] mDots;
+    private List<mainMenuFactsHolder> list;
+
+    private ShimmerFrameLayout mShimmerViewContainer;
+    slideAdapterMainMenuHorizontalSlide sliderAdapter;
+
+    private int currentPage;
+
+    ImageView nav_image123;
+    TextView nav_mail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         createRequest();
         appData = new AppData();
 
+        list=new ArrayList<>();
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
@@ -142,7 +178,144 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        RecyclerCardView();
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        slideViewPager=(ViewPager) findViewById(R.id.slideViewPager);
+        dotLayout=(LinearLayout) findViewById(R.id.dotLayout);
+        mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        mToggle = new ActionBarDrawerToggle(MainActivity.this,drawerLayout,R.string.open,R.string.close);
+
+        navigationView.bringToFront();
+
+
+        drawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        navigationView.setNavigationItemSelectedListener(MainActivity.this);
+
+
+        for(int i=1;i<=3;i++){
+            dataForHorizontalSlide();
+        }
+
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View hView =  navigationView.getHeaderView(0);
+        nav_mail = (TextView)hView.findViewById(R.id.mailidtext);
+        nav_image123 = (ImageView) hView.findViewById(R.id.proimage);
+
+        nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this));
+        Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this)).apply(RequestOptions
+                .bitmapTransform(new RoundedCorners(18)))
+                .into(nav_image123);
+
     }
+
+
+    public void dataForHorizontalSlide(){
+
+        // create instance of Random class
+        Random rand = new Random();
+
+        // Generate random integers in range 0 to 999
+        int setRandomNumber;
+        final int categoryRandomNumber = rand.nextInt(7)+1;
+        if(categoryRandomNumber<=5||categoryRandomNumber==7){
+            setRandomNumber = rand.nextInt(49)+1;
+        }else{
+            setRandomNumber = rand.nextInt(199)+1;
+        }
+
+
+
+
+        myRef.child("Facts").child(String.valueOf(categoryRandomNumber)).child(String.valueOf(setRandomNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange( DataSnapshot snapshot) {
+
+                list.add(snapshot.getValue(mainMenuFactsHolder.class));
+                num++;
+
+
+                if(num==3){
+                    mShimmerViewContainer.stopShimmerAnimation();
+                    mShimmerViewContainer.setVisibility(View.GONE);
+                    AdapterManupulation();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(MainActivity.this,"Facts Data Can't be Loaded", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void AdapterManupulation(){
+        sliderAdapter=new slideAdapterMainMenuHorizontalSlide(MainActivity.this,list);
+        slideViewPager.setAdapter(sliderAdapter);
+        addDotsIndicator(0);
+        slideViewPager.addOnPageChangeListener(viewListner);
+        sliderAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void addDotsIndicator(int position){
+        mDots=new TextView[3];
+        dotLayout.removeAllViews();
+        for(int i=0;i<mDots.length;i++){
+            mDots[i]=new TextView(this);
+            mDots[i].setText(Html.fromHtml("&#8226"));
+            mDots[i].setTextSize(40);
+            mDots[i].setTextColor(getResources().getColor(R.color.white));
+            dotLayout.addView(mDots[i]);
+
+        }
+        if(mDots.length>0){
+            mDots[position].setTextColor(getResources().getColor(R.color.button_color));
+        }
+    }
+    ViewPager.OnPageChangeListener viewListner=new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            addDotsIndicator(position);
+            currentPage=position;
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     public void signupDialog(Context context) {
 
@@ -177,6 +350,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    public void RecyclerCardView(){
+
+        lstExam=new ArrayList<>();
+        parto();
+        //   timerStarter();
+        RecyclerView myrv=(RecyclerView) findViewById(R.id.recyclerview);
+        RecyclerViewAdapter myAdapter=new RecyclerViewAdapter(this,lstExam);
+        myrv.setLayoutManager(new GridLayoutManager(this,2));
+
+        myrv.setAdapter(myAdapter);
+    }
+
+    public void parto(){
+        lstExam.add(new Modes("1 Vs 1",R.drawable.versusicon,"Time for the One-On-One. Compete with a rival online. Time your knowledge and be the champion."));
+        lstExam.add(new Modes("Tournament Mode",R.drawable.tournament,"Quizzers from all over the world come together in the arena to show who's the ultimate leaderboard breaker."));
+        lstExam.add(new Modes("Single Mode",R.drawable.singleicon,"Test your knowledge and compete against time. Score points for accuracy and achieve ranks."));
+        lstExam.add(new Modes("KBC",R.drawable.kbc123,"The legendary KBC is back! Crack the questions and earn as much as you can. It's your time to set the leaderboard UP!"));
+
+         }
 
 
     public void createRequest() {
@@ -346,6 +540,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
+
     public void start() {
         mailid123 = appData.getSharedPreferencesString(appString.SP_MAIN, appString.SP_MY_MAIL, MainActivity.this);
         mAuth = FirebaseAuth.getInstance();
@@ -474,10 +671,16 @@ public class MainActivity extends AppCompatActivity {
                             if (username()) {
                                 String usernameEntered = usernameEditText.getText().toString();
 
+
+
                                 myRef.child("NEW_APP").child("User").child(mAuth.getCurrentUser().getUid()).child("personal").child("userName").setValue(usernameEntered).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                                        appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this,usernameEntered);
+
+                                        nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this));
+
 
                                     }
                                 });
@@ -504,6 +707,10 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
+                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this,usernameEntered);
+
+                            nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this));
+
                         }
                     });
                     try {
@@ -529,7 +736,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this,urlAva);
 
+                            Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this)).apply(RequestOptions
+                                    .bitmapTransform(new RoundedCorners(18)))
+                                    .into(nav_image123);
                         } else {
 
                         }
@@ -668,7 +879,10 @@ public class MainActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-
+                                                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this,imageurl);
+                                                            Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this)).apply(RequestOptions
+                                                                    .bitmapTransform(new RoundedCorners(18)))
+                                                                    .into(nav_image123);
                                                         } else {
 
                                                         }
@@ -716,6 +930,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mShimmerViewContainer.startShimmerAnimation();
+        //  music.start();
+
+    }
+
+    @Override
+    protected void onPause() {
+        mShimmerViewContainer.stopShimmerAnimation();
+        super.onPause();
+        // music.pause();
+    }
 
 }
 
