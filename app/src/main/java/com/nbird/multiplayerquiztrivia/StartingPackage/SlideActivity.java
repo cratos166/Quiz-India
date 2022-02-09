@@ -41,7 +41,7 @@ public class SlideActivity extends AppCompatActivity {
 
         AppData appData = new AppData();
 
-        if (appData.getSharedPreferences(AppString.SP_MAIN, AppString.SP_IS_LOGIN, this)) {
+        if (appData.getSharedPreferencesBollean(AppString.SP_MAIN, AppString.SP_IS_LOGIN, this)) {
             intentFunction();
         }
 

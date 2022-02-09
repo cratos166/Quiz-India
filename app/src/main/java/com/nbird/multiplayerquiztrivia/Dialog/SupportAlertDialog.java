@@ -99,7 +99,13 @@ public class SupportAlertDialog {
     }
 
     public void dismissLoadingDialog(){
-        loadingDialog.dismiss();
+         try{
+             loadingDialog.dismiss();
+         }catch (Exception e){
+
+         }
+
+
     }
 
 

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 
 public class AppData {
 
-    public boolean getSharedPreferences(String stringA,String stringB, Context context){
+    public boolean getSharedPreferencesBollean(String stringA,String stringB, Context context){
          SharedPreferences sharedPreferences = context.getSharedPreferences(stringA, 0);
          SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -20,4 +20,12 @@ public class AppData {
             return false;
         }
     }
+
+    public void setSharedPreferencesString(String stringA,String stringB, Context context,String value){
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(stringA, 0);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(stringB, value);
+        editor.commit();
+    }
+    
 }
