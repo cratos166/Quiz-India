@@ -737,7 +737,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this,urlAva);
-
+                            nav_image123.setImageResource(0);
                             Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this)).apply(RequestOptions
                                     .bitmapTransform(new RoundedCorners(18)))
                                     .into(nav_image123);
@@ -869,7 +869,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     Toast.makeText(MainActivity.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
                                     try {
 
-                                        StorageReference urlref = storageReference.child("NEW_APP/images/" + mailid123);
+                                        StorageReference urlref = storageReference;
                                         urlref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri downloadUrl) {
@@ -880,9 +880,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
                                                             appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this,imageurl);
-                                                            Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this)).apply(RequestOptions
+                                                            nav_image123.setImageResource(0);
+                                                            Glide.with(getBaseContext()).load(imageurl).apply(RequestOptions
                                                                     .bitmapTransform(new RoundedCorners(18)))
                                                                     .into(nav_image123);
+
                                                         } else {
 
                                                         }
