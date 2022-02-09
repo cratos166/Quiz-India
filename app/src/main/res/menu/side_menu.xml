@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+           <item android:title="MindScape">
+
+
+                <group android:checkableBehavior="single">
+
+                    <item
+                        android:id="@+id/nav_profile"
+                        android:title="My Profile"
+                        android:icon="@drawable/nav_profile"
+                        />
+                    <item
+                        android:id="@+id/nav_help"
+                        android:title="Help Guide"
+                        android:icon="@drawable/nav_help"
+                        />
+                    <item
+                        android:id="@+id/nav_logout"
+                        android:title="Logout"
+                        android:icon="@drawable/nav_logout"
+                        />
+
+                </group>
+
+
+        </item>
+
+    <item
+        android:title="Communication"
+        android:id="@+id/nav_com">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/nav_contact"
+                    android:title="Contact Us"
+                    android:icon="@drawable/nav_contact"
+                    />
+
+                <item
+                    android:id="@+id/nav_about"
+                    android:title="About Us"
+                    android:icon="@drawable/nav_aboutus"
+                    />
+                <item
+                    android:id="@+id/share_us"
+                    android:title="Share"
+                    android:icon="@drawable/sharenav"
+                    />
+                <item
+                    android:id="@+id/nav_rate"
+                    android:title="Rate Us"
+                    android:icon="@drawable/nav_rateus"
+
+                    />
+            </group>
+
+        </menu>
+
+    </item>
+
+
+
+
+    <item android:title="Legal"
+        android:id="@+id/nav_legal">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+            <item
+                android:id="@+id/nav_tos"
+                android:title="Terms of Service"
+                android:icon="@drawable/nav_legal"
+               />
+
+                <item
+                    android:id="@+id/nav_ref"
+                    android:title="Refund Policy"
+                    android:icon="@drawable/nav_legal"
+                    />
+
+                <item
+                    android:id="@+id/nav_ps"
+                    android:title="Privacy statement"
+                    android:icon="@drawable/nav_legal"
+                    />
+
+            </group>
+
+        </menu>
+
+
+    </item>
+
+</menu>
