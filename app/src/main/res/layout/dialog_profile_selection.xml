@@ -41,9 +41,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/buttonYes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6">
@@ -1147,7 +1145,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:hint="Username"
-            android:textColorHint="#000000"
+            android:textColorHint="@color/text_dis"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textTitle"
@@ -1160,7 +1158,7 @@
                 android:inputType="none"
                 android:nextFocusDown="@+id/textView2"
                 android:singleLine="true"
-                android:textColor="#000000" />
+                android:textColor="@color/text_dis" />
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -1224,22 +1222,22 @@
         </LinearLayout>
 
 
-
-
         <Button
             android:id="@+id/buttonYes"
-            android:layout_width="150dp"
+            android:layout_width="120dp"
             android:layout_height="45dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/next_button"
             android:fontFamily="@font/ubuntu"
-            android:textColor="@color/text_dis"
-            android:textStyle="bold"
-            android:textSize="16dp"
             android:text="done"
-            app:layout_constraintBottom_toBottomOf="@id/layoutDialog"
+            android:textColor="@color/text_dis"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutDialog"
             app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
-            app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
+            app:layout_constraintStart_toStartOf="@+id/layoutDialog"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView11" />
 
 
 
