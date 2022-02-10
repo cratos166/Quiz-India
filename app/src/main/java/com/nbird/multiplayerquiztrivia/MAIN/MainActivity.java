@@ -769,32 +769,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void settingBlack() {
-        linearLayout1.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout2.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout3.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout4.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout5.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout6.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout7.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout8.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout9.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout10.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout11.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout12.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout13.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout14.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout15.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout16.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout17.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout18.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout19.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout20.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout21.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout22.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout23.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout24.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout25.setBackgroundResource(R.drawable.double_color_1);
-        linearLayout26.setBackgroundResource(R.drawable.double_color_1);
+        linearLayout1.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout2.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout3.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout4.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout5.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout6.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout7.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout8.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout9.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout10.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout11.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout12.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout13.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout14.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout15.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout16.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout17.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout18.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout19.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout20.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout21.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout22.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout23.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout24.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout25.setBackgroundResource(R.drawable.border_theme_2);
+        linearLayout26.setBackgroundResource(R.drawable.border_theme_2);
     }
 
     private void selectImage() {

@@ -59,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 a=position+1;
                 switch (a){
-                    case 1:
+                    case 3:
                         //TODO WORK TO BE DONE HERE
                         DialogSingleOrMulti dialogSingleOrMulti=new DialogSingleOrMulti();
                         dialogSingleOrMulti.start(mContext,holder.cardView);

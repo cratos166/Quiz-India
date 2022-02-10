@@ -70,14 +70,12 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="5dp"
-                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/ubuntu_bold"
                 android:padding="10dp"
                 android:text="Please Select Any One Mode"
                 android:textAlignment="center"
                 android:textColor="@color/text_head"
                 android:textSize="20dp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -140,12 +138,12 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
-                                    android:fontFamily="@font/ubuntu_bold"
+                                    android:fontFamily="@font/ubuntu"
                                     android:text="Picture Mode"
                                     android:gravity="center"
-                                    android:textColor="@color/text_head"
+                                    android:textColor="@color/text_dis"
                                     android:textSize="16dp"
-                                    android:textStyle="bold" />
+                                     />
 
 
 
@@ -197,12 +195,12 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
-                                    android:fontFamily="@font/ubuntu_bold"
+                                    android:fontFamily="@font/ubuntu"
                                     android:gravity="center"
                                     android:text="Normal Mode"
-                                    android:textColor="@color/text_head"
+                                    android:textColor="@color/text_dis"
                                     android:textSize="16dp"
-                                    android:textStyle="bold" />
+                                    />
 
 
 
@@ -263,12 +261,12 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
-                                    android:fontFamily="@font/ubuntu_bold"
+                                    android:fontFamily="@font/ubuntu"
                                     android:gravity="center"
                                     android:text="Audio Mode"
-                                    android:textColor="@color/text_head"
+                                    android:textColor="@color/text_dis"
                                     android:textSize="16dp"
-                                    android:textStyle="bold" />
+                                     />
 
 
 
@@ -319,12 +317,12 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
-                                    android:fontFamily="@font/ubuntu_bold"
+                                    android:fontFamily="@font/ubuntu"
                                     android:gravity="center"
                                     android:text="Video Mode"
-                                    android:textColor="@color/text_head"
+                                    android:textColor="@color/text_dis"
                                     android:textSize="16dp"
-                                    android:textStyle="bold" />
+                                    />
 
 
 
