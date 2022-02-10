@@ -20,7 +20,7 @@ public class DialogSingleOrMulti {
         builder.setView(view1);
         builder.setCancelable(false);
 
-        //SignInButton googsignin=(SignInButton) view.findViewById(R.id.googlesignin);
+
 
 
 
