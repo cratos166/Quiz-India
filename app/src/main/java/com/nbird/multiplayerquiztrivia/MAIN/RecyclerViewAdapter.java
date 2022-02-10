@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.nbird.multiplayerquiztrivia.Dialog.DialogSingleOrMulti;
 import com.nbird.multiplayerquiztrivia.R;
 
 import java.util.List;
@@ -60,7 +61,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 switch (a){
                     case 1:
                         //TODO WORK TO BE DONE HERE
-
+                        DialogSingleOrMulti dialogSingleOrMulti=new DialogSingleOrMulti();
+                        dialogSingleOrMulti.start(mContext,holder.cardView);
                        break;
 
 
