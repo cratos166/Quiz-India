@@ -19,9 +19,11 @@
     <color name="text_head">#BFD1FF</color>
     <color name="text_dis">#DEE7FF</color>
 
+    <color name="red">#FF5E5E</color>
+
     <color name="mainmenubuttonback">#3D4352</color>
 
-
+    <color name="layer_0">#6A7592</color>
     <color name="layer_1">#2A3551</color>
     <color name="layer_2">#252E4B</color>
     <color name="layer_3">#1C2140</color>

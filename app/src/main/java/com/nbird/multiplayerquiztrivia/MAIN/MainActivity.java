@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nav_mail = (TextView)hView.findViewById(R.id.mailidtext);
         nav_image123 = (ImageView) hView.findViewById(R.id.proimage);
 
-        nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this));
+        nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this));
         Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,MainActivity.this)).apply(RequestOptions
                 .bitmapTransform(new RoundedCorners(18)))
                 .into(nav_image123);
@@ -677,9 +677,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
-                                        appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this,usernameEntered);
+                                        appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this,usernameEntered);
 
-                                        nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this));
+                                        nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this));
 
 
                                     }
@@ -707,9 +707,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
-                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this,usernameEntered);
+                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this,usernameEntered);
 
-                            nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_MAIL,MainActivity.this));
+                            nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this));
 
                         }
                     });

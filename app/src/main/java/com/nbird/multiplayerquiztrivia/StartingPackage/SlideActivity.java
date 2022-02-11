@@ -41,6 +41,8 @@ public class SlideActivity extends AppCompatActivity {
 
         if (appData.getSharedPreferencesBollean(AppString.SP_MAIN, AppString.SP_IS_LOGIN, this)) {
             intentFunction();
+        }else{
+            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,SlideActivity.this,AppString.IMAGE_URL);
         }
 
 //        final SharedPreferences slidepermission = getBaseContext().getSharedPreferences("SlidePermission", 0);

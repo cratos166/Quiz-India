@@ -46,49 +46,16 @@ public class SupportAlertDialog {
     final DatabaseReference table_user = database.getReference("User");
     private GoogleSignInClient mGoogleSignInClient;
     Dialog loadingDialog;
+    Context context;
     int RC_SIGN_IN=1;
 
 
-    public void signupDialog(Context context,View view){
-
-        AlertDialog.Builder builder=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-
-        View view1= LayoutInflater.from(context).inflate(R.layout.dialog_sign_up,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
-        builder.setView(view1);
-        builder.setCancelable(false);
-
-        SignInButton googsignin=(SignInButton) view.findViewById(R.id.googlesignin);
-
-
-        showLoadingDialog(context);
-
-
-
-
-
-        final AlertDialog alertDialog=builder.create();
-        if(alertDialog.getWindow()!=null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        try{
-            alertDialog.show();
-        }catch (Exception e){
-
-        }
-
-        googsignin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+    public SupportAlertDialog(Dialog loadingDialog,Context context) {
+        this.loadingDialog = loadingDialog;
+        this.context=context;
     }
 
-
-
-
-
-    public void showLoadingDialog(Context context){
+    public void showLoadingDialog(){
 
         loadingDialog=new Dialog(context);
         loadingDialog.setContentView(R.layout.loading_screen);
