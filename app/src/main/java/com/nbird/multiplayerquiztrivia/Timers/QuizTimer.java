@@ -15,7 +15,7 @@ import androidx.cardview.widget.CardView;
 
 import com.nbird.multiplayerquiztrivia.R;
 
-public class Timer {
+public class QuizTimer {
 
     CountDownTimer countDownTimer;
     long totalTime;
@@ -30,7 +30,7 @@ public class Timer {
     TextView clockTextView;
     CardView cardViewClock;
 
-    public Timer(CountDownTimer countDownTimer, long totalTime, long interval, Context context,TextView clockTextView,CardView cardViewClock) {
+    public QuizTimer(CountDownTimer countDownTimer, long totalTime, long interval, Context context, TextView clockTextView, CardView cardViewClock) {
         this.countDownTimer = countDownTimer;
         this.totalTime = totalTime;
         this.interval = interval;

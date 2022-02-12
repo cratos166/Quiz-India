@@ -20,7 +20,8 @@
     <color name="text_dis">#DEE7FF</color>
 
     <color name="red">#FF5E5E</color>
-
+    <color name="lightred">#FAC8C8</color>
+    <color name="lightgreen">#8CF083</color>
     <color name="mainmenubuttonback">#3D4352</color>
 
     <color name="layer_0">#6A7592</color>

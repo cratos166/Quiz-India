@@ -34,4 +34,17 @@ public class AppData {
         return value;
     }
 
+    public boolean getSharedPreferencesBoolean(String stringA,String stringB, Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(stringA, 0);
+        Boolean value = sharedPreferences.getBoolean(stringB,true);
+        return value;
+    }
+
+    public void setSharedPreferencesBoolean(String stringA,String stringB, Context context,boolean value){
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(stringA, 0);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(stringB, value);
+        editor.commit();
+    }
+
 }

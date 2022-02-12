@@ -67,6 +67,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
 import com.nbird.multiplayerquiztrivia.Model.FirstTime;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
@@ -467,11 +468,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             String personEmail = account.getEmail();
                             appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.SP_MY_MAIL, MainActivity.this, personEmail);
 
-                            table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("personal").child("firstTime").addListenerForSingleValueEvent(new ValueEventListener() {
+                            table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("personal").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     try {
-                                        if (snapshot.getValue(Integer.class) == 1) {
+
+                                        FirstTime firstTime=snapshot.getValue(FirstTime.class);
+
+                                        if (firstTime.getFirstTime() == 1) {
                                             Toast.makeText(getBaseContext(), "Logged In Successful!", Toast.LENGTH_LONG).show();
 
                                             try {
@@ -482,6 +486,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 alertDialog.dismiss();
                                             } catch (Exception e) {
                                             }
+
+
+                                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, MainActivity.this,firstTime.getUserName());
+                                            appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, MainActivity.this,firstTime.getImageURL());
 
                                             // NOT FOR FIRST TIME
                                         }
@@ -678,10 +686,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
                                         appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this,usernameEntered);
-
                                         nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this));
-
-
                                     }
                                 });
                                 try {

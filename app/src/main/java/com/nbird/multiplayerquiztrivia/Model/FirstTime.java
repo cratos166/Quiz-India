@@ -5,6 +5,8 @@ public class FirstTime {
     String userName;
     int firstTime,onevsoneOnlineFinder;
 
+
+
     public FirstTime(String imageURL, String userName, int firstTime, int onevsoneOnlineFinder) {
         this.imageURL = imageURL;
         this.userName = userName;
