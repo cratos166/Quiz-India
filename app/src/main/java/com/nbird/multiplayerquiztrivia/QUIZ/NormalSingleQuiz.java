@@ -56,52 +56,31 @@ import java.util.Timer;
 
 public class NormalSingleQuiz extends AppCompatActivity {
 
-    TextView questionTextView,scoreBoard;
+    TextView questionTextView,scoreBoard,timerText;
     Button option1,option2,option3,option4,nextButton;
-    LinearLayout linearLayout;
-
-    CardView audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL;
-    LinearLayout linearLayoutexpert,linearLayoutAudience,linearLayoutFiftyFifty,linearLayoutSwap;
-
-    TextView timerText;
-
+    LinearLayout linearLayout,linearLayoutexpert,linearLayoutAudience,linearLayoutFiftyFifty,linearLayoutSwap;
+    CardView audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL,clockCardView;
     LottieAnimationView anim11,anim12,anim13,anim14,anim15,anim16,anim17,anim18,anim19,anim20;
-
     ImageView myPic;
     Dialog loadingDialog;
-    SupportAlertDialog supportAlertDialog;
-
-    int category;
-    AppData appData;
-    CardView clockCardView;
-
-
-    private List<questionHolder> list;
-
-    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0;
-
-    int lifelineSum=0;
-
-    LifeLine lifeLine;
-    String myName;
-
-    int position=0;
+    CountDownTimer countDownTimer;
 
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference myRef=database.getReference();
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
-    int num=0,score=0;
-    SongActivity songActivity;
-    int count;
-
-    LLManupulator llManupulator;
-
+    private List<questionHolder> list;
     ArrayList<LottieAnimationView> animationList;
-    int myPosition=-1;
 
+    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category;
+    String myName;
+
+    AppData appData;
+    SongActivity songActivity;
+    LLManupulator llManupulator;
     QuizTimer timer;
-    CountDownTimer countDownTimer;
+    LifeLine lifeLine;
+    SupportAlertDialog supportAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +93,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
         appData=new AppData();
         animationList=new ArrayList<>();
 
-
         songStopperAndResumer();
-
-
-
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -160,13 +135,10 @@ public class NormalSingleQuiz extends AppCompatActivity {
         animationList.add(anim11);animationList.add(anim12);animationList.add(anim13);animationList.add(anim14);animationList.add(anim15);
         animationList.add(anim16);animationList.add(anim17);animationList.add(anim18);animationList.add(anim19);animationList.add(anim20);
 
-
-
         supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalSingleQuiz.this);
         supportAlertDialog.showLoadingDialog();
 
         lifeLine();
-
         questionSelector();
 
     }
@@ -174,94 +146,27 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
     public void lifeLine(){
 
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,
-                option3,option4,myName,NormalSingleQuiz.this);
+        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalSingleQuiz.this);
 
-
-        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(fiftyfiftynum==0) {
-                    lifelineSum++;
-                    fiftyfiftynum = 1;
-
-                    lifeLine.fiftyfiftyLL();
-
-                }else{
-                    lifeLine.LLUsed();
-
-                }
-
-
-            }
-        });
-
-
-        audienceLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(audiencenum==0) {
-
-                    lifelineSum++;
-                    audiencenum = 1;
-
-                    lifeLine.audienceLL();
-
-                }else{
-                    lifeLine.LLUsed();
-                }
-
-            }
-        });
+        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
+        audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
 
 
         swapTheQuestionLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(swapnum==0) {
-
-                    lifelineSum++;
-                    swapnum=1;
+                    lifelineSum++;swapnum=1;
                     linearLayoutSwap.setBackgroundResource(R.drawable.usedicon);
-                    nextButton.setEnabled(false);
-                    nextButton.setAlpha(0.7f);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        enableOption(true);
-                    }
-                    position++;
-                    llManupulator.True();
-
-
-                    count = 0;
+                    nextButton.setEnabled(false);nextButton.setAlpha(0.7f);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { enableOption(true); }
+                    position++;llManupulator.True();count = 0;
                     playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
-                }else{
-                    lifeLine.LLUsed();
-                }
+                }else{ lifeLine.LLUsed("SWAP"); }
             }
         });
 
-
-        expertAdviceLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(expertnum==0){
-
-
-                    lifelineSum++;
-                    expertnum=1;
-
-
-                    lifeLine.expertAdviceLL();
-                }else{
-                    lifeLine.LLUsed();
-                }
-            }
-        });
-
-
-
+        expertAdviceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(expertnum==0){ lifelineSum++;expertnum=1;lifeLine.expertAdviceLL(); }else{ lifeLine.LLUsed("EXPERT ADVICE"); } }});
     }
 
 
@@ -270,16 +175,8 @@ public class NormalSingleQuiz extends AppCompatActivity {
             Random rand = new Random();
             int setNumber;
             switch (category) {
-                case 1: case 3: case 4: case 5: case 6: case 9: case 10: case 11: case 12: case 17: setNumber = rand.nextInt(299) + 1;fireBaseData(setNumber);break;
-                case 2: case 14: setNumber = rand.nextInt(499) + 1;fireBaseData(setNumber);break;
-                case 7: setNumber = rand.nextInt(401) + 1;fireBaseData(setNumber);break;
-                case 8: case 18: setNumber = rand.nextInt(339) + 1;fireBaseData(setNumber);break;
-                case 13: case 15: case 16: setNumber = rand.nextInt(249) + 1;fireBaseData(setNumber);break;
-                case 19: setNumber = rand.nextInt(399) + 1;fireBaseData(setNumber);break;
-                default: setNumber = rand.nextInt(6326) + 1;fireBaseData2(setNumber);break;
+                case 1: case 3: case 4: case 5: case 6: case 9: case 10: case 11: case 12: case 17: setNumber = rand.nextInt(299) + 1;fireBaseData(setNumber);break; case 2: case 14: setNumber = rand.nextInt(499) + 1;fireBaseData(setNumber);break; case 7: setNumber = rand.nextInt(401) + 1;fireBaseData(setNumber);break; case 8: case 18: setNumber = rand.nextInt(339) + 1;fireBaseData(setNumber);break; case 13: case 15: case 16: setNumber = rand.nextInt(249) + 1;fireBaseData(setNumber);break; case 19: setNumber = rand.nextInt(399) + 1;fireBaseData(setNumber);break; default: setNumber = rand.nextInt(6326) + 1;fireBaseData2(setNumber);break;
             }
-            //NEED TO CHANGE HERE
-            //NEED TO CHANGE HERE
         }
     }
 
@@ -351,17 +248,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
                                 position++;
                                 llManupulator.True();
 
-                                if (swapnum == 0) {
-                                    if (position == 10) {
-                                        quizFinishDialog();
-                                        return;
-                                    }
-                                } else {
-                                    if (position == 11) {
-                                        quizFinishDialog();
-                                        return;
-                                    }
-                                }
+                                if (swapnum == 0) { if (position == 10) { quizFinishDialog();return; } } else { if (position == 11) { quizFinishDialog();return; } }
                                 count = 0;
                                 playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
                             }
@@ -384,37 +271,39 @@ public class NormalSingleQuiz extends AppCompatActivity {
                     String option="";
                     if(count==0){
                         option=list.get(position).getOption1();
-                        option1.setTextColor(Color.parseColor("#ffffff"));
-                        linearLayout.getChildAt(0).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option1.setTextColor(Color.parseColor("#DEE7FF"));
+                        linearLayout.getChildAt(0).setBackgroundResource(R.drawable.border_theme_2);
+
                     }else if(count==1){
                         option=list.get(position).getOption2();
-                        option2.setTextColor(Color.parseColor("#ffffff"));
-                        linearLayout.getChildAt(1).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option2.setTextColor(Color.parseColor("#DEE7FF"));
+                        linearLayout.getChildAt(1).setBackgroundResource(R.drawable.border_theme_2);
+
                     }else if(count==2){
                         option=list.get(position).getOption3();
-                        option3.setTextColor(Color.parseColor("#ffffff"));
-                        linearLayout.getChildAt(2).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option3.setTextColor(Color.parseColor("#DEE7FF"));
+                        linearLayout.getChildAt(2).setBackgroundResource(R.drawable.border_theme_2);
+
                     }else if(count==3){
                         option=list.get(position).getOption4();
-                        option4.setTextColor(Color.parseColor("#ffffff"));
-                        linearLayout.getChildAt(3).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option4.setTextColor(Color.parseColor("#DEE7FF"));
+                        linearLayout.getChildAt(3).setBackgroundResource(R.drawable.border_theme_2);
+
                     }
                     playAnim(linearLayout.getChildAt(count),0,option);
                     count++;
                 }
             }
-
             @Override
             public void onAnimationEnd(Animator animator) {
                 if (value == 0) {
                     try {
                         ((TextView) view).setText(data);
                         if(swapnum==0){
-                            scoreBoard.setText(" Question "+(position+1)+"/10 ");
+                            scoreBoard.setText((position+1)+"/10 ");
                         }else{
-                            scoreBoard.setText(" Question "+(position)+"/10 ");
+                            scoreBoard.setText((position)+"/10 ");
                         }
-
                     } catch (ClassCastException ex) {
                         ((Button) view).setText(data);
                     }
@@ -423,14 +312,9 @@ public class NormalSingleQuiz extends AppCompatActivity {
                 }
             }
             @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
+            public void onAnimationCancel(Animator animator) { }
             @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
+            public void onAnimationRepeat(Animator animator) { }
         });
     }
 
@@ -458,35 +342,32 @@ public class NormalSingleQuiz extends AppCompatActivity {
         llManupulator.False();
 
         if(selectedOption.getText().toString().equals(list.get(position).getCorrectAnswer())){
-
-
             //correct
-
             playMusic(R.raw.correctmusic);
-
             ANIM_MANU(R.raw.tickanim);
-            selectedOption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1FF88")));   //green color
+            selectedOption.setBackgroundResource(R.drawable.option_right);
+           //green color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
-            selectedOption.setShadowLayer(3,1,1,R.color.lightgreen);
+            selectedOption.setShadowLayer(3,1,1,R.color.green);
             score++;
         }else {
             //incorrect
             playMusic(R.raw.wrongansfinal);
             ANIM_MANU(R.raw.wronganim);
-            selectedOption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF8888")));     //red color
+            selectedOption.setBackgroundResource(R.drawable.option_wrong);     //red color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
-            selectedOption.setShadowLayer(3,1,1,R.color.lightgreen);
+            selectedOption.setShadowLayer(3,1,1,R.color.green);
             Button correctOption = (Button) linearLayout.findViewWithTag(list.get(position).getCorrectAnswer());
-            correctOption.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B1FF88")));     //green color
+            correctOption.setBackgroundResource(R.drawable.option_right);    //green color
             correctOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
-            correctOption.setShadowLayer(3,1,1,R.color.lightred);
+            correctOption.setShadowLayer(3,1,1,R.color.red);
         }
     }
 
     public void ANIM_MANU(int id){
         myPosition++;
         LottieAnimationView anim=animationList.get(myPosition);
-        anim.setAnimation(R.raw.tickanim);
+        anim.setAnimation(id);
         anim.playAnimation();
         anim.loop(false);
     }
@@ -498,7 +379,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
         for (int i=0;i<4;i++) {
             linearLayout.getChildAt(i).setEnabled(enable);
             if (enable) {
-                linearLayout.getChildAt(i).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E4E4E4")));
+                linearLayout.getChildAt(i).setBackgroundResource(R.drawable.option_null);
             }
         }
     }

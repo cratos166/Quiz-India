@@ -4,6 +4,6 @@
         android:topLeftRadius="35dp"
         android:bottomRightRadius="15dp"
         android:bottomLeftRadius="15dp" />
-    <solid android:color="@color/button_color"/>
+    <solid android:color="@color/layer_3"/>
 
 </shape>

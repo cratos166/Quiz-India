@@ -147,9 +147,10 @@ public class LifeLine {
 //        mAdView.loadAd(adRequest);
 
         BarDataSet barDataSet = new BarDataSet(visitors, "Bar Data");
-        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setBarBorderColor(R.color.text_head);
+        barDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
 
-        barDataSet.setValueTextColor(Color.BLUE);
+        barDataSet.setValueTextColor(Color.parseColor("#BFD1FF"));
         barDataSet.setValueTextSize(11f);
 
         BarData barData = new BarData(barDataSet);
@@ -157,7 +158,7 @@ public class LifeLine {
         barChart.setFitBars(true);
         barChart.setData(barData);
         barChart.getDescription().setText("Audience Poll");
-        barChart.animateY(2000);
+        barChart.animateY(3000);
 
 
         final AlertDialog alertDialog = builder.create();
@@ -280,14 +281,14 @@ public class LifeLine {
     }
 
 
-    public void LLUsed(){
+    public void LLUsed(String llName){
 
         AlertDialog.Builder builder=new AlertDialog.Builder(context,R.style.AlertDialogTheme);
 
         final View view1= LayoutInflater.from(context).inflate(R.layout.dialog_anim_text_button,(ConstraintLayout) linearLayoutAudience.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
         builder.setCancelable(false);
-        ((TextView) view1.findViewById(R.id.textTitle)).setText("Oops! You Have Used Your FIFTY-FIFTY Life Line Once.");
+        ((TextView) view1.findViewById(R.id.textTitle)).setText("Oops! You Have Used Your "+llName+" Life Line Once.");
         ((Button) view1.findViewById(R.id.buttonYes)).setText("OKAY");
 
 

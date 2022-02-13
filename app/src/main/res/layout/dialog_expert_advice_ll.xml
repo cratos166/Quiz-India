@@ -65,7 +65,7 @@
             android:padding="10dp"
             android:text="Expert Advice!Expert    "
             android:textColor="@color/text_head"
-            android:textSize="20dp"
+            android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@+id/imageIcon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

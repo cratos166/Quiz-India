@@ -22,8 +22,8 @@ public class QuizTimer {
     long interval;
     Context context;
 
-    int minutes=0;
-    int second=0;
+    int minutes=2;
+    int second=59;
     String minutestext;
     String secondtext;
 
@@ -53,19 +53,42 @@ public class QuizTimer {
 
             @SuppressLint("ResourceAsColor")
             public void onTick(long millisUntilFinished) {
-                if(second==60){
-                    second=0;
-                    minutes++;
+//                if(second==60){
+//                    second=0;
+//                    minutes++;
+//
+//                    minutestext="0"+String.valueOf(minutes);
+//
+//                    if(second<10){
+//                        secondtext="0"+String.valueOf(second);
+//                    }else{
+//                        secondtext=String.valueOf(second);
+//                    }
+//                    clockTextView.setText(minutestext+":"+secondtext+" ");
+//                    second++;
+//                }else{
+//                    minutestext="0"+String.valueOf(minutes);
+//                    if(second<10){
+//                        secondtext="0"+String.valueOf(second);
+//                    }else{
+//                        secondtext=String.valueOf(second);
+//                    }
+//                    clockTextView.setText(minutestext+":"+secondtext+" ");
+//                    second++;
+//                }
 
+
+                if(second==0){
+                    minutes--;
                     minutestext="0"+String.valueOf(minutes);
-
+                    second=59;
                     if(second<10){
                         secondtext="0"+String.valueOf(second);
                     }else{
                         secondtext=String.valueOf(second);
                     }
-                    clockTextView.setText(" Timer "+minutestext+":"+secondtext+" ");
-                    second++;
+                    clockTextView.setText(minutestext+":"+secondtext+" ");
+
                 }else{
                     minutestext="0"+String.valueOf(minutes);
                     if(second<10){
@@ -73,15 +96,14 @@ public class QuizTimer {
                     }else{
                         secondtext=String.valueOf(second);
                     }
-                    clockTextView.setText(" Timer "+minutestext+":"+secondtext+" ");
-                    second++;
+                    clockTextView.setText(minutestext+":"+secondtext+" ");
+                    second--;
                 }
 
                 //Last 15 seconds end animation
-                if(minutes==0 && second>45){
+                if(minutes==0 && second<=15){
 
                     clockTextView.setTextColor(R.color.red);
-
 
                     //Continuous zoomIn - zoomOut
                     ObjectAnimator scaleX = ObjectAnimator.ofFloat(cardViewClock, "scaleX", 0.9f, 1f);

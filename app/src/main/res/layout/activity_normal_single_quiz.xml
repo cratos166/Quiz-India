@@ -98,7 +98,7 @@
                 android:gravity="right"
                 android:text=""
                 android:textColor="@color/text_head"
-                android:textSize="25dp"
+                android:textSize="22dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +144,7 @@
                 android:scaleY="0.9"
                 android:text=""
                 android:textColor="@color/text_head"
-                android:textSize="25dp"
+                android:textSize="22dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -405,7 +405,7 @@
                         android:padding="15dp"
                         android:text=""
                         android:textColor="@color/text_head"
-                        android:textSize="22dp"
+                        android:textSize="16dp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -447,7 +447,7 @@
                         android:id="@+id/linearLayoutexpert"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/border_theme_2">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -477,7 +477,7 @@
                         android:id="@+id/linearLayoutSwap"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/border_theme_2">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -508,7 +508,7 @@
                         android:id="@+id/linearLayoutAudience"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/border_theme_2">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -539,7 +539,7 @@
                         android:id="@+id/linearLayoutfiftyfifty"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/border_theme_2">
 
 
                         <TextView
@@ -587,46 +587,46 @@
                         android:id="@+id/button1"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@drawable/border_theme"
+                        android:background="@drawable/border_theme_2"
                         android:fontFamily="@font/ubuntu"
                         android:shadowColor="@color/black"
                         android:text=""
-                        android:textColor="#ffffff"
-                        android:textSize="20dp" />
+                        android:textColor="@color/text_dis"
+                        android:textSize="12dp" />
 
                     <Button
                         android:id="@+id/button2"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/border_theme"
+                        android:background="@drawable/border_theme_2"
                         android:fontFamily="@font/ubuntu"
                         android:text=""
-                        android:textColor="#ffffff"
-                        android:textSize="20dp" />
+                        android:textColor="@color/text_dis"
+                        android:textSize="12dp" />
 
                     <Button
                         android:id="@+id/button3"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/border_theme"
+                        android:background="@drawable/border_theme_2"
                         android:fontFamily="@font/ubuntu"
                         android:text=""
-                        android:textColor="#ffffff"
-                        android:textSize="20dp" />
+                        android:textColor="@color/text_dis"
+                        android:textSize="12dp" />
 
                     <Button
                         android:id="@+id/button4"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/border_theme"
+                        android:background="@drawable/border_theme_2"
                         android:fontFamily="@font/ubuntu"
                         android:text=""
-                        android:textColor="#ffffff"
+                        android:textColor="@color/text_dis"
 
-                        android:textSize="20dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
 
 
@@ -646,8 +646,8 @@
                 android:scaleX="0.8"
                 android:scaleY="0.8"
                 android:text="Next"
-                android:textSize="30dp"
-                android:textColor="@color/layer_1"
+                android:textSize="25dp"
+                android:textColor="#ffffff"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
