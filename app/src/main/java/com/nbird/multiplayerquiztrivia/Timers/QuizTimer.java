@@ -13,9 +13,10 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
-public class QuizTimer {
+public class QuizTimer extends NormalSingleQuiz {
 
     CountDownTimer countDownTimer;
     long totalTime;
@@ -47,35 +48,28 @@ public class QuizTimer {
         this.countDownTimer = countDownTimer;
     }
 
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(int minutes) {
+        this.minutes = minutes;
+    }
+
+    public int getSecond() {
+        return second;
+    }
+
+    public void setSecond(int second) {
+        this.second = second;
+    }
+
     public void start(){
         countDownTimer=new CountDownTimer(totalTime, interval) {
 
 
             @SuppressLint("ResourceAsColor")
             public void onTick(long millisUntilFinished) {
-//                if(second==60){
-//                    second=0;
-//                    minutes++;
-//
-//                    minutestext="0"+String.valueOf(minutes);
-//
-//                    if(second<10){
-//                        secondtext="0"+String.valueOf(second);
-//                    }else{
-//                        secondtext=String.valueOf(second);
-//                    }
-//                    clockTextView.setText(minutestext+":"+secondtext+" ");
-//                    second++;
-//                }else{
-//                    minutestext="0"+String.valueOf(minutes);
-//                    if(second<10){
-//                        secondtext="0"+String.valueOf(second);
-//                    }else{
-//                        secondtext=String.valueOf(second);
-//                    }
-//                    clockTextView.setText(minutestext+":"+secondtext+" ");
-//                    second++;
-//                }
 
 
                 if(second==0){
@@ -125,7 +119,11 @@ public class QuizTimer {
             }
             public void onFinish() {
 
+
+
                 Toast.makeText(context, "Time Over", Toast.LENGTH_SHORT).show();
+                quizFinishDialog();
+
 
 
 //                Intent scoreIntent = new Intent(context, scoreActivity.class);

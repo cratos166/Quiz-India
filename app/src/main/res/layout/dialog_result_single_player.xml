@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scaleY="0.85"
+    android:scaleX="0.85"
+    android:layout_marginLeft="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:background="@color/transparent"
+    android:id="@+id/layoutDialogContainer">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView5"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:foreground="?selectableItemBackground"
+        app:layout_constraintTop_toTopOf="parent"
+        cardview:cardBackgroundColor="@color/transparent"
+        cardview:cardElevation="5dp"
+        cardview:layout_constraintStart_toStartOf="parent"
+        tools:cardCornerRadius="5dp"
+        tools:layout_constraintStart_toStartOf="parent"
+        tools:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/single_color_2"
+            android:elevation="10dp"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/batch"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:background="@drawable/level_master"
+                android:scaleX="0.95"
+                android:scaleY="0.95" />
+
+            <TextView
+                android:id="@+id/levelText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:padding="5dp"
+                android:text=" Lv. 100"
+                android:textColor="@color/text_head"
+                android:textSize="8dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/highestScoreLinear"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:foreground="?selectableItemBackground"
+        app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+        app:layout_constraintTop_toTopOf="parent"
+        cardview:cardBackgroundColor="@color/transparent"
+        cardview:cardElevation="5dp"
+        tools:cardCornerRadius="5dp"
+        tools:layout_constraintEnd_toEndOf="parent"
+        tools:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/single_color_2"
+            android:elevation="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/highestScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:padding="10dp"
+                android:text="Your Highest Score : 343"
+                android:textColor="@color/text_head"
+                android:textSize="10dp"
+                 />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-20dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border_theme"
+        app:layout_constraintEnd_toEndOf="@+id/highestScoreLinear"
+        app:layout_constraintStart_toEndOf="@+id/cardView5"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <ImageView
+            android:id="@+id/myPic"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout28" />
+
+        <TextView
+            android:id="@+id/myName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/single_color_3"
+            android:padding="5dp"
+            android:text="kartik"
+            android:textColor="@color/text_head"
+            android:textSize="10dp"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="@+id/myPic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/myPic" />
+
+
+
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout28"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/single_color_3"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageIcon"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/single_color_4"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/correctAnswer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:fontFamily="@font/ubuntu"
+                    android:gravity="left"
+                    android:text="Correct Answer : 4/10"
+                    android:textColor="@color/text_head"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/timeTaken"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:gravity="left"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:text="Time Taken : 00:45"
+                    android:textColor="@color/text_head"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/lifeLineUsed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu"
+                    android:gravity="left"
+                    android:layout_margin="5dp"
+                    android:text="Life-Line Used : 3"
+                    android:textColor="@color/text_head"
+                    android:textSize="15dp" />
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:orientation="horizontal">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/expert"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                    cardview:cardCornerRadius="5dp">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutexpert"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_theme">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/kaal"
+                            android:scaleX="0.85"
+                            android:scaleY="0.7" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/audience"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                    cardview:cardCornerRadius="5dp">
+
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutAudience"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_theme">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/flip1"
+                            android:scaleX="0.7"
+                            android:scaleY="0.75" />
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/swap"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                    cardview:cardCornerRadius="5dp">
+
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutSwap"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_theme">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/audience1"
+                            android:scaleX="0.7"
+                            android:scaleY="0.75" />
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/fiftyfifty"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?selectableItemBackground"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                    cardview:cardCornerRadius="5dp">
+
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutfiftyfifty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_theme">
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:text="50:50"
+                            android:textColor="#000000"
+                            android:textSize="10dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/totalScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/ubuntu_bold"
+                android:gravity="left"
+                android:text="Total Score : 454"
+                android:textColor="@color/text_head"
+                android:textSize="18dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim11"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim12"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim13"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim14"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim15"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim16"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim17"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim18"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim19"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/anim20"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:elevation="-5dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:lottie_speed="1" />
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout28">
+
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp" />
+
+            <Button
+                android:id="@+id/leaderBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_theme"
+                android:fontFamily="@font/ubuntu"
+                android:layout_marginBottom="5dp"
+                android:textSize="13sp"
+                android:scaleY="0.90"
+                android:scaleX="0.95"
+                android:padding="8dp"
+                android:textColor="@color/text_head"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="LEADER BOARD"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="5dp"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/homeButton"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/next_button_dark"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="HOME"
+                    android:textColor="@color/text_head"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+                    app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
+
+                <Button
+                    android:id="@+id/changeCategory"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/next_button_3"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="CATEGORY"
+                    android:textColor="@color/layer_3"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+                    app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
+
+                <Button
+                    android:id="@+id/reMatch"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/next_button"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:text="REMATCH"
+                    android:textColor="@color/level_2"
+                    android:textSize="10sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+                    app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
+
+
+            </LinearLayout>
+
+
+
+
+
+
+        </LinearLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

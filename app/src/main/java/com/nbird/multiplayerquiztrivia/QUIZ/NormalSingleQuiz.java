@@ -2,23 +2,17 @@ package com.nbird.multiplayerquiztrivia.QUIZ;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.Animator;
 import android.app.Dialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -39,20 +33,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
+import com.nbird.multiplayerquiztrivia.Dialog.ResultSinglePlayer;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
+import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
+import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
-import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
 
 public class NormalSingleQuiz extends AppCompatActivity {
 
@@ -71,9 +68,10 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
     private List<questionHolder> list;
     ArrayList<LottieAnimationView> animationList;
+    ArrayList<Boolean> animList;
 
     int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category;
-    String myName;
+    String myName,myPicURL;
 
     AppData appData;
     SongActivity songActivity;
@@ -81,6 +79,8 @@ public class NormalSingleQuiz extends AppCompatActivity {
     QuizTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
+    TotalScore totalScore;
+    HighestScore highestScore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +92,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
         list=new ArrayList<>();
         appData=new AppData();
         animationList=new ArrayList<>();
+        animList=new ArrayList<>();
 
         songStopperAndResumer();
 
@@ -126,7 +127,8 @@ public class NormalSingleQuiz extends AppCompatActivity {
         clockCardView = (CardView) findViewById(R.id.cardView3);
 
         myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, NormalSingleQuiz.this);
-        Glide.with(getBaseContext()).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, NormalSingleQuiz.this)).apply(RequestOptions
+        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, NormalSingleQuiz.this);
+        Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
                 .bitmapTransform(new RoundedCorners(18)))
                 .into(myPic);
 
@@ -141,6 +143,12 @@ public class NormalSingleQuiz extends AppCompatActivity {
         lifeLine();
         questionSelector();
 
+        totalScore=new TotalScore();
+        totalScore.getSingleModeScore();
+
+        highestScore=new HighestScore();
+        highestScore.start();
+
     }
 
 
@@ -148,8 +156,8 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
         lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalSingleQuiz.this);
 
-        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
-        audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
+        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
+        audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
 
 
         swapTheQuestionLL.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +174,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
             }
         });
 
-        expertAdviceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(expertnum==0){ lifelineSum++;expertnum=1;lifeLine.expertAdviceLL(); }else{ lifeLine.LLUsed("EXPERT ADVICE"); } }});
+        expertAdviceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(expertnum==0){ lifelineSum++;expertnum=1;lifeLine.setPosition(position);lifeLine.expertAdviceLL(); }else{ lifeLine.LLUsed("EXPERT ADVICE"); } }});
     }
 
 
@@ -345,6 +353,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
             //correct
             playMusic(R.raw.correctmusic);
             ANIM_MANU(R.raw.tickanim);
+            animList.add(true);
             selectedOption.setBackgroundResource(R.drawable.option_right);
            //green color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
@@ -354,6 +363,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
             //incorrect
             playMusic(R.raw.wrongansfinal);
             ANIM_MANU(R.raw.wronganim);
+            animList.add(false);
             selectedOption.setBackgroundResource(R.drawable.option_wrong);     //red color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
             selectedOption.setShadowLayer(3,1,1,R.color.green);
@@ -385,7 +395,54 @@ public class NormalSingleQuiz extends AppCompatActivity {
     }
 
 
-            public void quizFinishDialog(){
+    public void quizFinishDialog(){
+
+               try{
+                   timer.getCountDownTimer().cancel();
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
+
+               int minutesLeft=timer.getMinutes();
+               int secondsLeft=timer.getSecond();
+
+                String timeTakenString;
+               if((60-secondsLeft)>10){
+                   timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
+               }else{
+                   timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
+               }
+
+
+                ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
+
+
+               totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
+               totalScore.setSingleModeScore();
+
+               if(highestScore.getHighestScore()<scoreGenerator.start()){
+                   highestScore.setHighestScore(scoreGenerator.start());
+                   highestScore.upLoadHighestScore(scoreGenerator.start());
+               }
+
+
+                HashMap<String,Integer> map=new HashMap<>();
+                map.put("Expert",expertnum);
+                map.put("Flip",swapnum);
+                map.put("Audience",audiencenum);
+                map.put("Fifty-Fifty",fiftyfiftynum);
+
+
+
+
+
+                ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalSingleQuiz.this,map,animList,score,timeTakenString,
+                        lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL);
+
+                resultSinglePlayer.start();
+
+
+
 
 //                try {
 //                    songActivity.songStop();

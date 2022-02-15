@@ -61,6 +61,15 @@ public class LifeLine {
         this.context = context;
     }
 
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public void fiftyfiftyLL(){
 
 
