@@ -1,0 +1,97 @@
+package com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+public class LeaderBoardHolder {
+    String username;
+    int score;
+    int totalTime;
+    int correct;
+    int wrong;
+    String imageUrl;
+    int sumationScore;
+
+
+    public LeaderBoardHolder() {
+    }
+
+
+
+
+    public LeaderBoardHolder(String username, int score, int totalTime, int correct, int wrong, String imageUrl, int sumationScore) {
+        this.username = username;
+        this.score = score;
+        this.totalTime = totalTime;
+        this.correct=correct;
+        this.wrong=wrong;
+        this.imageUrl = imageUrl;
+        this.sumationScore=sumationScore;
+    }
+
+
+
+
+
+
+
+    public int getSumationScore() {
+        return sumationScore;
+    }
+
+    public void setSumationScore(int sumationScore) {
+        this.sumationScore = sumationScore;
+    }
+
+    public int getWrong() {
+        return wrong;
+    }
+
+    public void setWrong(int wrong) {
+        this.wrong = wrong;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(int totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public int getCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(int correct) {
+        this.correct = correct;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+
+}
+

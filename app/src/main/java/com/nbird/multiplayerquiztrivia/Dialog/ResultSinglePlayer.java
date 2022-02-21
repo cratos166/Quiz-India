@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.text.BoringLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -12,14 +11,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.nbird.multiplayerquiztrivia.AppString;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
 import com.nbird.multiplayerquiztrivia.GENERATORS.LevelGenerators;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
@@ -28,6 +41,7 @@ import com.nbird.multiplayerquiztrivia.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ResultSinglePlayer {
 
@@ -42,8 +56,21 @@ public class ResultSinglePlayer {
     int scoreInt;
     CardView view;
     String myNameString,myPicURL;
+    ArrayList<LottieAnimationView> animationList;
+    int category;
+    int IntentInt,timeTakenInt;
 
-    public ResultSinglePlayer(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList, int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt, int higestScoreInt, int scoreInt, CardView view, String myNameString, String myPicURL) {
+
+    FirebaseDatabase database=FirebaseDatabase.getInstance();
+    DatabaseReference table_user = database.getReference("NEW_APP");
+    FirebaseAuth mAuth= FirebaseAuth.getInstance();
+
+    //Single Mode Normal Quiz : 1
+
+    public ResultSinglePlayer(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList,
+                              int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt,
+                              int higestScoreInt, int scoreInt, CardView view, String myNameString,
+                              String myPicURL,int category,int IntentInt,int timeTakenInt) {
         this.context = context;
         this.llMap = llMap;
         this.animList = animList;
@@ -56,11 +83,24 @@ public class ResultSinglePlayer {
         this.view = view;
         this.myNameString=myNameString;
         this.myPicURL=myPicURL;
+        this.category=category;
+        this.IntentInt=IntentInt;
+        this.timeTakenInt=timeTakenInt;
     }
 
 
 
     public void start(){
+
+
+        Record record =new Record(scoreInt,correctAnsInt,category,context,view,timeTakenInt,myNameString,myPicURL);
+        record.startLineGraph();
+        record.startBarGroup();
+        record.startPieChart();
+        record.setLeaderBoard();
+
+
+
         AlertDialog.Builder builderRemove=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
         View viewRemove1= LayoutInflater.from(context).inflate(R.layout.dialog_result_single_player,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer),false);
         builderRemove.setView(viewRemove1);
@@ -78,19 +118,41 @@ public class ResultSinglePlayer {
         ImageView myPic=(ImageView) viewRemove1.findViewById(R.id.myPic);
         ImageView batch=(ImageView) viewRemove1.findViewById(R.id.batch);
 
+        LottieAnimationView anim1=(LottieAnimationView) viewRemove1.findViewById(R.id.anim11);
+        LottieAnimationView anim2=(LottieAnimationView) viewRemove1.findViewById(R.id.anim12);
+        LottieAnimationView anim3=(LottieAnimationView) viewRemove1.findViewById(R.id.anim13);
+        LottieAnimationView anim4=(LottieAnimationView) viewRemove1.findViewById(R.id.anim14);
+        LottieAnimationView anim5=(LottieAnimationView) viewRemove1.findViewById(R.id.anim15);
+        LottieAnimationView anim6=(LottieAnimationView) viewRemove1.findViewById(R.id.anim16);
+        LottieAnimationView anim7=(LottieAnimationView) viewRemove1.findViewById(R.id.anim17);
+        LottieAnimationView anim8=(LottieAnimationView) viewRemove1.findViewById(R.id.anim18);
+        LottieAnimationView anim9=(LottieAnimationView) viewRemove1.findViewById(R.id.anim19);
+        LottieAnimationView anim10=(LottieAnimationView) viewRemove1.findViewById(R.id.anim20);
+
         Button homeButton=(Button) viewRemove1.findViewById(R.id.homeButton);
         Button changeCategory=(Button) viewRemove1.findViewById(R.id.changeCategory);
         Button reMatch=(Button) viewRemove1.findViewById(R.id.reMatch);
         Button leaderBoard=(Button) viewRemove1.findViewById(R.id.leaderBoard);
 
+        LineChart lineChart = (LineChart) viewRemove1.findViewById(R.id.lineChart);
+
+        record.getLineGraph(lineChart);
 
         LinearLayout linearLayoutexpert=(LinearLayout) viewRemove1.findViewById(R.id.linearLayoutexpert);
         LinearLayout linearLayoutAudience=(LinearLayout) viewRemove1.findViewById(R.id.linearLayoutAudience);
         LinearLayout linearLayoutSwap=(LinearLayout) viewRemove1.findViewById(R.id.linearLayoutSwap);
         LinearLayout linearLayoutfiftyfifty=(LinearLayout) viewRemove1.findViewById(R.id.linearLayoutfiftyfifty);
 
+        animationList=new ArrayList<>();
 
-        correctAnswer.setText("Correct/Wrong : "+scoreInt+"/"+String.valueOf(10-scoreInt));
+        animationList.add(anim1); animationList.add(anim2); animationList.add(anim3);
+        animationList.add(anim4); animationList.add(anim5); animationList.add(anim6);
+        animationList.add(anim7); animationList.add(anim8); animationList.add(anim9);
+        animationList.add(anim10);
+
+
+
+        correctAnswer.setText("Correct/Wrong : "+correctAnsInt+"/"+String.valueOf(10-correctAnsInt));
         timeTaken.setText("Time Taken : "+timeTakenString);
         lifeLineUsed.setText("Life-Line Used : "+lifeLineUsedInt);
 
@@ -101,7 +163,7 @@ public class ResultSinglePlayer {
         batchGenerator.start();
 
         highestScore.setText("Your Highest Score : "+higestScoreInt);
-        totalScore.setText("Total Score : "+totalScore);
+        totalScore.setText("Total Score : "+scoreInt);
 
         myName.setText(myNameString);
         Glide.with(context).load(myPicURL).apply(RequestOptions
@@ -127,10 +189,18 @@ public class ResultSinglePlayer {
 
 
 
+        for(int i=0;i<animationList.size();i++){
+            if(animList.get(i)){
+                animationList.get(i).setAnimation(R.raw.tickanim);
+                animationList.get(i).playAnimation();
+                animationList.get(i).loop(false);
+            }else{
+                animationList.get(i).setAnimation(R.raw.wronganim);
+                animationList.get(i).playAnimation();
+                animationList.get(i).loop(false);
+            }
 
-
-
-
+        }
 
 
         final AlertDialog alertDialog=builderRemove.create();
@@ -143,8 +213,50 @@ public class ResultSinglePlayer {
 
         }
 
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                Intent i=new Intent(context,MainActivity.class);
+                context.startActivity(i);
+                ((Activity)context).finish();
+            }
+        });
+
+        changeCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                DialogCategory dialogCategory=new DialogCategory(context,view);
+                dialogCategory.start();
+            }
+        });
+
+        reMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                switch (IntentInt){
+                    case 1:
+                        Intent intent = new Intent(context, NormalSingleQuiz.class);
+                        intent.putExtra("category", category);
+                        view.getContext().startActivity(intent);
+                        ((Activity)view.getContext()).finish();
+                        break;
+                }
+
+            }
+        });
+
+        leaderBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               record.getLeaderBoard();
+            }
+        });
 
     }
+
 
 
 

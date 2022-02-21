@@ -21,7 +21,7 @@ public class BatchGenerator {
 
             imageView.setBackgroundResource(R.drawable.blackiron);
         }else if(scoreSum <2000){
-            //   Aakash Changes Are to be done here
+
             imageView.setBackgroundResource(R.drawable.bronze);
         }else if(scoreSum <8000){
 

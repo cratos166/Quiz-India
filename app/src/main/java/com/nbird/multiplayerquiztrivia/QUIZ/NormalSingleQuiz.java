@@ -413,6 +413,8 @@ public class NormalSingleQuiz extends AppCompatActivity {
                    timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
                }
 
+               int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
+
 
                 ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
 
@@ -436,8 +438,10 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
 
 
+
                 ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalSingleQuiz.this,map,animList,score,timeTakenString,
-                        lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL);
+                        lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                        category,1,timeTakenInt);
 
                 resultSinglePlayer.start();
 

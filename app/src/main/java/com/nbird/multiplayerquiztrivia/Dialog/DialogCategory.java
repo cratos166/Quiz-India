@@ -1,5 +1,6 @@
 package com.nbird.multiplayerquiztrivia.Dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -104,6 +105,7 @@ public class DialogCategory {
                 intent.putExtra("category", value);
                 alertDialog.dismiss();
                 view.getContext().startActivity(intent);
+                ((Activity)view.getContext()).finish();
             }
         });
     }

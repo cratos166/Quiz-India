@@ -108,6 +108,22 @@ public class LifeLine {
 
     }
 
+
+    public void audienceManu(){
+        Random rand2 = new Random();
+
+
+        int setMax = 100 - rand2.nextInt(60);
+
+        switch (manupulator) {
+            case 1: yo1 = setMax;yo2 = rand2.nextInt(100 - yo1);yo3 = rand2.nextInt(100 - yo1 - yo2);yo4 = 100 - yo1 - yo2 - yo3;break;
+            case 2: yo2 = setMax;yo1 = rand2.nextInt(100 - yo2);yo3 = rand2.nextInt(100 - yo2 - yo1);yo4 = 100 - yo2 - yo1 - yo3;break;
+            case 3: yo3 = setMax;yo2 = rand2.nextInt(100 - yo3);yo1 = rand2.nextInt(100 - yo3 - yo2);yo4 = 100 - yo3 - yo2 - yo1;break;
+            case 4: yo4 = setMax;yo2 = rand2.nextInt(100 - yo4);yo1 = rand2.nextInt(100 - yo4 - yo2);yo3 = 100 - yo4 - yo2 - yo1;break;
+        }
+
+    }
+
     public void audienceLL(){
         linearLayoutAudience.setBackgroundResource(R.drawable.usedicon);
 
@@ -121,18 +137,15 @@ public class LifeLine {
             manupulator = 4;
         }
 
-        Random rand2 = new Random();
-
-
-        int setMax = 100 - rand2.nextInt(60);
-
-        switch (manupulator) {
-            case 1: yo1 = setMax;yo2 = rand2.nextInt(100 - yo1);yo3 = rand2.nextInt(100 - yo1 - yo2);yo4 = 100 - yo1 - yo2 - yo3;break;
-            case 2: yo2 = setMax;yo1 = rand2.nextInt(100 - yo2);yo3 = rand2.nextInt(100 - yo2 - yo1);yo4 = 100 - yo2 - yo1 - yo3;break;
-            case 3: yo3 = setMax;yo2 = rand2.nextInt(100 - yo3);yo1 = rand2.nextInt(100 - yo3 - yo2);yo4 = 100 - yo3 - yo2 - yo1;break;
-            case 4: yo4 = setMax;yo2 = rand2.nextInt(100 - yo4);yo1 = rand2.nextInt(100 - yo4 - yo2);yo3 = 100 - yo4 - yo2 - yo1;break;
+        try{
+            audienceManu();
+        }catch (Exception e){
+            try{
+                audienceManu();
+            }catch (Exception e1){
+                audienceManu();
+            }
         }
-
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
@@ -188,9 +201,7 @@ public class LifeLine {
         });
     }
 
-    public void swapTheQuestionLL(){
 
-    }
 
     public void expertAdviceLL(){
         linearLayoutexpert.setBackgroundResource(R.drawable.usedicon);
@@ -204,7 +215,7 @@ public class LifeLine {
         builder.setCancelable(false);
         TextView titleText=((TextView) view1.findViewById(R.id.textTitle));
 
-        ((TextView) view1.findViewById(R.id.textMessage)).setText(myName+" I feel you should go for  : '"+answerByExpert+"'");
+        ((TextView) view1.findViewById(R.id.textMessage)).setText(myName+" I feel you should go for  : '"+answerByExpert.toUpperCase()+"'");
         ((Button) view1.findViewById(R.id.buttonYes)).setText("OKAY");
         ImageView expertImage=((ImageView) view1.findViewById(R.id.imageIcon));
 

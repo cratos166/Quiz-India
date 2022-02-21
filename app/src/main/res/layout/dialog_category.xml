@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:scaleX="0.95"
     android:scaleY="0.95"
-    android:padding="5dp"
     android:background="@drawable/border_theme_2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
@@ -186,8 +185,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardviewFloraAndFauna"
-                    android:layout_width="230dp"
-                    android:layout_height="110dp"
+                    android:layout_width="210dp"
+                    android:layout_height="130dp"
                     android:clickable="true"
                     android:foreground="?selectableItemBackground"
                     android:scaleX="0.95"
@@ -259,12 +258,13 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardviewAstronomyAndSpace"
                     android:layout_width="0dp"
-                    android:layout_height="220dp"
+                    android:layout_height="0dp"
                     android:layout_marginEnd="8dp"
                     android:clickable="true"
                     android:foreground="?selectableItemBackground"
                     android:scaleX="0.97"
                     android:scaleY="0.97"
+                    app:layout_constraintBottom_toBottomOf="@+id/cardviewGeography"
                     app:layout_constraintEnd_toEndOf="@+id/cardviewHistoricalMonuments"
                     app:layout_constraintStart_toEndOf="@+id/cardviewFloraAndFauna"
                     app:layout_constraintTop_toBottomOf="@+id/cardviewHistoricalMonuments"
@@ -319,7 +319,7 @@
                                 android:gravity="left"
                                 android:text="The mystery of space never stops to amze us. All aboard on the spacecraft!"
                                 android:textColor="@color/text_dis"
-                                android:textSize="9dp"  />
+                                android:textSize="9dp" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -331,12 +331,11 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardviewGeography"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
                     android:foreground="?selectableItemBackground"
                     android:scaleX="0.95"
                     android:scaleY="0.95"
-                    app:layout_constraintBottom_toBottomOf="@+id/cardviewAstronomyAndSpace"
                     app:layout_constraintEnd_toStartOf="@+id/cardviewAstronomyAndSpace"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cardviewFloraAndFauna"
@@ -358,7 +357,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginRight="5dp"
@@ -390,7 +389,7 @@
                                 android:gravity="left"
                                 android:text="Earth is an amazing planet. Take a spin around the Globe and test how much do you know about your Home!"
                                 android:textColor="@color/text_dis"
-                                android:textSize="9dp"  />
+                                android:textSize="9dp" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -480,7 +479,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/cardviewSports"
                     app:layout_constraintEnd_toEndOf="@+id/cardviewAstronomyAndSpace"
                     app:layout_constraintStart_toEndOf="@+id/cardviewSports"
-                    app:layout_constraintTop_toBottomOf="@+id/cardviewAstronomyAndSpace"
+                    app:layout_constraintTop_toBottomOf="@+id/cardviewGeography"
                     cardview:cardCornerRadius="5dp">
 
                     <LinearLayout
@@ -532,7 +531,7 @@
                                 android:gravity="left"
                                 android:text="The big game is here! Check out your skills and ace it all the way down!"
                                 android:textColor="@color/text_dis"
-                                android:textSize="9dp"  />
+                                android:textSize="9dp" />
 
                         </LinearLayout>
                     </LinearLayout>

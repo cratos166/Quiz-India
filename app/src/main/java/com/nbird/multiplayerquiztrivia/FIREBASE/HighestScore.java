@@ -49,16 +49,15 @@ public class HighestScore {
 
 
     public void upLoadHighestScore(int currentScore){
-        if(highestScore<currentScore){
+        mAuth = FirebaseAuth.getInstance();
+
             table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("MY_DATA").child("highestScore").setValue(currentScore).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.d("HighestScore","HIGHEST SCORE UPLOADED");
                 }
             });
-        }else{
-            Log.d("HighestScore","NO NEED TO UPLOAD HIGHEST SCORE");
-        }
+
     }
 
 }
