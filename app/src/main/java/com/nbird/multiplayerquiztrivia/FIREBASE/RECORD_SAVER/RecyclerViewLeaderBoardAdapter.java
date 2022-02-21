@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
+import com.nbird.multiplayerquiztrivia.GENERATORS.LevelGenerators;
 import com.nbird.multiplayerquiztrivia.R;
 
 import java.util.List;
@@ -79,7 +81,7 @@ public class RecyclerViewLeaderBoardAdapter extends RecyclerView.Adapter<Recycle
                     .into(imageUrl1);
 
             this.username.setText(username+" ");
-            this.score.setText(String.valueOf("Highest Score : "+score+" "));
+            this.score.setText(String.valueOf("HS : "+score+" "));
 
 
 
@@ -91,37 +93,12 @@ public class RecyclerViewLeaderBoardAdapter extends RecyclerView.Adapter<Recycle
                 this.totalTime.setText(String.valueOf("Total Time : "+minutes+" min "+sec+" sec "));
             }
 
-            if(sumationScore<100000){
-                if(sumationScore<50000){
-                    levelTextView.setText(" Lv. 1 ");
-                }else{
-                    levelTextView.setText(" Lv. 2 ");
-                }
-            }else{
-                int holder;
-                holder=sumationScore/50000;
-                levelTextView.setText(" Lv. "+holder+" ");
-            }
 
-            if(sumationScore<50000){
-                levelImageView.setBackgroundResource(R.drawable.blackiron);
-            }else if(sumationScore<200000){
-                levelImageView.setBackgroundResource(R.drawable.bronze);
-            }else if(sumationScore<800000){
-                levelImageView.setBackgroundResource(R.drawable.silver);
-            }else if(sumationScore<1800000){
-                levelImageView.setBackgroundResource(R.drawable.gold);
-            }else if(sumationScore<3000000){
-                levelImageView.setBackgroundResource(R.drawable.platinum);
-            }else if(sumationScore<4000000){
-                levelImageView.setBackgroundResource(R.drawable.diamond);
-            }else if(sumationScore<8000000){
-                levelImageView.setBackgroundResource(R.drawable.amethyst);
-            }else if(sumationScore<12000000){
-                levelImageView.setBackgroundResource(R.drawable.master);
-            }else{
-                levelImageView.setBackgroundResource(R.drawable.king);
-            }
+            BatchGenerator batchGenerator=new BatchGenerator(sumationScore,levelImageView);
+            batchGenerator.start();
+
+            LevelGenerators levelGenerators=new LevelGenerators(sumationScore,levelTextView);
+            levelGenerators.start();
 
             this.correctByWrong.setText("Correct/Wrong : "+correct+"/"+wrong+" ");
         }

@@ -85,8 +85,8 @@ public class Record {
                     if(score>leaderBoardHolder.getScore()){
                         leaderBoardHolder.setScore(score);
                     }
-                    leaderBoardHolder.setScore(leaderBoardHolder.getScore()+timeTakenInt);
-                    leaderBoardHolder.setCorrect(leaderBoardHolder.getScore()+correctAns);
+                    leaderBoardHolder.setScore(leaderBoardHolder.getTotalTime()+timeTakenInt);
+                    leaderBoardHolder.setCorrect(leaderBoardHolder.getCorrect()+correctAns);
                     leaderBoardHolder.setWrong(leaderBoardHolder.getWrong()+(10-correctAns));
                     leaderBoardHolder.setSumationScore(leaderBoardHolder.getSumationScore()+score);
                     LeaderBoardUploader(leaderBoardHolder);

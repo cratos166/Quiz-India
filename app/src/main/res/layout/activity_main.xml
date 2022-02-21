@@ -25,7 +25,7 @@ tools:openDrawer="start">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:menu="@menu/side_menu"
-    android:background="@color/layer_1"
+    android:background="@color/level_2"
     >
 
 

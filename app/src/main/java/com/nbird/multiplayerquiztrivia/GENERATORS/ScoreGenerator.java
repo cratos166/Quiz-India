@@ -15,7 +15,7 @@ public class ScoreGenerator {
     }
 
     public int start(){
-        int totalSecondsLeft=seconds+minutes;
+        int totalSecondsLeft=seconds+(minutes*60);
         return (totalSecondsLeft/6)+(correctAns*10)+(4-numberOfLL)*5;
 
     }

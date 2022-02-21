@@ -415,9 +415,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
                int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
 
-
-                ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
-
+               ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
 
                totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
                totalScore.setSingleModeScore();
@@ -427,48 +425,17 @@ public class NormalSingleQuiz extends AppCompatActivity {
                    highestScore.upLoadHighestScore(scoreGenerator.start());
                }
 
-
                 HashMap<String,Integer> map=new HashMap<>();
                 map.put("Expert",expertnum);
                 map.put("Flip",swapnum);
                 map.put("Audience",audiencenum);
                 map.put("Fifty-Fifty",fiftyfiftynum);
 
-
-
-
-
-
                 ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalSingleQuiz.this,map,animList,score,timeTakenString,
                         lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
                         category,1,timeTakenInt);
 
                 resultSinglePlayer.start();
-
-
-
-
-//                try {
-//                    songActivity.songStop();
-//                } catch (Exception e) {
-//
-//                }
-//                Intent scoreIntent = new Intent(quizActivity.this, scoreActivity.class);
-//                scoreIntent.putExtra("score", score);
-//                scoreIntent.putExtra("lifeline", lifelineSum);
-//                scoreIntent.putExtra("minutes", minutes);
-//                scoreIntent.putExtra("seconds", second);
-//                scoreIntent.putExtra("minutestext", minutestext);
-//                scoreIntent.putExtra("secondtext", secondtext);
-//                scoreIntent.putExtra("category", category);
-//                scoreIntent.putExtra("milliholder", milliHolder);
-//                scoreIntent.putExtra("imageurl", imageurl);
-//                startActivity(scoreIntent);
-//                if (countDownTimer != null) {
-//                    countDownTimer.cancel();
-//                }
-//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
-//                finish();
             }
 
 
@@ -498,7 +465,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
                 }else{
                     songActivity=new SongActivity(NormalSingleQuiz.this);
                     songActivity.startMusic();
-                    Speaker.setBackgroundResource(R.drawable.border_theme_2);
+                    Speaker.setBackgroundResource(R.drawable.single_color_2);
                     speakerImage.setBackgroundResource(R.drawable.music_on);
                     appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalSingleQuiz.this,true);
                 }

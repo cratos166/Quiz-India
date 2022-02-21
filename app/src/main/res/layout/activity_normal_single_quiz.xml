@@ -45,7 +45,7 @@
             android:id="@+id/Speaker"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/border_theme_2"
+            android:background="@drawable/single_color_2"
             android:elevation="10dp">
 
 
@@ -82,7 +82,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/border_theme_2"
+            android:background="@drawable/single_color_2"
             android:elevation="10dp">
 
 
@@ -128,7 +128,7 @@
             android:id="@+id/TimerLL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/border_theme_2"
+            android:background="@drawable/single_color_2"
             android:elevation="10dp">
 
 
@@ -187,7 +187,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/border_theme_2"
+                    android:background="@drawable/single_color_2"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -217,7 +217,7 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_marginBottom="5dp"
-                                android:background="@drawable/single_color_2"
+                                android:background="@drawable/single_color_3"
                                 android:orientation="vertical">
 
                                 <LinearLayout
@@ -392,7 +392,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/border_theme_2">
+                    android:background="@drawable/single_color_2">
 
                     <TextView
                         android:id="@+id/question"
@@ -447,7 +447,7 @@
                         android:id="@+id/linearLayoutexpert"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme_2">
+                        android:background="@drawable/border_theme">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -477,7 +477,7 @@
                         android:id="@+id/linearLayoutSwap"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme_2">
+                        android:background="@drawable/border_theme">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -508,7 +508,7 @@
                         android:id="@+id/linearLayoutAudience"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme_2">
+                        android:background="@drawable/border_theme">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -539,7 +539,7 @@
                         android:id="@+id/linearLayoutfiftyfifty"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme_2">
+                        android:background="@drawable/border_theme">
 
 
                         <TextView
@@ -587,7 +587,7 @@
                         android:id="@+id/button1"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@drawable/border_theme_2"
+                        android:background="@drawable/single_color_2"
                         android:fontFamily="@font/ubuntu"
                         android:shadowColor="@color/black"
                         android:text=""
@@ -599,7 +599,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/border_theme_2"
+                        android:background="@drawable/single_color_2"
                         android:fontFamily="@font/ubuntu"
                         android:text=""
                         android:textColor="@color/text_dis"
@@ -610,7 +610,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/border_theme_2"
+                        android:background="@drawable/single_color_2"
                         android:fontFamily="@font/ubuntu"
                         android:text=""
                         android:textColor="@color/text_dis"
@@ -621,7 +621,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/border_theme_2"
+                        android:background="@drawable/single_color_2"
                         android:fontFamily="@font/ubuntu"
                         android:text=""
                         android:textColor="@color/text_dis"
@@ -646,8 +646,9 @@
                 android:scaleX="0.8"
                 android:scaleY="0.8"
                 android:text="Next"
+                android:textStyle="bold"
                 android:textSize="25dp"
-                android:textColor="#ffffff"
+                android:textColor="@color/mainmenubuttonback"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
