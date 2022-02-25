@@ -36,6 +36,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
 import com.nbird.multiplayerquiztrivia.GENERATORS.LevelGenerators;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
@@ -223,6 +224,9 @@ public class ResultSinglePlayer {
             }
         });
 
+        if(IntentInt==2){
+            changeCategory.setVisibility(View.GONE);
+        }
         changeCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,6 +245,12 @@ public class ResultSinglePlayer {
                         Intent intent = new Intent(context, NormalSingleQuiz.class);
                         intent.putExtra("category", category);
                         view.getContext().startActivity(intent);
+                        ((Activity)view.getContext()).finish();
+                        break;
+                    case 2:
+                        Intent intent1 = new Intent(context, NormalPictureQuiz.class);
+                        intent1.putExtra("category", category);
+                        view.getContext().startActivity(intent1);
                         ((Activity)view.getContext()).finish();
                         break;
                 }

@@ -1,23 +1,13 @@
 package com.nbird.multiplayerquiztrivia.Model;
 
-public class questionHolder {
+public class pictureQuizHolder {
     private String questionTextView,option1,option2,option3,option4,correctAnswer,questionPicture;
     private int setNo;
 
-    public questionHolder() {
+    public pictureQuizHolder() {
     }
 
-    public questionHolder(String questionTextView, String option1, String option2, String option3, String option4, String correctAnswer, int setNo) {
-        this.questionTextView = questionTextView;
-        this.option1 = option1;
-        this.option2 = option2;
-        this.option3 = option3;
-        this.option4 = option4;
-        this.correctAnswer = correctAnswer;
-        this.setNo = setNo;
-    }
-
-    public questionHolder(String questionTextView, String option1, String option2, String option3, String option4, String correctAnswer, int setNo, String questionPicture) {
+    public pictureQuizHolder(String questionTextView, String option1, String option2, String option3, String option4, String correctAnswer, int setNo, String questionPicture) {
         this.questionTextView = questionTextView;
         this.option1 = option1;
         this.option2 = option2;

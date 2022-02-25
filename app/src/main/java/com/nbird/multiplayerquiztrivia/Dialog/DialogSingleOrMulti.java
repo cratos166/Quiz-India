@@ -1,6 +1,8 @@
 package com.nbird.multiplayerquiztrivia.Dialog;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,8 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.common.SignInButton;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
 public class DialogSingleOrMulti {
@@ -42,7 +46,10 @@ public class DialogSingleOrMulti {
         pictureMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, NormalPictureQuiz.class);
+                alertDialog.dismiss();
+                view.getContext().startActivity(intent);
+                ((Activity)view.getContext()).finish();
             }
         });
 

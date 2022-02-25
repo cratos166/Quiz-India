@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
+import com.nbird.multiplayerquiztrivia.Model.pictureQuizHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 
@@ -60,6 +61,8 @@ public class LifeLine {
         this.myName = myName;
         this.context = context;
     }
+
+
 
 
     public int getPosition() {
