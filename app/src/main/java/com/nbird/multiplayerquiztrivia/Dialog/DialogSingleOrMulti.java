@@ -15,6 +15,7 @@ import com.google.android.gms.common.SignInButton;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
 public class DialogSingleOrMulti {
@@ -76,7 +77,10 @@ public class DialogSingleOrMulti {
         videoMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, NormalVideoQuiz.class);
+                alertDialog.dismiss();
+                view.getContext().startActivity(intent);
+                ((Activity)view.getContext()).finish();
             }
         });
 

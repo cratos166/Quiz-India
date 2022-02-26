@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LifeLine {
+public class LL_Video_Quiz {
 
     int lifeLineSum=0;
     int manupulator1=0,manupulator=0;
@@ -40,12 +40,12 @@ public class LifeLine {
 
     LinearLayout linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert;
     int position;
-    List<questionHolder> list;
+    List<VideoQuestionHolder> list;
     Button option1,option2,option3,option4;
     String myName;
     Context context;
 
-    public LifeLine(LinearLayout linearLayoutFiftyFifty, LinearLayout linearLayoutAudience, LinearLayout linearLayoutexpert, int position, List<questionHolder> list, Button option1, Button option2, Button option3, Button option4, String myName, Context context) {
+    public LL_Video_Quiz(LinearLayout linearLayoutFiftyFifty, LinearLayout linearLayoutAudience, LinearLayout linearLayoutexpert, int position, List<VideoQuestionHolder> list, Button option1, Button option2, Button option3, Button option4, String myName, Context context) {
         this.linearLayoutFiftyFifty = linearLayoutFiftyFifty;
         this.linearLayoutAudience = linearLayoutAudience;
         this.linearLayoutexpert = linearLayoutexpert;
@@ -61,6 +61,8 @@ public class LifeLine {
 
 
 
+
+
     public int getPosition() {
         return position;
     }
@@ -72,34 +74,34 @@ public class LifeLine {
     public void fiftyfiftyLL(){
 
 
-                    linearLayoutFiftyFifty.setBackgroundResource(R.drawable.usedicon);
-                    if (option1.getText().toString().equals(list.get(position).getCorrectAnswer())) {
-                        manupulator1 = 1;
-                    } else if (option2.getText().toString().equals(list.get(position).getCorrectAnswer())) {
-                        manupulator1 = 2;
-                    } else if (option3.getText().toString().equals(list.get(position).getCorrectAnswer())) {
-                        manupulator1 = 3;
-                    } else {
-                        manupulator1 = 4;
-                    }
+        linearLayoutFiftyFifty.setBackgroundResource(R.drawable.usedicon);
+        if (option1.getText().toString().equals(list.get(position).getCorrectAnswer())) {
+            manupulator1 = 1;
+        } else if (option2.getText().toString().equals(list.get(position).getCorrectAnswer())) {
+            manupulator1 = 2;
+        } else if (option3.getText().toString().equals(list.get(position).getCorrectAnswer())) {
+            manupulator1 = 3;
+        } else {
+            manupulator1 = 4;
+        }
 
-                    Random rand3 = new Random();
-                    int runStopper = 0;
-                    while (runStopper == 0) {
+        Random rand3 = new Random();
+        int runStopper = 0;
+        while (runStopper == 0) {
 
-                        selectNum = rand3.nextInt(4) + 1;
+            selectNum = rand3.nextInt(4) + 1;
 
-                        if (manupulator1 != selectNum) {
-                            runStopper = 1;
-                        }
-                    }
+            if (manupulator1 != selectNum) {
+                runStopper = 1;
+            }
+        }
 
-                    switch (selectNum) {
-                        case 1: switch (manupulator1) { case 2: option3.setText("");option4.setText("");break; case 3: option2.setText("");option4.setText("");break; case 4: option2.setText("");option3.setText("");break; }break;
-                        case 2: switch (manupulator1) { case 1: option3.setText("");option4.setText("");break; case 3: option1.setText("");option4.setText("");break; case 4: option3.setText("");option1.setText("");break; }break;
-                        case 3: switch (manupulator1) { case 1: option2.setText("");option4.setText("");break; case 2: option1.setText("");option4.setText("");break; case 4: option2.setText("");option1.setText("");break; }break;
-                        case 4: switch (manupulator1) { case 1: option3.setText("");option2.setText("");break; case 2: option1.setText("");option3.setText("");break; case 3: option2.setText("");option1.setText("");break; }break;
-                    }
+        switch (selectNum) {
+            case 1: switch (manupulator1) { case 2: option3.setText("");option4.setText("");break; case 3: option2.setText("");option4.setText("");break; case 4: option2.setText("");option3.setText("");break; }break;
+            case 2: switch (manupulator1) { case 1: option3.setText("");option4.setText("");break; case 3: option1.setText("");option4.setText("");break; case 4: option3.setText("");option1.setText("");break; }break;
+            case 3: switch (manupulator1) { case 1: option2.setText("");option4.setText("");break; case 2: option1.setText("");option4.setText("");break; case 4: option2.setText("");option1.setText("");break; }break;
+            case 4: switch (manupulator1) { case 1: option3.setText("");option2.setText("");break; case 2: option1.setText("");option3.setText("");break; case 3: option2.setText("");option1.setText("");break; }break;
+        }
 
 
 
@@ -331,3 +333,4 @@ public class LifeLine {
 
 
 }
+
