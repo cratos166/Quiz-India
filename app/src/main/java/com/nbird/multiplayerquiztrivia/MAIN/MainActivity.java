@@ -760,7 +760,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean username() {
         String name1 = usernameEditText.getText().toString();
         //String noWhihteSpaces=("\\A\\w{4,20}\\z");
-
         if (name1.isEmpty()) {
             usernameEditText.setError("Field cannot be empty");
             return false;

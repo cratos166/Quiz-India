@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.animation.Animator;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,6 +21,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,12 +51,13 @@ import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
 import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class NormalPictureQuiz extends AppCompatActivity {
+public class NormalAudioQuiz extends AppCompatActivity {
 
 
     TextView questionTextView,scoreBoard,timerText;
@@ -63,7 +67,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
     LottieAnimationView anim11,anim12,anim13,anim14,anim15,anim16,anim17,anim18,anim19,anim20;
     ImageView myPic, questionImage;
     Dialog loadingDialog;
-    CountDownTimer countDownTimer;
+    CountDownTimer countDownTimer,c1;
 
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference myRef=database.getReference();
@@ -73,7 +77,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
     ArrayList<LottieAnimationView> animationList;
     ArrayList<Boolean> animList;
 
-    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category;
+    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category,statusFinder=1;
     String myName,myPicURL;
 
     AppData appData;
@@ -86,16 +90,25 @@ public class NormalPictureQuiz extends AppCompatActivity {
     HighestScore highestScore;
     PicLoader picLoader;
 
+
+    CardView playOrPauseButton;
+    LottieAnimationView backwardanim,forwardanim;
+    SeekBar seekBar;
+    LinearLayout linearFun1;
+    MediaPlayer music;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_normal_picture_quiz);
+        setContentView(R.layout.activity_normal_audio_quiz);
+
 
 
         list=new ArrayList<>();
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
+
 
 
         questionTextView=findViewById(R.id.question);
@@ -129,21 +142,47 @@ public class NormalPictureQuiz extends AppCompatActivity {
         questionImage=(ImageView) findViewById(R.id.questionImage);
         clockCardView = (CardView) findViewById(R.id.cardView3);
 
-        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, NormalPictureQuiz.this);
-        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, NormalPictureQuiz.this);
+        linearFun1=(LinearLayout) findViewById(R.id.linearFun1);
+        playOrPauseButton=(CardView) findViewById(R.id.mainButton);
+        seekBar=(SeekBar) findViewById(R.id.determinateBar);
+        backwardanim=(LottieAnimationView) findViewById(R.id.backwardanim);
+        forwardanim=(LottieAnimationView) findViewById(R.id.forwardanim);
+
+        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, NormalAudioQuiz.this);
+        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, NormalAudioQuiz.this);
         Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
                 .bitmapTransform(new RoundedCorners(18)))
                 .into(myPic);
+
+
+        animationListner();
+        seekerManupulator();
+
+
+        c1=new CountDownTimer(3*60*1000,1000){
+            @Override
+            public void onTick(long millisUntilFinished) {
+                try {
+                    seekBar.setProgress(music.getCurrentPosition());
+                }catch (Exception e){
+
+                }
+            }
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
 
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
 
         animationList.add(anim11);animationList.add(anim12);animationList.add(anim13);animationList.add(anim14);animationList.add(anim15);
         animationList.add(anim16);animationList.add(anim17);animationList.add(anim18);animationList.add(anim19);animationList.add(anim20);
 
-        supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalPictureQuiz.this);
+        supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalAudioQuiz.this);
         supportAlertDialog.showLoadingDialog();
 
-        timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
+        timer=new QuizTimer(countDownTimer,60000*3,1000,NormalAudioQuiz.this,timerText,clockCardView);
 
 
         lifeLine();
@@ -159,11 +198,15 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
         highestScore=new HighestScore();
         highestScore.start();
+
+
+
+
     }
 
     public void lifeLine(){
 
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalPictureQuiz.this);
+        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalAudioQuiz.this);
 
         fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
         audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
@@ -188,24 +231,38 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
 
     public void questionSelector() {
-        for(int i=0;i<11;i++){
-            Random rand = new Random();
-            int setNumber = rand.nextInt(4999)+1;
-            if(setNumber>1210&&setNumber<2000){
-                setNumber=setNumber-1000;
+
+        myRef.child("QUIZNUMBERS").child("AudioQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=156;
+                }
+                for(int i=0;i<11;i++){
+                    final Random rand = new Random();
+                    final int setNumber = rand.nextInt(num)+1;
+                    fireBaseData(setNumber);
+                }
             }
-            fireBaseData(setNumber);
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     public void fireBaseData ( int setNumber){
-        myRef.child("PictureQuizMain").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("SongQuizJson").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.add(snapshot.getValue(questionHolder.class));
                 try{
                     Glide.with(getBaseContext())
-                            .load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).preload(20,10)).preload(20,10)).preload(20,10))
+                            .load(list.get(num).getImageURL()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getImageURL()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getImageURL()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getImageURL()).preload(20,10)).preload(20,10)).preload(20,10))
                             .preload(20, 10);
                 }catch (Exception e){
 
@@ -215,7 +272,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(NormalPictureQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(NormalAudioQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 supportAlertDialog.dismissLoadingDialog();
                 finish();
             }
@@ -226,7 +283,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
         num++;
         if (num == 10) {
-//            timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
+//            timer=new QuizTimer(countDownTimer,60000*3,1000,NormalAudioQuiz.this,timerText,clockCardView);
 //            timer.start();
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
@@ -263,7 +320,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
                 });
             } else {
                 finish();
-                Toast.makeText(NormalPictureQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NormalAudioQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
             }
 //            supportAlertDialog.dismissLoadingDialog();
         }
@@ -279,16 +336,16 @@ public class NormalPictureQuiz extends AppCompatActivity {
                     String option="";
                     if(count==0){
 
-                        String linkHolder=list.get(position).getQuestionPicture();
-                        try{
-                            Glide.with(getBaseContext())
-                                    .load(linkHolder)
-                                    .error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder))))
-                                    .into(questionImage);
-                        }catch (Exception e){
+                        String linkHolder=list.get(position).getImageURL();
 
-                        }
 
+                        clearMediaPlayer();
+                        songURLDownload(list.get(position).getSongURL());
+
+
+                        Glide.with(getBaseContext()).load(linkHolder).apply(RequestOptions
+                                .bitmapTransform(new RoundedCorners(14)))
+                                .into(questionImage);
 
 
                         option=list.get(position).getOption1();
@@ -343,7 +400,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
     public void playMusic(int id){
         MediaPlayer musicNav;
-        musicNav = MediaPlayer.create(NormalPictureQuiz.this,id);
+        musicNav = MediaPlayer.create(NormalAudioQuiz.this,id);
         musicNav.start();
         musicNav.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -444,9 +501,9 @@ public class NormalPictureQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalPictureQuiz.this,map,animList,score,timeTakenString,
+        ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalAudioQuiz.this,map,animList,score,timeTakenString,
                 lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,2,timeTakenInt);
+                category,3,timeTakenInt);
 
         resultSinglePlayer.start();
     }
@@ -457,9 +514,162 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
 
 
+    public void animationListner(){
+        playOrPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(statusFinder==1){
+                    statusFinder=0;
+                    linearFun1.setBackgroundResource(R.drawable.play_button);
+                    pauseMusic();
+                }else{
+                    statusFinder=1;
+                    linearFun1.setBackgroundResource(R.drawable.pause_button);
+                    startMusic();
+                }
+            }
+        });
+
+        backwardanim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i=music.getCurrentPosition();
+                if(i<=5000){
+                    music.seekTo(0);
+                    seekBar.setProgress(0);
+
+                }else{
+                    int p=i-5000;
+                    music.seekTo(p);
+                    seekBar.setProgress(p);
+                }
+                backwardanim.setAnimation(R.raw.rewind_anim);
+                backwardanim.playAnimation();
+                backwardanim.loop(false);
+
+            }
+        });
+
+        forwardanim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i=music.getCurrentPosition();
+                try{
+                    int p=i+5000;
+                    music.seekTo(p);
+                    seekBar.setProgress(p);
+                }catch (Exception e){
+                    music.seekTo(music.getDuration());
+                    seekBar.setProgress(music.getDuration());
+                    music.pause();
+                }
+                forwardanim.setAnimation(R.raw.forward_anim);
+                forwardanim.playAnimation();
+                forwardanim.loop(false);
+            }
+        });
+    }
+
+
+    public void seekerManupulator(){
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                // seekBarHint.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+                // seekBarHint.setVisibility(View.VISIBLE);
+
+
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+
+                if (music != null && music.isPlaying()) {
+                    music.seekTo(seekBar.getProgress());
+                    music.start();
+                }
+            }
+        });
+    }
+    private void clearMediaPlayer() {
+        try {
+            music.stop();
+            music.release();
+            music = null;
+        }catch (Exception e){
+
+        }
+
+    }
+
+    public void pauseMusic(){
+        music.pause();
+    }
+
+    public void startMusic(){
+        music.start();
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(myProcess);
+        Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+        if (isInBackground) {
+            music.pause();
+        } else {
+            try{
+                if (!music.isPlaying()) {
+                    music.start();
+                    music.setVolume(0.4f,0.4f);
+                }
+            }catch (Exception e){
+
+            }
+
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        music.pause();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(myProcess);
+        Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+        if (isInBackground) {
+            music.pause();
+        } else {
+            try{
+                if (!music.isPlaying()) {
+                    music.start();
+                    music.setVolume(0.4f,0.4f);
+                }
+            }catch (Exception e){
+
+            }
+
+        }
+    }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalPictureQuiz.this,timer.getCountDownTimer(),option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalAudioQuiz.this,timer.getCountDownTimer(),option1,songActivity);
         quizCancelDialog.start();
     }
 
@@ -470,9 +680,70 @@ public class NormalPictureQuiz extends AppCompatActivity {
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
 
+
+        if(c1!=null){
+            c1.cancel();
+        }
+
+
+
         Runtime.getRuntime().gc();
     }
-    
-    
-    
+
+
+    private  class DownloadData extends AsyncTask<String,Void,String> {
+        private static final String TAG = "DownloadData";
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            supportAlertDialog.dismissLoadingDialog();
+
+            try{
+                DownloadData.this.cancel(true);
+            }catch (Exception e){
+
+            }
+
+
+            return;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+                music.setDataSource(strings[0]);
+            } catch (IOException e) {
+
+            }
+            music.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    music.start();
+                    seekBar.setMax(music.getDuration());
+                    music.setLooping(true);
+
+                }
+            });
+            music.prepareAsync();
+            return null;
+        }
+    }
+
+    public void songURLDownload(String musicUrl){
+
+        music = new MediaPlayer();
+
+        try{
+            DownloadData downloadData=new DownloadData();
+            downloadData.execute(musicUrl);
+        }catch (Exception e) {
+
+        }
+
+    }
+
+
 }

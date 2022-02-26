@@ -3,7 +3,6 @@ package com.nbird.multiplayerquiztrivia.LL;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,9 +18,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.nbird.multiplayerquiztrivia.AppString;
-import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
-import com.nbird.multiplayerquiztrivia.Model.pictureQuizHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 

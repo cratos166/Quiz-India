@@ -1,7 +1,7 @@
 package com.nbird.multiplayerquiztrivia.Model;
 
 public class questionHolder {
-    private String questionTextView,option1,option2,option3,option4,correctAnswer,questionPicture;
+    private String questionTextView,option1,option2,option3,option4,correctAnswer,questionPicture,songURL,imageURL;
     private int setNo;
 
     public questionHolder() {
@@ -26,6 +26,35 @@ public class questionHolder {
         this.correctAnswer = correctAnswer;
         this.setNo = setNo;
         this.questionPicture=questionPicture;
+    }
+
+    public questionHolder(String questionTextView, String option1, String option2, String option3, String option4, String correctAnswer, int setNo, String imageURL,String songURL) {
+        this.questionTextView = questionTextView;
+        this.option1 = option1;
+        this.option2 = option2;
+        this.option3 = option3;
+        this.option4 = option4;
+        this.correctAnswer = correctAnswer;
+        this.setNo = setNo;
+        this.imageURL=imageURL;
+        this.songURL=songURL;
+    }
+
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getSongURL() {
+        return songURL;
+    }
+
+    public void setSongURL(String songURL) {
+        this.songURL = songURL;
     }
 
     public String getQuestionPicture() {

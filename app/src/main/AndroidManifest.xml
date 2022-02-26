@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".QUIZ.NormalPictureQuiz"></activity>
+        <activity android:name=".QUIZ.NormalAudioQuiz"></activity>
+        <activity android:name=".QUIZ.NormalPictureQuiz" />
         <activity android:name=".QUIZ.NormalSingleQuiz" />
         <activity android:name=".StartingPackage.SlideActivity">
             <intent-filter>
