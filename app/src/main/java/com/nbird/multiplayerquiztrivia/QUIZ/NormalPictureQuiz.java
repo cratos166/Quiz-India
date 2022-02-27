@@ -145,6 +145,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
         timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
 
+        songStopperAndResumer();
 
         lifeLine();
         questionSelector();
@@ -453,7 +454,35 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
 
 
-
+    public void songStopperAndResumer(){
+        CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
+        final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
+        final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this)){
+            songActivity=new SongActivity(this);
+            songActivity.startMusic();
+        }else{
+            Speaker.setBackgroundResource(R.drawable.usedicon);
+            speakerImage.setBackgroundResource(R.drawable.music_off);
+        }
+        cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this)){
+                    songActivity.songStop();
+                    Speaker.setBackgroundResource(R.drawable.usedicon);
+                    speakerImage.setBackgroundResource(R.drawable.music_off);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this,false);
+                }else{
+                    songActivity=new SongActivity(NormalPictureQuiz.this);
+                    songActivity.startMusic();
+                    Speaker.setBackgroundResource(R.drawable.single_color_2);
+                    speakerImage.setBackgroundResource(R.drawable.music_on);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this,true);
+                }
+            }
+        });
+    }
 
 
 

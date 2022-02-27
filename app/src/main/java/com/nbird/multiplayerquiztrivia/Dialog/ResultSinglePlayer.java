@@ -39,6 +39,7 @@ import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
 import java.util.ArrayList;
@@ -225,7 +226,7 @@ public class ResultSinglePlayer {
             }
         });
 
-        if(IntentInt==2||IntentInt==3){
+        if(IntentInt==2||IntentInt==3||IntentInt==4){
             changeCategory.setVisibility(View.GONE);
         }
         changeCategory.setOnClickListener(new View.OnClickListener() {
@@ -256,6 +257,11 @@ public class ResultSinglePlayer {
                     case 3:
                         Intent intent2 = new Intent(context, NormalAudioQuiz.class);
                         view.getContext().startActivity(intent2);
+                        ((Activity)view.getContext()).finish();
+                        break;
+                    case 4:
+                        Intent intent3 = new Intent(context, NormalVideoQuiz.class);
+                        view.getContext().startActivity(intent3);
                         ((Activity)view.getContext()).finish();
                         break;
                 }

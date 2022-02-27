@@ -476,7 +476,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
 
         ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalVideoQuiz.this,map,animList,score,timeTakenString,
                 lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,1,timeTakenInt);
+                category,4,timeTakenInt);
 
         resultSinglePlayer.start();
     }
@@ -529,15 +529,12 @@ public class NormalVideoQuiz extends AppCompatActivity {
 
 
 
-
             videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-
                     seekBar.setMax(videoView.getDuration());
                     float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
-                    float screenRatio = videoView.getWidth() / (float)
-                            videoView.getHeight();
+                    float screenRatio = videoView.getWidth() / (float) videoView.getHeight();
                     float scaleX = videoRatio / screenRatio;
                     if (scaleX >= 1f) {
                         videoView.setScaleX(scaleX);
@@ -546,9 +543,10 @@ public class NormalVideoQuiz extends AppCompatActivity {
                     }
                     mp.setLooping(true);
                     loadingvideo.setVisibility(View.GONE);
-
                 }
             });
+
+
             videoView.start();
 
             return null;
