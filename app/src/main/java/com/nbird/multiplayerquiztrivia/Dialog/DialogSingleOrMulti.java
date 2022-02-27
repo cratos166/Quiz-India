@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
@@ -32,6 +33,9 @@ public class DialogSingleOrMulti {
         CardView audioMode=(CardView) view1.findViewById(R.id.audioMode);
         CardView videoMode=(CardView) view1.findViewById(R.id.videoMode);
 
+        ImageView cancel=(ImageView) view1.findViewById(R.id.cancel);
+
+
 
 
         final AlertDialog alertDialog=builder.create();
@@ -43,6 +47,13 @@ public class DialogSingleOrMulti {
         }catch (Exception e){
 
         }
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
 
 
         pictureMode.setOnClickListener(new View.OnClickListener() {

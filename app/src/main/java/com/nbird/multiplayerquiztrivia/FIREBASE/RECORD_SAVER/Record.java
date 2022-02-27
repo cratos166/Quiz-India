@@ -66,6 +66,7 @@ public class Record {
     }
 
     public void LeaderBoardUploader(LeaderBoardHolder leaderBoardHolder){
+        mAuth = FirebaseAuth.getInstance();
         table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -76,6 +77,8 @@ public class Record {
 
     public void setLeaderBoard(){
 
+        mAuth = FirebaseAuth.getInstance();
+
         table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -85,7 +88,7 @@ public class Record {
                     if(score>leaderBoardHolder.getScore()){
                         leaderBoardHolder.setScore(score);
                     }
-                    leaderBoardHolder.setScore(leaderBoardHolder.getTotalTime()+timeTakenInt);
+                    leaderBoardHolder.setTotalTime(leaderBoardHolder.getTotalTime()+timeTakenInt);
                     leaderBoardHolder.setCorrect(leaderBoardHolder.getCorrect()+correctAns);
                     leaderBoardHolder.setWrong(leaderBoardHolder.getWrong()+(10-correctAns));
                     leaderBoardHolder.setSumationScore(leaderBoardHolder.getSumationScore()+score);
@@ -104,9 +107,6 @@ public class Record {
 
             }
         });
-
-
-
     }
 
     public void getLeaderBoard(){

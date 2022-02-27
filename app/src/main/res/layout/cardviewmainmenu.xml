@@ -37,6 +37,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="8dp"
+            android:scaleY="0.98"
+            android:scaleX="0.98"
             android:background="@drawable/single_color_3"
             android:layout_marginBottom="5dp"
             >
