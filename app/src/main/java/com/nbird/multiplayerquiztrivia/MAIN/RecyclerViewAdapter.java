@@ -1,10 +1,6 @@
 package com.nbird.multiplayerquiztrivia.MAIN;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.media.MediaPlayer;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +10,8 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.nbird.multiplayerquiztrivia.Dialog.DialogOnlineLocal;
-import com.nbird.multiplayerquiztrivia.Dialog.DialogSingleOrMulti;
+import com.nbird.multiplayerquiztrivia.Dialog.DialogQuizMode;
 import com.nbird.multiplayerquiztrivia.R;
 
 import java.util.List;
@@ -61,12 +56,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 a=position+1;
                 switch (a){
                     case 1:
-                        DialogOnlineLocal dialogOnlineLocal=new DialogOnlineLocal();
-                        dialogOnlineLocal.start(mContext,holder.cardView);
+                        DialogQuizMode dialogQuizMode =new DialogQuizMode();
+                        dialogQuizMode.start(mContext,holder.cardView,2);
                         break;
                     case 3:
-                        DialogSingleOrMulti dialogSingleOrMulti=new DialogSingleOrMulti();
-                        dialogSingleOrMulti.start(mContext,holder.cardView);
+                        DialogQuizMode dialogQuizMode1 =new DialogQuizMode();
+                        dialogQuizMode1.start(mContext,holder.cardView,1);
                        break;
 
 

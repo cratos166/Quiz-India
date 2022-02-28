@@ -19,12 +19,12 @@ import com.nbird.multiplayerquiztrivia.R;
 
 public class DialogOnlineLocal {
 
-    public void start(Context context, View view){
+    public void start(Context context, View view,int quizMode){
         AlertDialog.Builder builder=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
         View view1= LayoutInflater.from(context).inflate(R.layout.dialog_online_local,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
-        builder.setCancelable(false);
+        builder.setCancelable(true);
 
         CardView onlineCard=(CardView) view1.findViewById(R.id.onlineCard);
         CardView localCard=(CardView) view1.findViewById(R.id.localCard);
@@ -62,9 +62,9 @@ public class DialogOnlineLocal {
         localCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               DialogWaiterVS dialogWaiterVS=new DialogWaiterVS();
-                dialogWaiterVS.start(context,view);
-               alertDialog.dismiss();
+              DialogJoinOrCreate dialogJoinOrCreate=new DialogJoinOrCreate();
+                dialogJoinOrCreate.start(context,view,quizMode);
+                alertDialog.dismiss();
             }
         });
 

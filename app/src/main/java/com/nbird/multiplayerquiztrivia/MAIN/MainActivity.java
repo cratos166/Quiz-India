@@ -233,10 +233,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else{
             setRandomNumber = rand.nextInt(199)+1;
         }
-
-
-
-
         myRef.child("Facts").child(String.valueOf(categoryRandomNumber)).child(String.valueOf(setRandomNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
 
 

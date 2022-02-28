@@ -19,14 +19,14 @@ import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
-public class DialogSingleOrMulti {
+public class DialogQuizMode {
 
-    public void start(Context context,View view){
+    public void start(Context context,View view,int gate){
         AlertDialog.Builder builder=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
         View view1= LayoutInflater.from(context).inflate(R.layout.dialog_select_mode,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
-        builder.setCancelable(false);
+        builder.setCancelable(true);
 
         CardView pictureMode=(CardView) view1.findViewById(R.id.pictureMode);
         CardView normalMode=(CardView) view1.findViewById(R.id.normalMode);
@@ -59,39 +59,67 @@ public class DialogSingleOrMulti {
         pictureMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, NormalPictureQuiz.class);
-                alertDialog.dismiss();
-                view.getContext().startActivity(intent);
-                ((Activity)view.getContext()).finish();
+                if(gate==1){
+                    Intent intent = new Intent(context, NormalPictureQuiz.class);
+                    alertDialog.dismiss();
+                    view.getContext().startActivity(intent);
+                    ((Activity)view.getContext()).finish();
+                }else{
+                    DialogOnlineLocal dialogOnlineLocal=new DialogOnlineLocal();
+                    dialogOnlineLocal.start(context,view,1);
+                    alertDialog.dismiss();
+                }
+
             }
         });
 
         normalMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogCategory dialogCategory=new DialogCategory(context,view);
-                dialogCategory.start();
-                alertDialog.dismiss();
+                if(gate==1){
+                    DialogCategory dialogCategory=new DialogCategory(context,view);
+                    dialogCategory.start();
+                    alertDialog.dismiss();
+                }else{
+                    DialogOnlineLocal dialogOnlineLocal=new DialogOnlineLocal();
+                    dialogOnlineLocal.start(context,view,2);
+                    alertDialog.dismiss();
+                }
+
             }
         });
 
         audioMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, NormalAudioQuiz.class);
-                alertDialog.dismiss();
-                view.getContext().startActivity(intent);
-                ((Activity)view.getContext()).finish();
+                if (gate==1){
+                    Intent intent = new Intent(context, NormalAudioQuiz.class);
+                    alertDialog.dismiss();
+                    view.getContext().startActivity(intent);
+                    ((Activity)view.getContext()).finish();
+                }else {
+                    DialogOnlineLocal dialogOnlineLocal=new DialogOnlineLocal();
+                    dialogOnlineLocal.start(context,view,3);
+                    alertDialog.dismiss();
+                }
+
             }
         });
 
         videoMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, NormalVideoQuiz.class);
-                alertDialog.dismiss();
-                view.getContext().startActivity(intent);
-                ((Activity)view.getContext()).finish();
+                if (gate==1){
+                    Intent intent = new Intent(context, NormalVideoQuiz.class);
+                    alertDialog.dismiss();
+                    view.getContext().startActivity(intent);
+                    ((Activity)view.getContext()).finish();
+                }else {
+                    DialogOnlineLocal dialogOnlineLocal=new DialogOnlineLocal();
+                    dialogOnlineLocal.start(context,view,4);
+                    alertDialog.dismiss();
+                }
+
             }
         });
 
