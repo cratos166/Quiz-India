@@ -22,6 +22,9 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,15 +33,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.EXTRA.OneVSOneOpponentDataSetter;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.FIREBASE.VS.RoomCodeGenerator;
+import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
+import com.nbird.multiplayerquiztrivia.GENERATORS.LevelGenerators;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
+import com.nbird.multiplayerquiztrivia.Model.FirstTime;
 import com.nbird.multiplayerquiztrivia.Model.OnlineDetailHolder;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +76,23 @@ public class DialogWaiterVS {
     Context context;
     private int currentPage;
 
+    AppData appData;
+    ImageView oppoImage;
+    TextView oppoName;
+    TextView highestScore;
+    TextView totalTime;
+    TextView oppoRatio;
+    TextView oppoAccu;
+    LinearLayout mainlinearLayout;
+    CardView oppoBatchCardView;
+    ImageView oppoBatch;
+    TextView oppoLevelText;
+
     public void start(Context context, View view,int quizMode){
 
         this.context=context;
+
+        appData = new AppData();
 
         AlertDialog.Builder builder=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
@@ -84,6 +109,39 @@ public class DialogWaiterVS {
 
         slideViewPager=(ViewPager) view1.findViewById(R.id.slideViewPager);
         dotLayout=(LinearLayout) view1.findViewById(R.id.dotLayout);
+
+
+
+        TextView myName=(TextView) view1.findViewById(R.id.myName);
+        ImageView myImage=(ImageView) view1.findViewById(R.id.myImage);
+        ImageView myBatch=(ImageView) view1.findViewById(R.id.myBatch);
+        TextView myLevelText=(TextView) view1.findViewById(R.id.myLevelText);
+
+        oppoImage=(ImageView) view1.findViewById(R.id.oppoImage);
+        oppoName=(TextView) view1.findViewById(R.id.oppoName);
+
+        highestScore=(TextView) view1.findViewById(R.id.highestScore);
+        totalTime=(TextView) view1.findViewById(R.id.totalTime);
+        oppoRatio=(TextView) view1.findViewById(R.id.oppoRatio);
+        oppoAccu=(TextView) view1.findViewById(R.id.oppoAccu);
+
+        mainlinearLayout=(LinearLayout) view1.findViewById(R.id.mainlinearLayout);
+
+
+
+        oppoBatchCardView=(CardView) view1.findViewById(R.id.oppoBatchCardView);
+        oppoBatch=(ImageView) view1.findViewById(R.id.oppoBatch);
+        oppoLevelText=(TextView) view1.findViewById(R.id.oppoLevelText);
+
+
+
+        myName.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context));
+        Glide.with(context).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context)).apply(RequestOptions
+                .bitmapTransform(new RoundedCorners(18)))
+                .into(myImage);
+
+
+        myBatchSetter(myBatch,myLevelText);
 
         for(int i=1;i<=3;i++){
             dataForHorizontalSlide(context);
@@ -124,13 +182,49 @@ public class DialogWaiterVS {
             @Override
             public void onSuccess(Void aVoid) {
 
-                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("PLAYER_2_CONNECTED").addValueEventListener(new ValueEventListener() {
+                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         try{
-                            if(snapshot.getValue(Integer.class)==1){
-                                //TODO PLAYER CONNECT START COUNTDOWN TIMER
-                            }
+
+                            String Player2UID=snapshot.getValue(String.class);
+                            table_user.child("LeaderBoard").child(Player2UID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    try{
+                                        LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
+
+                                        OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter=new OneVSOneOpponentDataSetter(leaderBoardHolder,oppoImage,oppoName,highestScore,totalTime,oppoRatio,oppoAccu,shimmerOppo,context,mainlinearLayout,oppoBatchCardView,oppoBatch,oppoLevelText);
+                                        oneVSOneOpponentDataSetter.start();
+
+                                    }catch (Exception e){
+                                        table_user.child("User").child(Player2UID).child("personal").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                FirstTime firstTime=snapshot.getValue(FirstTime.class);
+                                                LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(firstTime.getUserName(),0,0,0,0,firstTime.getImageURL(),0);
+                                                OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter=new OneVSOneOpponentDataSetter(leaderBoardHolder,oppoImage,oppoName,highestScore,totalTime,oppoRatio,oppoAccu,shimmerOppo,context,mainlinearLayout,oppoBatchCardView,oppoBatch,oppoLevelText);
+                                                oneVSOneOpponentDataSetter.start();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
+
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                         }catch (Exception e){
 
                         }
@@ -147,6 +241,30 @@ public class DialogWaiterVS {
         });
 
 
+    }
+
+
+    public void myBatchSetter(ImageView myBatch, TextView myLevelText){
+        table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).child("sumationScore").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    int summationScore=snapshot.getValue(Integer.class);
+                    BatchGenerator batchGenerator=new BatchGenerator(summationScore,myBatch);
+                    batchGenerator.start();
+                    LevelGenerators levelGenerators=new LevelGenerators(summationScore,myLevelText);
+                    levelGenerators.start();
+                }catch (Exception e){
+                    BatchGenerator batchGenerator=new BatchGenerator(0,myBatch);
+                    batchGenerator.start();
+                    LevelGenerators levelGenerators=new LevelGenerators(0,myLevelText);
+                    levelGenerators.start();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
 

@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:id="@+id/cardview_id"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:scaleX="0.9"
+    android:scaleX="0.85"
     android:scaleY="0.9"
     android:layout_gravity="center"
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
@@ -16,15 +16,6 @@
     android:layout_marginBottom="5dp"
     app:ignore="NamespaceTypo">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
-        cardview:cardCornerRadius="5dp"
-        android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground"
-        cardview:layout_constraintBottom_toBottomOf="parent"
-        cardview:layout_constraintEnd_toEndOf="parent"
-        cardview:layout_constraintStart_toStartOf="parent"
-        cardview:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -39,7 +30,6 @@
                 android:orientation="horizontal">
 
                 <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/anim_official_name"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_margin="5dp"
@@ -111,10 +101,9 @@
                             android:id="@+id/roomCode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="@color/text_head"
                             android:layout_margin="10dp"
                             android:fontFamily="@font/ubuntu"
-                            android:textStyle="bold"
                             android:textSize="18dp"/>
                     </LinearLayout>
 
@@ -176,12 +165,11 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_margin="10dp"
                 android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="200dp"
                     android:clickable="true"
                     android:elevation="10dp"
@@ -203,21 +191,33 @@
 
 
                         <ImageView
-                            android:id="@+id/batch4"
+                            android:id="@+id/myBatch"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:layout_gravity="center_vertical"
+                            android:padding="2dp"
                             />
 
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/text_head"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"/>
+
                         <TextView
-                            android:id="@+id/levelText1234"
+                            android:id="@+id/myLevelText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="2dp"
+                            android:padding="5dp"
                             android:fontFamily="@font/ubuntu"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_head"
                             android:textSize="15dp"
-                            android:textStyle="bold" />
+                             />
 
                     </LinearLayout>
 
@@ -229,8 +229,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
                     android:background="@drawable/single_color_1"
                     android:orientation="horizontal"
                     cardview:layout_constraintBottom_toBottomOf="parent"
@@ -244,7 +242,7 @@
 
 
                         <ImageView
-                            android:id="@+id/exam_img_id"
+                            android:id="@+id/myImage"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_margin="5dp"
@@ -261,19 +259,20 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_margin="5dp"
                         android:background="@drawable/single_color_3"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/userName123"
+                            android:id="@+id/myName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:fontFamily="@font/ubuntu_bold"
-                            android:textColor="#000000"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:fontFamily="@font/ubuntu"
+                            android:padding="5dp"
+                            android:textColor="@color/text_head"
+                            android:textSize="18sp" />
 
                     </LinearLayout>
 
@@ -289,48 +288,58 @@
                 android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView11"
+                    android:id="@+id/oppoBatchCardView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
-                    android:alpha="0"
+                    android:layout_marginStart="200dp"
                     android:clickable="true"
                     android:elevation="1dp"
                     android:foreground="?selectableItemBackground"
+                    android:visibility="invisible"
                     app:cardCornerRadius="5dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     cardview:cardBackgroundColor="@color/transparent"
                     cardview:cardElevation="5dp"
-                    shimmer:layout_constraintEnd_toEndOf="@+id/shimmer40"
-                    shimmer:layout_constraintStart_toStartOf="@+id/shimmer40"
+                    shimmer:layout_constraintEnd_toEndOf="parent"
+                    shimmer:layout_constraintStart_toStartOf="parent"
                     shimmer:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
                         android:id="@+id/batchdisplay1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:alpha="1"
                         android:background="@drawable/single_color_3"
                         android:elevation="10dp"
                         android:orientation="horizontal">
 
 
                         <ImageView
-                            android:id="@+id/batch99"
+                            android:id="@+id/oppoBatch"
                             android:layout_width="30dp"
+                            android:layout_gravity="center_vertical"
                             android:layout_height="30dp" />
 
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/text_head"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginLeft="3dp"
+                            android:layout_marginRight="3dp"/>
+
+
                         <TextView
-                            android:id="@+id/levelText99"
+                            android:id="@+id/oppoLevelText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="2dp"
+                            android:padding="5dp"
                             android:fontFamily="@font/ubuntu"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_dis"
                             android:textSize="15dp"
-                            android:textStyle="bold" />
+                            />
 
                     </LinearLayout>
 
@@ -341,6 +350,7 @@
                     android:id="@+id/shimmerOppo"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:visibility="visible"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
@@ -366,13 +376,13 @@
 
 
                 <LinearLayout
-                    android:id="@+id/linearLayout300"
+                    android:id="@+id/mainlinearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:alpha="0"
+                    android:visibility="invisible"
                     android:background="@drawable/single_color_1"
                     android:orientation="horizontal"
                     cardview:layout_constraintBottom_toBottomOf="parent"
@@ -386,7 +396,7 @@
 
 
                         <ImageView
-                            android:id="@+id/secondplayerimg"
+                            android:id="@+id/oppoImage"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:layout_margin="5dp"
@@ -407,14 +417,14 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/secondPlayername"
+                            android:id="@+id/oppoName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="5dp"
                             android:layout_marginTop="5dp"
                             android:layout_marginLeft="5dp"
                             android:fontFamily="@font/ubuntu_bold"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_head"
                             android:textSize="18dp"
                             android:textStyle="bold" />
 
@@ -431,9 +441,9 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_marginLeft="5dp"
                                 android:fontFamily="@font/ubuntu"
-                                android:textColor="#000000"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
+                                android:textColor="@color/text_dis"
+                                android:textSize="10dp"
+                                 />
 
                             <TextView
                                 android:id="@+id/totalTime"
@@ -444,9 +454,9 @@
                                 android:layout_marginLeft="5dp"
                                 android:gravity="right"
                                 android:fontFamily="@font/ubuntu"
-                                android:textColor="#000000"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
+                                android:textColor="@color/text_dis"
+                                android:textSize="10dp"
+                                 />
 
                         </LinearLayout>
 
@@ -463,9 +473,9 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_marginLeft="5dp"
                                 android:fontFamily="@font/ubuntu"
-                                android:textColor="#000000"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
+                                android:textColor="@color/text_dis"
+                                android:textSize="10dp"
+                                 />
 
 
                             <TextView
@@ -477,9 +487,9 @@
                                 android:layout_marginLeft="5dp"
                                 android:gravity="right"
                                 android:fontFamily="@font/ubuntu"
-                                android:textColor="#000000"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
+                                android:textColor="@color/text_dis"
+                                android:textSize="10dp"
+                                 />
 
                         </LinearLayout>
 
@@ -583,7 +593,7 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

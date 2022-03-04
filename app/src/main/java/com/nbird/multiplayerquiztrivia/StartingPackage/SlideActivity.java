@@ -45,20 +45,6 @@ public class SlideActivity extends AppCompatActivity {
             appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,SlideActivity.this,AppString.IMAGE_URL);
         }
 
-//        final SharedPreferences slidepermission = getBaseContext().getSharedPreferences("SlidePermission", 0);
-//        final SharedPreferences.Editor editorslidepermission = slidepermission.edit();
-//
-//        Boolean slidername = slidepermission.getBoolean("sp", false);
-//        if(slidername){
-//            Intent intent=new Intent(getBaseContext(), MainActivity.class);
-//            startActivity(intent);
-//            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//            finish();
-//        }
-//
-//        editorslidepermission.putBoolean("sp", true);
-//        editorslidepermission.apply();
-
         slideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
         dotLayout = (LinearLayout) findViewById(R.id.dotLayout);
         nextbutton = (CardView) findViewById(R.id.nextButton);

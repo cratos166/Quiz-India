@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.Model.OnlineDetailHolder;
+import com.nbird.multiplayerquiztrivia.Model.PlayHolder;
 import com.nbird.multiplayerquiztrivia.R;
 
 public class DialogJoinVS {
@@ -73,7 +75,7 @@ public class DialogJoinVS {
                 }else if(passWordET.getText().toString().length()>=6){
                     passWordET.setError("Field Length Should Be Less Than 6 Characters");
                 }else{
-                    joiner(context,passWordET.getText().toString());
+                    joiner(context,passWordET.getText().toString(),passWordET);
                 }
             }
         });
@@ -82,33 +84,41 @@ public class DialogJoinVS {
     }
 
 
-    public void joiner(Context context, String password){
+    public void joiner(Context context, String password,TextInputEditText passWordET){
         Dialog dialog = null;
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
         supportAlertDialog.showLoadingDialog();
 
         table_user.child("VS_ARENA").orderByChild("roomCode").equalTo(Integer.parseInt(password)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+            public void onDataChange(DataSnapshot snapshot) {
+                OnlineDetailHolder onlineDetailHolder = null;
                 for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                       OnlineDetailHolder onlineDetailHolder=dataSnapshot1.getValue(OnlineDetailHolder.class);
-
-                       try{
-
-                           String oppoUID=onlineDetailHolder.getUID();
-
-                            //TODO CODE MATCHED REMOVE THE OPPONENT FROM VS_ARENA
-
-                       }catch (Exception e){
-                           //TODO CODE DID NOT MATCH
-                       }
-
-
+                    onlineDetailHolder=dataSnapshot1.getValue(OnlineDetailHolder.class);
                 }
 
+                try{
 
+                    String oppoUID=onlineDetailHolder.getUID();
+                    int mode=onlineDetailHolder.getMode();
+                    int roomCode=onlineDetailHolder.getRoomCode();
 
+                    table_user.child("VS_ARENA").child(oppoUID).removeValue();
+
+                    PlayHolder playHolder=new PlayHolder(oppoUID,mAuth.getCurrentUser().getUid());
+                    table_user.child("VS_PLAY").child(oppoUID).child("Personal").setValue(playHolder).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                        }
+                    });
+                    //TODO CODE MATCHED REMOVE THE OPPONENT FROM VS_ARENA
+
+                }catch (Exception e){
+                    passWordET.setError("No Room Present With This Password");
+                    supportAlertDialog.dismissLoadingDialog();
+                }
+                
 
             }
 
@@ -117,9 +127,9 @@ public class DialogJoinVS {
 
             }
         });
-
-
-
     }
+
+
+
 
 }
