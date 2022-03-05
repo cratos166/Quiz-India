@@ -10,6 +10,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -87,6 +88,7 @@ public class DialogWaiterVS {
     CardView oppoBatchCardView;
     ImageView oppoBatch;
     TextView oppoLevelText;
+    Button cancelButton;
 
     public void start(Context context, View view,int quizMode){
 
@@ -100,7 +102,6 @@ public class DialogWaiterVS {
         builder.setView(view1);
         builder.setCancelable(false);
 
-
         shimmerOppo=view1.findViewById(R.id.shimmerOppo);
         shimerFact=view1.findViewById(R.id.shimmerFact);
 
@@ -109,8 +110,6 @@ public class DialogWaiterVS {
 
         slideViewPager=(ViewPager) view1.findViewById(R.id.slideViewPager);
         dotLayout=(LinearLayout) view1.findViewById(R.id.dotLayout);
-
-
 
         TextView myName=(TextView) view1.findViewById(R.id.myName);
         ImageView myImage=(ImageView) view1.findViewById(R.id.myImage);
@@ -127,13 +126,11 @@ public class DialogWaiterVS {
 
         mainlinearLayout=(LinearLayout) view1.findViewById(R.id.mainlinearLayout);
 
-
-
         oppoBatchCardView=(CardView) view1.findViewById(R.id.oppoBatchCardView);
         oppoBatch=(ImageView) view1.findViewById(R.id.oppoBatch);
         oppoLevelText=(TextView) view1.findViewById(R.id.oppoLevelText);
 
-
+        cancelButton=(Button) view1.findViewById(R.id.cancelButton);
 
         myName.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context));
         Glide.with(context).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context)).apply(RequestOptions
@@ -212,10 +209,26 @@ public class DialogWaiterVS {
 
                                             }
                                         });
+                                    }
 
+                                    ArrayList<Integer> listAns=new ArrayList<>();
 
+                                    switch (quizMode){
+                                        case 1:
+                                            pictureQuizNumberUploader(listAns);break;
+                                        case 2:
+                                            normalQuizNumberUploader(listAns);break;
+                                        case 3:
+                                            audioQuizNumberUploader(listAns);break;
+                                        case 4:
+                                            vidioQuizNUmberUploader(listAns);break;
 
                                     }
+
+
+                                    //TODO CANCEL BUTTON SETTING
+
+
                                 }
 
                                 @Override
@@ -229,19 +242,108 @@ public class DialogWaiterVS {
 
                         }
                     }
-
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                    public void onCancelled(@NonNull DatabaseError error) { }
+                });
+            }
+        });
+    }
+
+    public void normalQuizNumberUploader(ArrayList<Integer> listAns){
+        Random random=new Random();
+        for(int i=0;i<11;i++){
+            listAns.add(random.nextInt(6326)+1);
+        }
+
+        table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        });
+    }
+
+    public void pictureQuizNumberUploader(ArrayList<Integer> listAns){
+        Random random=new Random();
+
+        for(int i=0;i<11;i++){
+            int setNumber = random.nextInt(4999)+1;
+            if(setNumber>1210&&setNumber<2000){
+                setNumber=setNumber-1000;
+            }
+            listAns.add(setNumber);
+        }
+        table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        });
+    }
+
+    public void audioQuizNumberUploader(ArrayList<Integer> listAns){
+        Random random=new Random();
+        myRef.child("QUIZNUMBERS").child("AudioQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=156;
+                }
+                for(int i=0;i<11;i++){
+                    int setNumber = random.nextInt(num)+1;
+                    listAns.add(setNumber);
+                }
+
+                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
                     }
                 });
 
 
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
-
-
     }
+
+    public void vidioQuizNUmberUploader(ArrayList<Integer> listAns){
+        Random random=new Random();
+        myRef.child("QUIZNUMBERS").child("VideoQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=118;
+                }
+                for(int i=0;i<11;i++){
+                    int setNumber = random.nextInt(num)+1;
+                    listAns.add(setNumber);
+                }
+
+                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                });
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
 
     public void myBatchSetter(ImageView myBatch, TextView myLevelText){
