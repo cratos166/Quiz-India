@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.CountDownTimer;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,6 +50,10 @@ import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsAudioQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsNormalQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsPictureQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
@@ -89,6 +94,11 @@ public class DialogWaiterVS {
     ImageView oppoBatch;
     TextView oppoLevelText;
     Button cancelButton;
+
+    ValueEventListener listenerOppoConnected;
+    CountDownTimer countDownTimerIntent;
+
+    int incrementer=0;
 
     public void start(Context context, View view,int quizMode){
 
@@ -160,6 +170,18 @@ public class DialogWaiterVS {
         }
 
 
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{ table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").removeEventListener(listenerOppoConnected); }catch (Exception e){ }
+                try{ countDownTimerIntent.cancel(); }catch (Exception e){ }
+                try{ table_user.child("VS_ARENA").child(mAuth.getCurrentUser().getUid()).removeValue(); }catch (Exception e){ }
+                try { alertDialog.dismiss(); }catch (Exception e){ }
+            }
+        });
+
+
+
     }
 
 
@@ -179,72 +201,137 @@ public class DialogWaiterVS {
             @Override
             public void onSuccess(Void aVoid) {
 
-                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").addValueEventListener(new ValueEventListener() {
+
+                listenerOppoConnected=new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        try{
+                        if(incrementer==1) {
 
-                            String Player2UID=snapshot.getValue(String.class);
-                            table_user.child("LeaderBoard").child(Player2UID).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    try{
-                                        LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
 
-                                        OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter=new OneVSOneOpponentDataSetter(leaderBoardHolder,oppoImage,oppoName,highestScore,totalTime,oppoRatio,oppoAccu,shimmerOppo,context,mainlinearLayout,oppoBatchCardView,oppoBatch,oppoLevelText);
-                                        oneVSOneOpponentDataSetter.start();
 
-                                    }catch (Exception e){
-                                        table_user.child("User").child(Player2UID).child("personal").addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                FirstTime firstTime=snapshot.getValue(FirstTime.class);
-                                                LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(firstTime.getUserName(),0,0,0,0,firstTime.getImageURL(),0);
-                                                OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter=new OneVSOneOpponentDataSetter(leaderBoardHolder,oppoImage,oppoName,highestScore,totalTime,oppoRatio,oppoAccu,shimmerOppo,context,mainlinearLayout,oppoBatchCardView,oppoBatch,oppoLevelText);
-                                                oneVSOneOpponentDataSetter.start();
+                            try {
+
+                                String Player2UID = snapshot.getValue(String.class);
+                                cancelButton.setEnabled(false);
+                                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").removeEventListener(listenerOppoConnected);
+
+
+
+                                    table_user.child("LeaderBoard").child(Player2UID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                                            try {
+                                            LeaderBoardHolder leaderBoardHolder = snapshot.getValue(LeaderBoardHolder.class);
+
+                                            String crashTester=leaderBoardHolder.getImageUrl();
+
+                                            OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter = new OneVSOneOpponentDataSetter(leaderBoardHolder, oppoImage, oppoName, highestScore, totalTime, oppoRatio, oppoAccu, shimmerOppo, context, mainlinearLayout, oppoBatchCardView, oppoBatch, oppoLevelText);
+                                            oneVSOneOpponentDataSetter.start();
+
+
+                                            } catch (Exception e) {
+                                                table_user.child("User").child(Player2UID).child("personal").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        FirstTime firstTime = snapshot.getValue(FirstTime.class);
+                                                        LeaderBoardHolder leaderBoardHolder = new LeaderBoardHolder(firstTime.getUserName(), 0, 0, 0, 0, firstTime.getImageURL(), 0);
+                                                        OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter = new OneVSOneOpponentDataSetter(leaderBoardHolder, oppoImage, oppoName, highestScore, totalTime, oppoRatio, oppoAccu, shimmerOppo, context, mainlinearLayout, oppoBatchCardView, oppoBatch, oppoLevelText);
+                                                        oneVSOneOpponentDataSetter.start();
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
                                             }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-
-                                    ArrayList<Integer> listAns=new ArrayList<>();
-
-                                    switch (quizMode){
-                                        case 1:
-                                            pictureQuizNumberUploader(listAns);break;
-                                        case 2:
-                                            normalQuizNumberUploader(listAns);break;
-                                        case 3:
-                                            audioQuizNumberUploader(listAns);break;
-                                        case 4:
-                                            vidioQuizNUmberUploader(listAns);break;
-
-                                    }
 
 
-                                    //TODO CANCEL BUTTON SETTING
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
 
 
+
+                                ArrayList<Integer> listAns = new ArrayList<>();
+
+                                switch (quizMode) {
+                                    case 1:
+                                        pictureQuizNumberUploader(listAns);
+                                        break;
+                                    case 2:
+                                        normalQuizNumberUploader(listAns);
+                                        break;
+                                    case 3:
+                                        audioQuizNumberUploader(listAns);
+                                        break;
+                                    case 4:
+                                        vidioQuizNUmberUploader(listAns);
+                                        break;
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                cancelButton.setTextSize(10f);
 
-                                }
-                            });
+                                countDownTimerIntent = new CountDownTimer(1000 * 10, 1000) {
+                                    @Override
+                                    public void onTick(long l) {
+                                        cancelButton.setText("Game Starts In " + l / 1000);
+                                    }
 
+                                    @Override
+                                    public void onFinish() {
+                                        switch (quizMode) {
+                                            case 1:
+                                                Intent intent = new Intent(context, VsNormalQuiz.class);
+                                                intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                context.startActivity(intent);
+                                                ((Activity) context).finish();
+                                                break;
+                                            case 2:
+                                                Intent intent1 = new Intent(context, VsPictureQuiz.class);
+                                                intent1.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                context.startActivity(intent1);
+                                                ((Activity) context).finish();
+                                                break;
+                                            case 3:
+                                                Intent intent2 = new Intent(context, VsAudioQuiz.class);
+                                                intent2.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                context.startActivity(intent2);
+                                                ((Activity) context).finish();
+                                                break;
+                                            case 4:
+                                                Intent intent3 = new Intent(context, VsVideoQuiz.class);
+                                                intent3.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                context.startActivity(intent3);
+                                                ((Activity) context).finish();
+                                                break;
+                                        }
 
-                        }catch (Exception e){
+                                    }
+                                }.start();
 
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }else{
+                            incrementer=1;
                         }
                     }
+
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) { }
-                });
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").addValueEventListener(listenerOppoConnected);
+
             }
         });
     }
@@ -456,6 +543,7 @@ public class DialogWaiterVS {
 
         }
     };
+
 
 
 

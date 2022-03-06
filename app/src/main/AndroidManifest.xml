@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".QUIZ.NormalVideoQuiz"></activity>
+        <activity android:name=".QUIZ.VsVideoQuiz"></activity>
+        <activity android:name=".QUIZ.VsAudioQuiz" />
+        <activity android:name=".QUIZ.VsPictureQuiz" />
+        <activity android:name=".QUIZ.VsNormalQuiz" />
+        <activity android:name=".QUIZ.NormalVideoQuiz" />
         <activity android:name=".QUIZ.NormalAudioQuiz" />
         <activity android:name=".QUIZ.NormalPictureQuiz" />
         <activity android:name=".QUIZ.NormalSingleQuiz" />
