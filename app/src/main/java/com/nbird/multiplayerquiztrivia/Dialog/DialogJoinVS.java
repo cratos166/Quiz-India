@@ -86,6 +86,7 @@ public class DialogJoinVS {
     private int currentPage;
     int incrementer=0;
     ValueEventListener questionGetterListner;
+    String oppoImgStr;
     public void start(Context context, View view, int quizMode){
         this.context=context;
 
@@ -176,10 +177,7 @@ public class DialogJoinVS {
                                         try {
 
                                             ArrayList<Integer> arrayListAnswers = (ArrayList<Integer>) snapshot.getValue();
-
                                             table_user.child("VS_PLAY").child(oppoUID).child("Answers").removeEventListener(questionGetterListner);
-
-
                                             cancelButton.setTextSize(10f);
 
                                             countDownTimerIntent = new CountDownTimer(1000 * 10, 1000) {
@@ -191,27 +189,43 @@ public class DialogJoinVS {
                                                 @Override
                                                 public void onFinish() {
                                                     switch (finalOnlineDetailHolder1.getMode()) {
-                                                        case 1:
+                                                        case 2:
                                                             Intent intent = new Intent(context, VsNormalQuiz.class);
                                                             intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) arrayListAnswers);
+                                                            intent.putExtra("playerNum",2);
+                                                            intent.putExtra("oppoUID",oppoUID);
+                                                            intent.putExtra("oppoName", oppoName.getText().toString());
+                                                            intent.putExtra("oppoImgStr",oppoImgStr);
                                                             context.startActivity(intent);
                                                             ((Activity) context).finish();
                                                             break;
-                                                        case 2:
+                                                        case 1:
                                                             Intent intent1 = new Intent(context, VsPictureQuiz.class);
                                                             intent1.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) arrayListAnswers);
+                                                            intent1.putExtra("playerNum",2);
+                                                            intent1.putExtra("oppoUID",oppoUID);
+                                                            intent1.putExtra("oppoName", oppoName.getText().toString());
+                                                            intent1.putExtra("oppoImgStr",oppoImgStr);
                                                             context.startActivity(intent1);
                                                             ((Activity) context).finish();
                                                             break;
                                                         case 3:
                                                             Intent intent2 = new Intent(context, VsAudioQuiz.class);
                                                             intent2.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) arrayListAnswers);
+                                                            intent2.putExtra("playerNum",2);
+                                                            intent2.putExtra("oppoUID",oppoUID);
+                                                            intent2.putExtra("oppoName", oppoName.getText().toString());
+                                                            intent2.putExtra("oppoImgStr",oppoImgStr);
                                                             context.startActivity(intent2);
                                                             ((Activity) context).finish();
                                                             break;
                                                         case 4:
                                                             Intent intent3 = new Intent(context, VsVideoQuiz.class);
                                                             intent3.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) arrayListAnswers);
+                                                            intent3.putExtra("playerNum",2);
+                                                            intent3.putExtra("oppoUID",oppoUID);
+                                                            intent3.putExtra("oppoName", oppoName.getText().toString());
+                                                            intent3.putExtra("oppoImgStr",oppoImgStr);
                                                             context.startActivity(intent3);
                                                             ((Activity) context).finish();
                                                             break;
@@ -331,7 +345,7 @@ public class DialogJoinVS {
                     LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
                     OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter=new OneVSOneOpponentDataSetter(leaderBoardHolder,oppoImage,oppoName,highestScore,totalTime,oppoRatio,oppoAccu,shimmerOppo,context,mainlinearLayout,oppoBatchCardView,oppoBatch,oppoLevelText);
                     oneVSOneOpponentDataSetter.start();
-
+                    oppoImgStr=leaderBoardHolder.getImageUrl();
                 }catch (Exception e){
                     table_user.child("User").child(onlineDetailHolder.getUID()).child("personal").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -340,6 +354,7 @@ public class DialogJoinVS {
                             LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(firstTime.getUserName(),0,0,0,0,firstTime.getImageURL(),0);
                             OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter=new OneVSOneOpponentDataSetter(leaderBoardHolder,oppoImage,oppoName,highestScore,totalTime,oppoRatio,oppoAccu,shimmerOppo,context,mainlinearLayout,oppoBatchCardView,oppoBatch,oppoLevelText);
                             oneVSOneOpponentDataSetter.start();
+                            oppoImgStr=leaderBoardHolder.getImageUrl();
                         }
 
                         @Override

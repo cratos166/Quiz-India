@@ -288,27 +288,35 @@ public class DialogWaiterVS {
                                     @Override
                                     public void onFinish() {
                                         switch (quizMode) {
-                                            case 1:
+                                            case 2:
                                                 Intent intent = new Intent(context, VsNormalQuiz.class);
                                                 intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                intent.putExtra("playerNum",1);
+                                                intent.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent);
                                                 ((Activity) context).finish();
                                                 break;
-                                            case 2:
+                                            case 1:
                                                 Intent intent1 = new Intent(context, VsPictureQuiz.class);
                                                 intent1.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                intent1.putExtra("playerNum",2);
+                                                intent1.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent1);
                                                 ((Activity) context).finish();
                                                 break;
                                             case 3:
                                                 Intent intent2 = new Intent(context, VsAudioQuiz.class);
                                                 intent2.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                intent2.putExtra("playerNum",3);
+                                                intent2.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent2);
                                                 ((Activity) context).finish();
                                                 break;
                                             case 4:
                                                 Intent intent3 = new Intent(context, VsVideoQuiz.class);
                                                 intent3.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                                intent3.putExtra("playerNum",4);
+                                                intent3.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent3);
                                                 ((Activity) context).finish();
                                                 break;
