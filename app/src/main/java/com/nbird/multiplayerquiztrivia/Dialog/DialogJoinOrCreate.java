@@ -20,7 +20,7 @@ public class DialogJoinOrCreate {
     public void start(Context context, View view, int quizMode){
         AlertDialog.Builder builder=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
-        View view1= LayoutInflater.from(context).inflate(R.layout.quit_asker_layout,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
+        View view1= LayoutInflater.from(context).inflate(R.layout.quiz_asker_layout,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
         builder.setCancelable(true);
 

@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ResultSinglePlayer {
+public class ResultHandling {
 
     Context context;
     HashMap<String, Integer> llMap;
@@ -70,10 +70,10 @@ public class ResultSinglePlayer {
 
     //Single Mode Normal Quiz : 1
 
-    public ResultSinglePlayer(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList,
-                              int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt,
-                              int higestScoreInt, int scoreInt, CardView view, String myNameString,
-                              String myPicURL,int category,int IntentInt,int timeTakenInt) {
+    public ResultHandling(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList,
+                          int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt,
+                          int higestScoreInt, int scoreInt, CardView view, String myNameString,
+                          String myPicURL, int category, int IntentInt, int timeTakenInt) {
         this.context = context;
         this.llMap = llMap;
         this.animList = animList;
@@ -90,7 +90,6 @@ public class ResultSinglePlayer {
         this.IntentInt=IntentInt;
         this.timeTakenInt=timeTakenInt;
     }
-
 
 
     public void start(){

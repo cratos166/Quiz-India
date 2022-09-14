@@ -38,7 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultSinglePlayer;
+import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
@@ -46,9 +46,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LL_Video_Quiz;
-import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
-import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
@@ -474,11 +472,11 @@ public class NormalVideoQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalVideoQuiz.this,map,animList,score,timeTakenString,
+        ResultHandling resultHandling =new ResultHandling(NormalVideoQuiz.this,map,animList,score,timeTakenString,
                 lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
                 category,4,timeTakenInt);
 
-        resultSinglePlayer.start();
+        resultHandling.start();
     }
 
 

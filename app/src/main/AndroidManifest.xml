@@ -17,7 +17,8 @@
         <activity android:name=".QUIZ.NormalAudioQuiz" />
         <activity android:name=".QUIZ.NormalPictureQuiz" />
         <activity android:name=".QUIZ.NormalSingleQuiz" />
-        <activity android:name=".StartingPackage.SlideActivity">
+        <activity android:name=".StartingPackage.SlideActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

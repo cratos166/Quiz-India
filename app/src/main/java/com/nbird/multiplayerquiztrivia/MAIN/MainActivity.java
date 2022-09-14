@@ -168,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
+
         createRequest();
         appData = new AppData();
 
@@ -217,6 +220,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .bitmapTransform(new RoundedCorners(18)))
                 .into(nav_image123);
 
+
+        table_user.child("VS_PLAY").child("DataExchange").child(mAuth.getCurrentUser().getUid()).removeValue();
+        table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).removeValue();
+        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
     }
 
 

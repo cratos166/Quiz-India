@@ -33,12 +33,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultSinglePlayer;
+import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
 import com.nbird.multiplayerquiztrivia.FIREBASE.AnswerUploaderAndReceiver;
 import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
+import com.nbird.multiplayerquiztrivia.FIREBASE.VS.DataExchange;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
@@ -87,7 +88,6 @@ public class VsNormalQuiz extends AppCompatActivity {
 
     ArrayList<Integer> ansArray;
 
-    int ansIncrementer=0;
     int playerNum;
     String oppoUID,oppoName,oppoImgStr;
 
@@ -498,11 +498,18 @@ public class VsNormalQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(VsNormalQuiz.this,map,animList,score,timeTakenString,
-                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,1,timeTakenInt);
 
-        resultSinglePlayer.start();
+        DataExchange dataExchange=new DataExchange(VsNormalQuiz.this,map,animList,score,timeTakenString,
+                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                category,1,timeTakenInt,oppoUID,oppoName,oppoImgStr,animationList);
+
+        dataExchange.start();
+
+//        ResultHandling resultHandling =new ResultHandling(VsNormalQuiz.this,map,animList,score,timeTakenString,
+//                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+//                category,1,timeTakenInt);
+//
+//        resultHandling.start();
     }
 
 
@@ -552,6 +559,7 @@ public class VsNormalQuiz extends AppCompatActivity {
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
 
+        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
         Runtime.getRuntime().gc();
     }
     

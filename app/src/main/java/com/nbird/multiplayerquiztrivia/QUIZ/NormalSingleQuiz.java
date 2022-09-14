@@ -33,7 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultSinglePlayer;
+import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
@@ -431,11 +431,11 @@ public class NormalSingleQuiz extends AppCompatActivity {
                 map.put("Audience",audiencenum);
                 map.put("Fifty-Fifty",fiftyfiftynum);
 
-                ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalSingleQuiz.this,map,animList,score,timeTakenString,
+                ResultHandling resultHandling =new ResultHandling(NormalSingleQuiz.this,map,animList,score,timeTakenString,
                         lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
                         category,1,timeTakenInt);
 
-                resultSinglePlayer.start();
+                resultHandling.start();
             }
 
 

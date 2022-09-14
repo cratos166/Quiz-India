@@ -34,7 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultSinglePlayer;
+import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
@@ -290,8 +290,6 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
                         }
 
-
-
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
                         linearLayout.getChildAt(0).setBackgroundResource(R.drawable.border_theme_2);
@@ -445,11 +443,11 @@ public class NormalPictureQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultSinglePlayer resultSinglePlayer=new ResultSinglePlayer(NormalPictureQuiz.this,map,animList,score,timeTakenString,
+        ResultHandling resultHandling =new ResultHandling(NormalPictureQuiz.this,map,animList,score,timeTakenString,
                 lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
                 category,2,timeTakenInt);
 
-        resultSinglePlayer.start();
+        resultHandling.start();
     }
 
 

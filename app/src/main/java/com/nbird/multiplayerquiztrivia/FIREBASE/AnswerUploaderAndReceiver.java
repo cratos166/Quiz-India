@@ -37,14 +37,10 @@ public class AnswerUploaderAndReceiver {
 
 
         try {
-
-
         vsReceiverListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try {
-
-
                     if (snapshot.getValue(Integer.class) == 1) {
                         oppoAnimList.get(positionOppo).setAnimation(R.raw.tickanim);
                         oppoAnimList.get(positionOppo).playAnimation();
@@ -58,12 +54,6 @@ public class AnswerUploaderAndReceiver {
                         positionOppo++;
                         table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).child(String.valueOf(positionOppo)).addValueEventListener(vsReceiverListener);
                     }
-
-
-
-
-
-
                 } catch (Exception e) {
 
                 }

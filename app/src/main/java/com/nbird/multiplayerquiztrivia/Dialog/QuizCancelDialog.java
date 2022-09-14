@@ -34,7 +34,7 @@ public class QuizCancelDialog {
 
     public void start(){
         AlertDialog.Builder builderRemove=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
-        View viewRemove1= LayoutInflater.from(context).inflate(R.layout.quit_asker_layout,(ConstraintLayout) v.findViewById(R.id.layoutDialogContainer),false);
+        View viewRemove1= LayoutInflater.from(context).inflate(R.layout.quiz_asker_layout,(ConstraintLayout) v.findViewById(R.id.layoutDialogContainer),false);
         builderRemove.setView(viewRemove1);
         builderRemove.setCancelable(false);
         Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);

@@ -39,7 +39,7 @@
         android:scaleY="0.8"
         android:scaleX="0.8"
         android:foreground="?selectableItemBackground"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -84,7 +84,7 @@
         android:foreground="?selectableItemBackground"
         android:scaleX="0.8"
         android:scaleY="0.8"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -146,7 +146,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView2"
-                cardview:cardCornerRadius="5dp">
+                cardview:cardCornerRadius="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -351,7 +351,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView46"
-                cardview:cardCornerRadius="5dp">
+                cardview:cardCornerRadius="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -520,7 +520,7 @@
                     android:scaleX="0.75"
                     android:scaleY="0.75"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"
-                    cardview:cardCornerRadius="5dp">
+                    cardview:cardCornerRadius="8dp">
 
                     <LinearLayout
                         android:id="@+id/linearLayoutexpert"
@@ -550,7 +550,7 @@
                     android:scaleX="0.75"
                     android:scaleY="0.75"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"
-                    cardview:cardCornerRadius="5dp">
+                    cardview:cardCornerRadius="8dp">
 
                     <LinearLayout
                         android:id="@+id/linearLayoutSwap"
@@ -580,7 +580,7 @@
                     android:scaleX="0.75"
                     android:scaleY="0.75"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"
-                    cardview:cardCornerRadius="5dp">
+                    cardview:cardCornerRadius="8dp">
 
 
                     <LinearLayout
@@ -611,7 +611,7 @@
                     android:scaleX="0.75"
                     android:scaleY="0.75"
                     app:layout_constraintTop_toBottomOf="@+id/imageView"
-                    cardview:cardCornerRadius="5dp">
+                    cardview:cardCornerRadius="8dp">
 
 
                     <LinearLayout

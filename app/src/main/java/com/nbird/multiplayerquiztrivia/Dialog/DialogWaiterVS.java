@@ -7,7 +7,9 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
+import android.os.Debug;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -213,8 +215,9 @@ public class DialogWaiterVS {
 
                                 String Player2UID = snapshot.getValue(String.class);
                                 cancelButton.setEnabled(false);
+                                Log.i("Player 2 UID",Player2UID);
                                 table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").removeEventListener(listenerOppoConnected);
-
+                                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).removeValue();
 
 
                                     table_user.child("LeaderBoard").child(Player2UID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -226,6 +229,7 @@ public class DialogWaiterVS {
                                             LeaderBoardHolder leaderBoardHolder = snapshot.getValue(LeaderBoardHolder.class);
 
                                             String crashTester=leaderBoardHolder.getImageUrl();
+
 
                                             OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter = new OneVSOneOpponentDataSetter(leaderBoardHolder, oppoImage, oppoName, highestScore, totalTime, oppoRatio, oppoAccu, shimmerOppo, context, mainlinearLayout, oppoBatchCardView, oppoBatch, oppoLevelText);
                                             oneVSOneOpponentDataSetter.start();
@@ -299,7 +303,7 @@ public class DialogWaiterVS {
                                             case 1:
                                                 Intent intent1 = new Intent(context, VsPictureQuiz.class);
                                                 intent1.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
-                                                intent1.putExtra("playerNum",2);
+                                                intent1.putExtra("playerNum",1);
                                                 intent1.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent1);
                                                 ((Activity) context).finish();
@@ -307,7 +311,7 @@ public class DialogWaiterVS {
                                             case 3:
                                                 Intent intent2 = new Intent(context, VsAudioQuiz.class);
                                                 intent2.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
-                                                intent2.putExtra("playerNum",3);
+                                                intent2.putExtra("playerNum",1);
                                                 intent2.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent2);
                                                 ((Activity) context).finish();
@@ -315,7 +319,7 @@ public class DialogWaiterVS {
                                             case 4:
                                                 Intent intent3 = new Intent(context, VsVideoQuiz.class);
                                                 intent3.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
-                                                intent3.putExtra("playerNum",4);
+                                                intent3.putExtra("playerNum",1);
                                                 intent3.putExtra("oppoUID",Player2UID);
                                                 context.startActivity(intent3);
                                                 ((Activity) context).finish();
