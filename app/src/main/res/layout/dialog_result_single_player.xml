@@ -127,7 +127,7 @@
             android:id="@+id/myName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/single_color_3"
             android:padding="5dp"
             android:text="kartik"

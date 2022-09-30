@@ -13,6 +13,7 @@
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="5dp"
     android:layout_marginLeft="2dp"
+    android:background="@drawable/border_theme"
     android:layout_marginBottom="5dp"
     app:ignore="NamespaceTypo">
 
@@ -29,18 +30,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_margin="5dp"
-                    android:layout_gravity="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:lottie_autoPlay="true"
-                    shimmer:lottie_rawRes="@raw/finding_anim"
-                    app:lottie_loop="true"
-                    app:lottie_speed="1" />
 
 
 
@@ -57,7 +46,7 @@
                         android:textColor="@color/text_head"
                         android:fontFamily="@font/ubuntu"
                         android:padding="10dp"
-                        android:text="Finding Your Opponent.Please Wait!!Until Then Read Some Facts Given Below."/>
+                        android:text="Please share the the below code with you friend or family member to play the game."/>
 
                 </LinearLayout>
 
@@ -66,35 +55,25 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/roomCodeLinear"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:weightSum="2"
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:elevation="10dp"
-                    android:foreground="?selectableItemBackground"
-                    app:cardCornerRadius="5dp"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    cardview:cardBackgroundColor="@color/transparent"
-                    cardview:cardElevation="5dp"
-                    cardview:layout_constraintEnd_toEndOf="@+id/linearLayout29"
-                    cardview:layout_constraintStart_toStartOf="@+id/linearLayout29">
+
 
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/single_color_1"
                         android:elevation="10dp"
+                        android:layout_weight="1"
                         android:gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="5dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -108,26 +87,20 @@
                     </LinearLayout>
 
 
-                </androidx.cardview.widget.CardView>
+
 
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/share"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:elevation="10dp"
                     android:foreground="?selectableItemBackground"
-                    app:cardCornerRadius="5dp"
+                    app:cardCornerRadius="7dp"
                     android:layout_weight="1"
-
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="5dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    cardview:cardBackgroundColor="@color/transparent"
-                    cardview:cardElevation="5dp"
-                    cardview:layout_constraintEnd_toEndOf="@+id/linearLayout29"
-                    cardview:layout_constraintStart_toStartOf="@+id/linearLayout29">
+                   >
 
 
                     <LinearLayout
@@ -136,7 +109,7 @@
                         android:background="@drawable/single_color_3"
                         android:elevation="10dp"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        >
 
                         <TextView
                             android:layout_width="match_parent"
@@ -586,7 +559,7 @@
                 android:textSize="15dp"
                 android:scaleY="0.9"
                 android:scaleX="0.9"
-                android:padding="2dp"
+                android:padding="15dp"
                 android:gravity="center"
                 android:textColor="@color/text_dis"
                 android:layout_gravity="center"

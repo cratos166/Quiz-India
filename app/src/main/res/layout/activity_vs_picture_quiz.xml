@@ -9,6 +9,25 @@
     android:orientation="vertical"
     tools:context=".QUIZ.NormalSingleQuiz">
 
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/party_popper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:elevation="5dp"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/party_popper"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_speed="1" />
+
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backlitemodeanim"
         android:layout_width="match_parent"
@@ -38,7 +57,7 @@
         app:cardCornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="@+id/cardView2"
-        app:layout_constraintStart_toStartOf="@+id/cardView3"
+        app:layout_constraintStart_toStartOf="@+id/timerCard"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -110,7 +129,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/timerCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -160,7 +179,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView3">
+        app:layout_constraintTop_toBottomOf="@+id/timerCard">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -225,6 +244,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="11dp"
+                                    android:textColor="@color/text_head"
+                                    android:fontFamily="@font/ubuntu"
                                     android:layout_margin="5dp"
                                     />
 
@@ -402,6 +423,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textSize="11dp"
+                                    android:textColor="@color/text_head"
+                                    android:fontFamily="@font/ubuntu"
                                     android:layout_margin="5dp"
                                     />
 
@@ -582,14 +605,13 @@
                         android:id="@+id/question"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
+                       android:layout_margin="5dp"
                         android:fontFamily="@font/ubuntu"
                         android:gravity="center"
 
                         android:text=""
                         android:textColor="@color/text_head"
-                        android:textSize="16dp"
+                        android:textSize="12dp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -607,7 +629,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginEnd="25dp"
                 android:layout_weight="1"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:elevation="-2dp"

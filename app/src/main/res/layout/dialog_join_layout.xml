@@ -9,7 +9,6 @@
     android:scaleX="0.9"
     android:layout_margin="20dp"
     android:padding="20dp"
-    android:background="@color/transparent"
     android:id="@+id/layoutDialogContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout

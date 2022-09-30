@@ -9,7 +9,6 @@
     android:scaleX="0.8"
     android:layout_margin="20dp"
     android:padding="20dp"
-    android:background="@color/transparent"
     android:id="@+id/layoutDialogContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,23 +74,6 @@
             app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
             app:layout_constraintStart_toStartOf="@+id/layoutDialog">
 
-            <Button
-                android:id="@+id/buttonYes"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_margin="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/next_button_dark"
-                android:fontFamily="@font/ubuntu"
-                android:scaleX="0.85"
-                android:scaleY="0.85"
-                android:text="Yes"
-                android:textColor="@color/text_head"
-                android:textSize="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
-                app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
 
             <Button
                 android:id="@+id/buttonNo"
@@ -102,10 +84,29 @@
                 android:layout_margin="10dp"
                 android:scaleX="0.85"
                 android:scaleY="0.85"
-                android:background="@drawable/next_button"
+                android:textColor="@color/text_head"
+                android:background="@drawable/next_button_dark"
                 android:fontFamily="@font/ubuntu"
                 android:text="NO"
+                android:textSize="17dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+                app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
+
+            <Button
+                android:id="@+id/buttonYes"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/next_button"
+                android:fontFamily="@font/ubuntu"
+                android:scaleX="0.85"
+                android:scaleY="0.85"
+                android:text="Yes"
                 android:textColor="@color/layer_3"
+
                 android:textSize="17dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/layoutDialog"

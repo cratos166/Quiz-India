@@ -74,10 +74,9 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/timerCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:clickable="true"
         android:elevation="10dp"
@@ -85,6 +84,7 @@
         android:scaleX="0.8"
         android:scaleY="0.8"
         app:cardCornerRadius="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/cardView2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -124,7 +124,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView3">
+        app:layout_constraintTop_toBottomOf="@+id/timerCard">
 
         <LinearLayout
             android:layout_width="match_parent"

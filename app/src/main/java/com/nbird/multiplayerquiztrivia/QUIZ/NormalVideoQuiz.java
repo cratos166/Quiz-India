@@ -94,6 +94,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
     LottieAnimationView loadingvideo;
     int statusFinder=1;
     Boolean isInBackground;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

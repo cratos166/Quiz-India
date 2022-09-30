@@ -1,5 +1,7 @@
 package com.nbird.multiplayerquiztrivia.FIREBASE;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -35,7 +37,6 @@ public class AnswerUploaderAndReceiver {
 
     public void vsReceiver(String oppoUID, ArrayList<LottieAnimationView> oppoAnimList) {
 
-
         try {
         vsReceiverListener = new ValueEventListener() {
             @Override
@@ -44,18 +45,22 @@ public class AnswerUploaderAndReceiver {
                     if (snapshot.getValue(Integer.class) == 1) {
                         oppoAnimList.get(positionOppo).setAnimation(R.raw.tickanim);
                         oppoAnimList.get(positionOppo).playAnimation();
+                        Log.i("pos tick", String.valueOf(positionOppo));
                         table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).child(String.valueOf(positionOppo)).removeEventListener(vsReceiverListener);
                         positionOppo++;
                         table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).child(String.valueOf(positionOppo)).addValueEventListener(vsReceiverListener);
+
                     } else if (snapshot.getValue(Integer.class) == 2) {
                         oppoAnimList.get(positionOppo).setAnimation(R.raw.wronganim);
                         oppoAnimList.get(positionOppo).playAnimation();
+                        Log.i("pos wrong", String.valueOf(positionOppo));
                         table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).child(String.valueOf(positionOppo)).removeEventListener(vsReceiverListener);
                         positionOppo++;
                         table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).child(String.valueOf(positionOppo)).addValueEventListener(vsReceiverListener);
+
                     }
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
 
@@ -69,6 +74,18 @@ public class AnswerUploaderAndReceiver {
         }catch (Exception e){
 
         }
+
+    }
+
+    public void removeAnimListener(String oppoUID){
+        try{
+            table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).child(String.valueOf(positionOppo)).removeEventListener(vsReceiverListener);
+        }catch (Exception e){
+
+        }
+
+        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
+        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(oppoUID).removeValue();
 
     }
 

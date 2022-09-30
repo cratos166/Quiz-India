@@ -28,7 +28,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +42,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.EXTRA.OneVSOneOpponentDataSetter;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
+import com.nbird.multiplayerquiztrivia.FIREBASE.ConnectionStatus;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
 import com.nbird.multiplayerquiztrivia.GENERATORS.LevelGenerators;
@@ -180,6 +183,22 @@ public class DialogJoinVS {
                                             table_user.child("VS_PLAY").child(oppoUID).child("Answers").removeEventListener(questionGetterListner);
                                             cancelButton.setTextSize(10f);
 
+
+
+
+
+                                            // CONNECTION SETTER FOR ONLINE
+                                            ConnectionStatus connectionStatus=new ConnectionStatus();
+                                            connectionStatus.myStatusSetter();
+
+                                            table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+
+                                                }
+                                            });
+
+
                                             countDownTimerIntent = new CountDownTimer(1000 * 10, 1000) {
                                                 @Override
                                                 public void onTick(long l) {
@@ -196,6 +215,7 @@ public class DialogJoinVS {
                                                             intent.putExtra("oppoUID",oppoUID);
                                                             intent.putExtra("oppoName", oppoName.getText().toString());
                                                             intent.putExtra("oppoImgStr",oppoImgStr);
+                                                            intent.putExtra("mode",2);
                                                             context.startActivity(intent);
                                                             ((Activity) context).finish();
                                                             break;
@@ -206,6 +226,7 @@ public class DialogJoinVS {
                                                             intent1.putExtra("oppoUID",oppoUID);
                                                             intent1.putExtra("oppoName", oppoName.getText().toString());
                                                             intent1.putExtra("oppoImgStr",oppoImgStr);
+                                                            intent1.putExtra("mode",1);
                                                             context.startActivity(intent1);
                                                             ((Activity) context).finish();
                                                             break;
@@ -216,6 +237,7 @@ public class DialogJoinVS {
                                                             intent2.putExtra("oppoUID",oppoUID);
                                                             intent2.putExtra("oppoName", oppoName.getText().toString());
                                                             intent2.putExtra("oppoImgStr",oppoImgStr);
+                                                            intent2.putExtra("mode",3);
                                                             context.startActivity(intent2);
                                                             ((Activity) context).finish();
                                                             break;
@@ -226,6 +248,7 @@ public class DialogJoinVS {
                                                             intent3.putExtra("oppoUID",oppoUID);
                                                             intent3.putExtra("oppoName", oppoName.getText().toString());
                                                             intent3.putExtra("oppoImgStr",oppoImgStr);
+                                                            intent3.putExtra("mode",4);
                                                             context.startActivity(intent3);
                                                             ((Activity) context).finish();
                                                             break;
@@ -313,6 +336,11 @@ public class DialogJoinVS {
 
         cancelButton=(Button) view1.findViewById(R.id.cancelButton);
 
+        LinearLayout roomCodeLinear=(LinearLayout) view1.findViewById(R.id.roomCodeLinear);
+        roomCodeLinear.setVisibility(View.GONE);
+
+
+
         myName.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context));
         Glide.with(context).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context)).apply(RequestOptions
                 .bitmapTransform(new RoundedCorners(18)))
@@ -371,6 +399,9 @@ public class DialogJoinVS {
 
             }
         });
+
+
+
     }
 
 

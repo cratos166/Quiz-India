@@ -6,13 +6,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -25,6 +31,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,9 +40,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.Dialog.DialogModel_1;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.Dialog.Vs_Response;
+import com.nbird.multiplayerquiztrivia.Dialog.WaitingVSInGameDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
 import com.nbird.multiplayerquiztrivia.FIREBASE.AnswerUploaderAndReceiver;
@@ -79,7 +89,6 @@ public class VsNormalQuiz extends AppCompatActivity {
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    QuizTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
@@ -88,19 +97,46 @@ public class VsNormalQuiz extends AppCompatActivity {
 
     ArrayList<Integer> ansArray;
 
-    int playerNum;
+    int playerNum,mode;
     String oppoUID,oppoName,oppoImgStr;
+    ValueEventListener isCompletedListener,vsRematchListener,lisnerForConnectionStatus;
+    DialogModel_1 dialogModel_1;
+    int starter=1;
+
+
+
+    int minutes=2;
+    int second=59;
+    String minutestext;
+    String secondtext,timeTakenString;
+    int timeTakenInt;
+
+    LottieAnimationView party_popper;
+
+    CardView timerCard;
+
+    boolean rematchButtonEnable=true;
+    DataExchange dataExchange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vs_normal_quiz);
 
+        timerCard=(CardView) findViewById(R.id.timerCard);
+
+
+
+
+
+
+
+
         list=new ArrayList<>();
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
-
+        ansArray = new ArrayList<>();
 
         answerUploaderAndReceiver=new AnswerUploaderAndReceiver();
 
@@ -138,11 +174,14 @@ public class VsNormalQuiz extends AppCompatActivity {
         oppoNameTextView=(TextView) findViewById(R.id.oppoNameTextView);
         myNameTextView=(TextView) findViewById(R.id.myNameTextView);
 
+        party_popper=(LottieAnimationView) findViewById(R.id.party_popper);
+
 
         playerNum=getIntent().getIntExtra("playerNum",1);
         oppoUID=getIntent().getStringExtra("oppoUID");
         oppoName=getIntent().getStringExtra("oppoName");
         oppoImgStr=getIntent().getStringExtra("oppoImgStr");
+        mode=getIntent().getIntExtra("mode",1);
 
 
 
@@ -169,6 +208,10 @@ public class VsNormalQuiz extends AppCompatActivity {
                 .bitmapTransform(new RoundedCorners(18)))
                 .into(picOppo);
 
+
+        Log.i("MY PIC",myPicURL);
+        Log.i("oppo PIC",oppoImgStr);
+
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
 
         animationList.add(anim11);animationList.add(anim12);animationList.add(anim13);animationList.add(anim14);animationList.add(anim15);
@@ -185,6 +228,37 @@ public class VsNormalQuiz extends AppCompatActivity {
 
         highestScore=new HighestScore();
         highestScore.start();
+
+
+
+
+        lisnerForConnectionStatus=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    int value=snapshot.getValue(Integer.class);
+
+                    if(value==0){
+                        dialogModel_1=new DialogModel_1(VsNormalQuiz.this,"Opponent is disconnected from the server.","Possible reasons may be Slow Internet or your opponent would have left the game.\nTry to find another opponent.",R.raw.userremoved,"Okay",questionTextView,isCompletedListener,vsRematchListener,lisnerForConnectionStatus,answerUploaderAndReceiver,oppoUID);
+                        dialogModel_1.displayDialog();
+                        try{
+                            table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }; table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").addValueEventListener(lisnerForConnectionStatus);
+
+
         
     }
 
@@ -217,20 +291,50 @@ public class VsNormalQuiz extends AppCompatActivity {
 
     public void questionSelector() {
 
-        ansArray = new ArrayList<>(12);
+
         ansArray=getIntent().getIntegerArrayListExtra("answerInt");
 
 
-        if(ansArray.size()==11){
-            for (int i = 0; i < 11; i++) {
-                fireBaseData(Long.parseLong(String.valueOf(ansArray.get(i))));
+        try{
+
+            if(ansArray.size()==11){
+                for (int i = 0; i < 11; i++) {
+                    fireBaseData(Long.parseLong(String.valueOf(ansArray.get(i))));
+                }
+
+                if(playerNum==2){
+                    table_user.child("VS_PLAY").child(oppoUID).child("Answers").removeValue();
+                }
+
+            }else{
+                table_user.child("VS_PLAY").child(oppoUID).child("Answers").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try{
+                            ansArray = (ArrayList<Integer>) snapshot.getValue();
+
+                            for (int i = 0; i < 11; i++) {
+                                fireBaseData(Long.parseLong(String.valueOf(ansArray.get(i))));
+                            }
+
+                            if(playerNum==2){
+                                table_user.child("VS_PLAY").child(oppoUID).child("Answers").removeValue();
+                            }
+
+                        }catch (Exception e){
+
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
-            if(playerNum==2){
-                table_user.child("VS_PLAY").child(oppoUID).child("Answers").removeValue();
-            }
 
-        }else{
+        }catch (Exception e){
+            e.printStackTrace();
             table_user.child("VS_PLAY").child(oppoUID).child("Answers").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -238,7 +342,7 @@ public class VsNormalQuiz extends AppCompatActivity {
                         ansArray = (ArrayList<Integer>) snapshot.getValue();
 
                         for (int i = 0; i < 11; i++) {
-                            fireBaseData(ansArray.get(i));
+                            fireBaseData(Long.parseLong(String.valueOf(ansArray.get(i))));
                         }
 
                         if(playerNum==2){
@@ -255,7 +359,6 @@ public class VsNormalQuiz extends AppCompatActivity {
                 }
             });
         }
-
 
 
     }
@@ -287,8 +390,9 @@ public class VsNormalQuiz extends AppCompatActivity {
 
         num++;
         if (num == 10) {
-            timer=new QuizTimer(countDownTimer,60000*3,1000,VsNormalQuiz.this,timerText,clockCardView);
-            timer.start();
+
+            mainTimer();
+
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
                     linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -317,7 +421,7 @@ public class VsNormalQuiz extends AppCompatActivity {
                         position++;
                         llManupulator.True();
 
-                        if (swapnum == 0) { if (position == 10) { quizFinishDialog();return; } } else { if (position == 11) { quizFinishDialog();return; } }
+                        if (swapnum == 0) { if (position == 10) { quizFinishDialog(0);return; } } else { if (position == 11) { quizFinishDialog(0);return; } }
                         count = 0;
                         playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
                     }
@@ -462,27 +566,110 @@ public class VsNormalQuiz extends AppCompatActivity {
     }
 
 
-    public void quizFinishDialog(){
+    public void mainTimer(){
+        countDownTimer=new CountDownTimer(1000*180, 1000) {
 
-        try{
-            timer.getCountDownTimer().cancel();
-        }catch (Exception e){
-            e.printStackTrace();
+
+            @SuppressLint("ResourceAsColor")
+            public void onTick(long millisUntilFinished) {
+
+
+                if(second==0){
+                    minutes--;
+                    minutestext="0"+String.valueOf(minutes);
+                    second=59;
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+
+                }else{
+                    minutestext="0"+String.valueOf(minutes);
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+                    second--;
+                }
+
+                //Last 15 seconds end animation
+                if(minutes==0 && second<=15){
+
+                    timerText.setTextColor(R.color.red);
+
+                    //Continuous zoomIn - zoomOut
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
+
+                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    AnimatorSet scaleAnim = new AnimatorSet();
+                    scaleAnim.setDuration(500);
+                    scaleAnim.play(scaleX).with(scaleY);
+
+                    scaleAnim.start();
+                }
+
+            }
+            public void onFinish() {
+
+
+
+                Toast.makeText(VsNormalQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
+               quizFinishDialog(1);
+
+
+            }
+
+        }.start();
+    }
+
+
+
+
+    public void quizFinishDialog(int i){
+
+        timerCard.setVisibility(View.INVISIBLE);
+
+        if(i==0){
+            try{
+               countDownTimer.cancel();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+
+
+
+
+            if((60-second)>10){
+                timeTakenString="0"+String.valueOf(2-minutes)+":"+String.valueOf(60-second);
+            }else{
+                timeTakenString="0"+String.valueOf(2-minutes)+":0"+String.valueOf(60-second);
+            }
+
+             timeTakenInt=((2-minutes)*60)+(60-second);
+
+        }else if(i==1){
+
+            minutes=0;
+            second=0;
+            timeTakenString="03:00";
+            timeTakenInt=180;
         }
 
-        int minutesLeft=timer.getMinutes();
-        int secondsLeft=timer.getSecond();
 
-        String timeTakenString;
-        if((60-secondsLeft)>10){
-            timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
-        }else{
-            timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
-        }
 
-        int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
-
-        ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
+        ScoreGenerator scoreGenerator=new ScoreGenerator(minutes,second,lifelineSum,score);
 
         totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
         totalScore.setSingleModeScore();
@@ -499,17 +686,203 @@ public class VsNormalQuiz extends AppCompatActivity {
         map.put("Fifty-Fifty",fiftyfiftynum);
 
 
-        DataExchange dataExchange=new DataExchange(VsNormalQuiz.this,map,animList,score,timeTakenString,
-                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,1,timeTakenInt,oppoUID,oppoName,oppoImgStr,animationList);
 
-        dataExchange.start();
 
-//        ResultHandling resultHandling =new ResultHandling(VsNormalQuiz.this,map,animList,score,timeTakenString,
-//                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-//                category,1,timeTakenInt);
-//
-//        resultHandling.start();
+        Dialog loadingDialog = null;
+        SupportAlertDialog supportAlertDialog =new SupportAlertDialog(loadingDialog,VsNormalQuiz.this);
+        supportAlertDialog.showLoadingDialog();
+
+        try {
+            table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+        vsRematchListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    boolean request=snapshot.getValue(Boolean.class);
+                    if(request){
+                        if(dataExchange.rematchButtonEnable){
+                            table_user.child("VS_REQUEST").child(oppoUID).removeValue();
+                            String tt=oppoName+" has send a rematch request to you.";
+                            Vs_Response vs_response=new Vs_Response(VsNormalQuiz.this,countDownTimer,option1,songActivity,R.raw.rematch_request,mode,tt,oppoUID,oppoName,oppoImgStr,lisnerForConnectionStatus,vsRematchListener,isCompletedListener);
+                            vs_response.start();
+                            table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);
+                        }else{
+
+
+                            //TODO
+
+
+                            table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").removeValue();
+
+
+                            if(playerNum==1){
+
+                                dataExchange.reMatch.setVisibility(View.GONE);
+                                table_user.child("VS_REQUEST").child(mAuth.getCurrentUser().getUid()).setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        dataExchange.rematchButtonEnable=true;
+                                        dataExchange.reMatch.setVisibility(View.VISIBLE);
+                                        Toast.makeText(VsNormalQuiz.this, "PLEASE SEND REQUEST AGAIN", Toast.LENGTH_LONG).show();
+
+                                    }
+                                });
+
+
+
+                            }else{
+                                dataExchange.reMatch.setVisibility(View.GONE);
+                                table_user.child("VS_REQUEST").child(mAuth.getCurrentUser().getUid()).setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        dataExchange.rematchButtonEnable=true;
+
+                                        new CountDownTimer(15000,100){
+
+                                            @Override
+                                            public void onTick(long l) {
+
+                                            }
+
+                                            @Override
+                                            public void onFinish() {
+                                                try{
+                                                    dataExchange.reMatch.setVisibility(View.VISIBLE);
+                                                }catch (Exception e){
+
+                                                }
+                                            }
+                                        }.start();
+
+                                        Toast.makeText(VsNormalQuiz.this, "Both the players have send the request for rematch at the same time. Try again to send the request again after 15 seconds. ", Toast.LENGTH_LONG).show();
+
+                                    }
+                                });
+
+
+                                }
+
+
+
+
+
+                        }
+
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        table_user.child("VS_REQUEST").child(oppoUID).addValueEventListener(vsRematchListener);
+
+
+        int finalTimeTakenInt = timeTakenInt;
+        String finalTimeTakenString = timeTakenString;
+        table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                table_user.child("VS_PLAY").child("IsDone").child(oppoUID).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        try{
+
+                            Boolean isCompletedOppo=snapshot.getValue(Boolean.class);
+                            supportAlertDialog.dismissLoadingDialog();
+                            if(isCompletedOppo){
+                                starter=0;
+                               // dialogModel_1.removeLisnerForConnectionStatus(oppoUID);
+
+                                try{
+                                    table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                                 dataExchange=new DataExchange(VsNormalQuiz.this,map,animList,score, finalTimeTakenString,
+                                        lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                                        category,1, finalTimeTakenInt,oppoUID,oppoName,oppoImgStr,animationList,mode,lisnerForConnectionStatus,answerUploaderAndReceiver,vsRematchListener,isCompletedListener,countDownTimer,party_popper,rematchButtonEnable);
+
+                                dataExchange.start();
+                            }else{
+
+                                WaitingVSInGameDialog waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), finalTimeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum),VsNormalQuiz.this,questionTextView);
+                                isCompletedListener=new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        try{
+                                            Boolean isCompleted=snapshot.getValue(Boolean.class);
+                                            if(isCompleted){
+                                                waitingVSInGameDialog.dismiss();
+
+                                                starter=0;
+
+                                               // dialogModel_1.removeLisnerForConnectionStatus(oppoUID);
+
+                                                table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);
+
+                                                try{
+                                                    table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+
+
+                                                 dataExchange=new DataExchange(VsNormalQuiz.this,map,animList,score, finalTimeTakenString,
+                                                        lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                                                        category,1, finalTimeTakenInt,oppoUID,oppoName,oppoImgStr,animationList,mode,lisnerForConnectionStatus,answerUploaderAndReceiver,vsRematchListener,isCompletedListener,countDownTimer,party_popper,rematchButtonEnable);
+                                                dataExchange.start();
+                                            }else{
+                                                if(starter==1){
+                                                    waitingVSInGameDialog.start();
+                                                }
+
+                                            }
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                }; table_user.child("VS_PLAY").child("IsDone").child(oppoUID).addValueEventListener(isCompletedListener);
+                            }
+
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+
+
+
+
+
+
+
     }
 
 
@@ -548,7 +921,7 @@ public class VsNormalQuiz extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsNormalQuiz.this,timer.getCountDownTimer(),option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsNormalQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener);
         quizCancelDialog.start();
     }
 
@@ -559,7 +932,15 @@ public class VsNormalQuiz extends AppCompatActivity {
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
 
-        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
+
+        try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+
+        try{table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){e.printStackTrace();}
+
+        answerUploaderAndReceiver.removeAnimListener(oppoUID);
+
         Runtime.getRuntime().gc();
     }
     

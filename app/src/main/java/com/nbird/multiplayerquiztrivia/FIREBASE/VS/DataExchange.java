@@ -5,12 +5,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -22,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,21 +33,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.nbird.multiplayerquiztrivia.Dialog.DialogCategory;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.FIREBASE.AnswerUploaderAndReceiver;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
-import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
-import com.nbird.multiplayerquiztrivia.GENERATORS.LevelGenerators;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsAudioQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsNormalQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsPictureQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class DataExchange {
     FirebaseDatabase database=FirebaseDatabase.getInstance();
@@ -54,7 +57,7 @@ public class DataExchange {
     Context context;
     HashMap<String, Integer> llMap;
     ArrayList<Boolean> animList;
-    int correctAnsInt;
+    int correctAnsInt,mode;
     String timeTakenString;
     int lifeLineUsedInt;
     long totalScoreInt;
@@ -67,10 +70,19 @@ public class DataExchange {
     Dialog loadingDialog;
     String oppoUID, oppoNameString, oppoImgStr;
     ArrayList<LottieAnimationView> animationList,animationListOppo;
-    ValueEventListener valueEventListener;
+    ValueEventListener valueEventListener, requestEventListener,lisnerForConnectionStatus,vsRematchListener,isCompletedListener;
+    ArrayList<Integer> listAns;
+    int value=1;
+    AnswerUploaderAndReceiver answerUploaderAndReceiver;
+    CountDownTimer countDownTimer;
+    LottieAnimationView party_popper;
 
 
-    public DataExchange(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList, int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt, int higestScoreInt, int scoreInt, CardView view, String myNameString, String myPicURL, int category, int intentInt, int timeTakenInt, String oppoUID, String oppoName, String oppoImgStr,ArrayList<LottieAnimationView> animationList) {
+    public boolean rematchButtonEnable;
+
+    public Button reMatch;
+
+    public DataExchange(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList, int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt, int higestScoreInt, int scoreInt, CardView view, String myNameString, String myPicURL, int category, int intentInt, int timeTakenInt, String oppoUID, String oppoName, String oppoImgStr, ArrayList<LottieAnimationView> animationList, int mode, ValueEventListener lisnerForConnectionStatus, AnswerUploaderAndReceiver answerUploaderAndReceiver,ValueEventListener vsRematchListener,ValueEventListener isCompletedListener,CountDownTimer countDownTimer,LottieAnimationView party_popper,boolean rematchButtonEnable) {
         this.context = context;
         this.llMap = llMap;
         this.animList = animList;
@@ -90,11 +102,58 @@ public class DataExchange {
         this.oppoNameString=oppoName;
         this.oppoImgStr=oppoImgStr;
         this.animationList=animationList;
+        this.mode=mode;
+        this.lisnerForConnectionStatus=lisnerForConnectionStatus;
+        this.answerUploaderAndReceiver=answerUploaderAndReceiver;
+        this.vsRematchListener=vsRematchListener;
+        this.isCompletedListener=isCompletedListener;
+        this.countDownTimer=countDownTimer;
+        this.party_popper=party_popper;
+        this.rematchButtonEnable=rematchButtonEnable;
     }
 
 
     public void start(){
+
+
+
+
+        listAns=new ArrayList<>();
+
+
+
+
         mAuth = FirebaseAuth.getInstance();
+
+
+
+        lisnerForConnectionStatus=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    value=snapshot.getValue(Integer.class);
+
+                    if(value==0){
+                        try{
+                            table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }; table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").addValueEventListener(lisnerForConnectionStatus);
+
+
+
+
         myDataDisplay();
     }
 
@@ -129,7 +188,7 @@ public class DataExchange {
 
         ImageView myPic=(ImageView) viewRemove1.findViewById(R.id.myPic);
 
-        ImageView oppoImage=(ImageView) viewRemove1.findViewById(R.id.oppoImage);
+        ImageView oppoImage=(ImageView) viewRemove1.findViewById(R.id.oppoPic);
 
         LottieAnimationView anim1=(LottieAnimationView) viewRemove1.findViewById(R.id.anim11);
         LottieAnimationView anim2=(LottieAnimationView) viewRemove1.findViewById(R.id.anim12);
@@ -155,9 +214,12 @@ public class DataExchange {
         LottieAnimationView anim20=(LottieAnimationView) viewRemove1.findViewById(R.id.anim30);
 
         Button homeButton=(Button) viewRemove1.findViewById(R.id.homeButton);
-        Button changeCategory=(Button) viewRemove1.findViewById(R.id.changeCategory);
-        Button reMatch=(Button) viewRemove1.findViewById(R.id.reMatch);
+         reMatch=(Button) viewRemove1.findViewById(R.id.reMatch);
 
+        LottieAnimationView partyPopper=(LottieAnimationView) viewRemove1.findViewById(R.id.party_popper);
+
+
+        TextView result=(TextView) viewRemove1.findViewById(R.id.result);
 
 
 
@@ -188,7 +250,7 @@ public class DataExchange {
 
 
         dataUpload(correctAnswerOppo,timeTakenOppo,lifeLineUsedOppo,totalScoreOppo,oppoName,oppoImage
-        ,linearLayoutexpertOppo,linearLayoutAudienceOppo,linearLayoutSwapOppo,linearLayoutfiftyfiftyOppo,animationListOppo);
+        ,linearLayoutexpertOppo,linearLayoutAudienceOppo,linearLayoutSwapOppo,linearLayoutfiftyfiftyOppo,animationListOppo,result,party_popper);
 
 
         correctAnswer.setText("Correct/Wrong : "+correctAnsInt+"/"+String.valueOf(10-correctAnsInt));
@@ -223,16 +285,19 @@ public class DataExchange {
 
 
         for(int i=0;i<animationList.size();i++){
-            if(animList.get(i)){
-                animationList.get(i).setAnimation(R.raw.tickanim);
-                animationList.get(i).playAnimation();
-                animationList.get(i).loop(false);
-            }else{
-                animationList.get(i).setAnimation(R.raw.wronganim);
-                animationList.get(i).playAnimation();
-                animationList.get(i).loop(false);
+            try{
+                if(animList.get(i)){
+                    animationList.get(i).setAnimation(R.raw.tickanim);
+                    animationList.get(i).playAnimation();
+                    animationList.get(i).loop(false);
+                }else{
+                    animationList.get(i).setAnimation(R.raw.wronganim);
+                    animationList.get(i).playAnimation();
+                    animationList.get(i).loop(false);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-
         }
 
 
@@ -249,61 +314,343 @@ public class DataExchange {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.dismiss();
-                Intent i=new Intent(context, MainActivity.class);
-                context.startActivity(i);
-                ((Activity)context).finish();
+
+                Dialog loadingDialog = null;
+                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(loadingDialog,context);
+                supportAlertDialog.showLoadingDialog();
+
+
+                table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").setValue(0).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        try{
+                            table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            table_user.child("VS_RESPONSE").child(oppoUID).removeEventListener(requestEventListener);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        table_user.child("VS_RESPONSE").child(oppoUID).removeValue();
+
+                        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+                        answerUploaderAndReceiver.removeAnimListener(oppoUID);
+
+                        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
+
+                        supportAlertDialog.dismissLoadingDialog();
+
+
+
+
+
+
+                            try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+
+
+                        alertDialog.dismiss();
+                        Intent i=new Intent(context, MainActivity.class);
+                        context.startActivity(i);
+                        ((Activity)context).finish();
+                    }
+                });
+
             }
         });
 
-        if(IntentInt==2||IntentInt==3||IntentInt==4){
-            changeCategory.setVisibility(View.GONE);
-        }
-        changeCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-                DialogCategory dialogCategory=new DialogCategory(context,view);
-                dialogCategory.start();
-            }
-        });
+
 
         reMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.dismiss();
-//                switch (IntentInt){
-//                    case 1:
-//                        Intent intent = new Intent(context, NormalSingleQuiz.class);
-//                        intent.putExtra("category", category);
-//                        view.getContext().startActivity(intent);
-//                        ((Activity)view.getContext()).finish();
-//                        break;
-//                    case 2:
-//                        Intent intent1 = new Intent(context, NormalPictureQuiz.class);
-//                        view.getContext().startActivity(intent1);
-//                        ((Activity)view.getContext()).finish();
-//                        break;
-//                    case 3:
-//                        Intent intent2 = new Intent(context, NormalAudioQuiz.class);
-//                        view.getContext().startActivity(intent2);
-//                        ((Activity)view.getContext()).finish();
-//                        break;
-//                    case 4:
-//                        Intent intent3 = new Intent(context, NormalVideoQuiz.class);
-//                        view.getContext().startActivity(intent3);
-//                        ((Activity)view.getContext()).finish();
-//                        break;
-//                }
+
+               rematchButtonEnable=false;
+
+
+
+
+                if (value == 0) {
+                    Toast.makeText(context, "Opponent has left the room", Toast.LENGTH_SHORT).show();
+                    Log.i("VALUE ","1");
+                } else {
+                    Log.i("VALUE ","2");
+
+                Toast.makeText(context, "Rematch request send to the opponent", Toast.LENGTH_SHORT).show();
+              //  reMatch.setEnabled(false);
+              //  reMatch.setAlpha(0.7f);
+                reMatch.setVisibility(View.GONE);
+
+                table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        QuestionGenerator();
+
+
+
+                    }
+                });
+            }
+            }
+        });
+    }
+
+    public void QuestionGenerator() {
+
+
+        switch (mode) {
+            case 1:
+                pictureQuizNumberUploader(listAns);
+                break;
+            case 2:
+                normalQuizNumberUploader(listAns);
+                break;
+            case 3:
+                audioQuizNumberUploader(listAns);
+                break;
+            case 4:
+                vidioQuizNUmberUploader(listAns);
+                break;
+        }
+    }
+
+
+    public void rematchMethod(){
+        table_user.child("VS_REQUEST").child(mAuth.getCurrentUser().getUid()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                requestEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            Boolean requestResponse = snapshot.getValue(Boolean.class);
+                            if (requestResponse) {
+
+                                Toast.makeText(context, "The request was accepted by the opponent", Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    table_user.child("VS_RESPONSE").child(oppoUID).removeEventListener(requestEventListener);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+
+                                table_user.child("VS_RESPONSE").child(oppoUID).removeValue();
+
+                                try{
+                                    table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                                table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+                                answerUploaderAndReceiver.removeAnimListener(oppoUID);
+
+                                try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+
+                                try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
+
+                                //  table_user.child("VS_PLAY").child("DataExchange").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+                                if(countDownTimer!=null){ countDownTimer.cancel();}
+
+                                switch (mode) {
+                                    case 2:
+                                        Intent intent = new Intent(context, VsNormalQuiz.class);
+                                        intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                        intent.putExtra("playerNum", 1);
+                                        intent.putExtra("oppoImgStr", oppoImgStr);
+                                        intent.putExtra("oppoName", oppoNameString);
+                                        intent.putExtra("oppoUID", oppoUID);
+                                        intent.putExtra("mode", mode);
+                                        context.startActivity(intent);
+                                        ((Activity) context).finish();
+                                        break;
+                                    case 1:
+                                        Intent intent1 = new Intent(context, VsPictureQuiz.class);
+                                        intent1.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                        intent1.putExtra("playerNum", 1);
+                                        intent1.putExtra("oppoImgStr", oppoImgStr);
+                                        intent1.putExtra("oppoName", oppoNameString);
+                                        intent1.putExtra("oppoUID", oppoUID);
+                                        intent1.putExtra("mode", mode);
+                                        context.startActivity(intent1);
+                                        ((Activity) context).finish();
+                                        break;
+                                    case 3:
+                                        Intent intent2 = new Intent(context, VsAudioQuiz.class);
+                                        intent2.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                        intent2.putExtra("playerNum", 1);
+                                        intent2.putExtra("oppoImgStr", oppoImgStr);
+                                        intent2.putExtra("oppoName", oppoNameString);
+                                        intent2.putExtra("oppoUID", oppoUID);
+                                        intent2.putExtra("mode", mode);
+                                        context.startActivity(intent2);
+                                        ((Activity) context).finish();
+                                        break;
+                                    case 4:
+                                        Intent intent3 = new Intent(context, VsVideoQuiz.class);
+                                        intent3.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                                        intent3.putExtra("playerNum", 1);
+                                        intent3.putExtra("oppoImgStr", oppoImgStr);
+                                        intent3.putExtra("oppoName", oppoNameString);
+                                        intent3.putExtra("oppoUID", oppoUID);
+                                        intent3.putExtra("mode", mode);
+                                        context.startActivity(intent3);
+                                        ((Activity) context).finish();
+                                        break;
+                                }
+
+                            } else {
+
+                                rematchButtonEnable=true;
+
+
+                                Toast.makeText(context, "The request was decline by the opponent", Toast.LENGTH_LONG).show();
+                                try {
+                                    table_user.child("VS_RESPONSE").child(oppoUID).addValueEventListener(requestEventListener);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                table_user.child("VS_RESPONSE").child(oppoUID).removeValue();
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+                table_user.child("VS_RESPONSE").child(oppoUID).addValueEventListener(requestEventListener);
 
             }
         });
     }
 
-    private void dataUpload(TextView correctAnswerOppo, TextView timeTakenOppo, TextView lifeLineUsedOppo, TextView totalScoreOppo, TextView oppoName, ImageView oppoImage, LinearLayout linearLayoutexpertOppo, LinearLayout linearLayoutAudienceOppo, LinearLayout linearLayoutSwapOppo, LinearLayout linearLayoutfiftyfiftyOppo, ArrayList<LottieAnimationView> animationListOppo){
 
-        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(loadingDialog,context);
-        supportAlertDialog.showLoadingDialog();
+
+    public void normalQuizNumberUploader(ArrayList<Integer> listAns){
+        listAns.clear();
+        Random random=new Random();
+        for(int i=0;i<11;i++){
+            listAns.add(random.nextInt(6326)+1);
+        }
+
+        table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                rematchMethod();
+
+            }
+        });
+    }
+
+    public void pictureQuizNumberUploader(ArrayList<Integer> listAns){
+        listAns.clear();
+        Random random=new Random();
+
+        for(int i=0;i<11;i++){
+            int setNumber = random.nextInt(4999)+1;
+            if(setNumber>1210&&setNumber<2000){
+                setNumber=setNumber-1000;
+            }
+            listAns.add(setNumber);
+        }
+        table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                rematchMethod();
+            }
+        });
+    }
+
+    public void audioQuizNumberUploader(ArrayList<Integer> listAns){
+        listAns.clear();
+        Random random=new Random();
+        myRef.child("QUIZNUMBERS").child("AudioQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=156;
+                }
+                for(int i=0;i<11;i++){
+                    int setNumber = random.nextInt(num)+1;
+                    listAns.add(setNumber);
+                }
+
+                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        rematchMethod();
+                    }
+                });
+
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void vidioQuizNUmberUploader(ArrayList<Integer> listAns){
+        listAns.clear();
+        Random random=new Random();
+        myRef.child("QUIZNUMBERS").child("VideoQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=118;
+                }
+                for(int i=0;i<11;i++){
+                    int setNumber = random.nextInt(num)+1;
+                    listAns.add(setNumber);
+                }
+
+                table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        rematchMethod();
+                    }
+                });
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
+    private void dataUpload(TextView correctAnswerOppo, TextView timeTakenOppo, TextView lifeLineUsedOppo, TextView totalScoreOppo, TextView oppoName, ImageView oppoImage, LinearLayout linearLayoutexpertOppo, LinearLayout linearLayoutAudienceOppo, LinearLayout linearLayoutSwapOppo, LinearLayout linearLayoutfiftyfiftyOppo, ArrayList<LottieAnimationView> animationListOppo,TextView result,LottieAnimationView party_popper){
+
 
 
         DataExchangeHolder dataExchangeHolder=new DataExchangeHolder(llMap,animList,correctAnsInt,timeTakenString,lifeLineUsedInt,totalScoreInt,
@@ -323,46 +670,59 @@ public class DataExchange {
                             lifeLineUsedOppo.setText("Life-Line Used : "+oppoHolder.getLifeLineUsedInt());
                             totalScoreOppo.setText("Total Score : "+oppoHolder.getScoreInt());
 
-                            oppoName.setText(oppoNameString);
-                            Glide.with(context).load(oppoImgStr).apply(RequestOptions
+                            table_user.child("VS_PLAY").child("DataExchange").child(oppoUID).removeEventListener(valueEventListener);
+                     //       table_user.child("VS_PLAY").child("DataExchange").child(oppoUID).removeValue();
+                            if(scoreInt>oppoHolder.getScoreInt()){
+                               // party_popper.setAnimation(R.raw.tickanim);
+                                party_popper.setVisibility(View.VISIBLE);
+                                party_popper.playAnimation();
+                                party_popper.loop(false);
+                                result.setText(myNameString+" Won");
+                            }else if(scoreInt<oppoHolder.getScoreInt()){
+                                result.setText(oppoHolder.getMyNameString()+" Won");
+                            }else{
+                                result.setText("Draw");
+                            }
+
+                            oppoName.setText(oppoHolder.getMyNameString());
+                            Log.i("name",oppoHolder.getMyNameString());
+                            Glide.with(context).load(oppoHolder.getMyPicURL()).apply(RequestOptions
                                             .bitmapTransform(new RoundedCorners(18)))
                                     .into(oppoImage);
 
-
-                            if(oppoHolder.getLlMap().get("Expert")==1){
+                            HashMap<String,Integer> map=oppoHolder.getLlMap();
+                            Log.i("Map",map.toString());
+                            if(map.get("Expert")==1){
                                 linearLayoutexpertOppo.setBackgroundResource(R.drawable.usedicon);
                             }
 
-                            if(oppoHolder.getLlMap().get("Flip")==1){
+                            if(map.get("Flip")==1){
                                 linearLayoutSwapOppo.setBackgroundResource(R.drawable.usedicon);
                             }
 
-                            if(oppoHolder.getLlMap().get("Audience")==1){
+                            if(map.get("Audience")==1){
                                 linearLayoutAudienceOppo.setBackgroundResource(R.drawable.usedicon);
                             }
 
-                            if(oppoHolder.getLlMap().get("Fifty-Fifty")==1){
+                            if(map.get("Fifty-Fifty")==1){
                                 linearLayoutfiftyfiftyOppo.setBackgroundResource(R.drawable.usedicon);
                             }
 
-
-                            for(int i=0;i<oppoHolder.getAnimList().size();i++){
+                            ArrayList<Boolean> animList=oppoHolder.getAnimList();
+                            for(int i=0;i<animList.size();i++){
                                 if(animList.get(i)){
-                                    animationList.get(i).setAnimation(R.raw.tickanim);
-                                    animationList.get(i).playAnimation();
-                                    animationList.get(i).loop(false);
+                                    animationListOppo.get(i).setAnimation(R.raw.tickanim);
+                                    animationListOppo.get(i).playAnimation();
+                                    animationListOppo.get(i).loop(false);
                                 }else{
-                                    animationList.get(i).setAnimation(R.raw.wronganim);
-                                    animationList.get(i).playAnimation();
-                                    animationList.get(i).loop(false);
+                                    animationListOppo.get(i).setAnimation(R.raw.wronganim);
+                                    animationListOppo.get(i).playAnimation();
+                                    animationListOppo.get(i).loop(false);
                                 }
                             }
 
-                            table_user.child("VS_PLAY").child("DataExchange").child(oppoUID).removeEventListener(valueEventListener);
-                            table_user.child("VS_PLAY").child("DataExchange").child(oppoUID).removeValue();
-
                         }catch (Exception e){
-
+                           e.printStackTrace();
                         }
                     }
 

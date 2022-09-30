@@ -30,7 +30,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +43,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.EXTRA.OneVSOneOpponentDataSetter;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
+import com.nbird.multiplayerquiztrivia.FIREBASE.ConnectionStatus;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.FIREBASE.VS.RoomCodeGenerator;
 import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
@@ -101,6 +104,9 @@ public class DialogWaiterVS {
     CountDownTimer countDownTimerIntent;
 
     int incrementer=0;
+    int roomCodeInt;
+
+    LeaderBoardHolder leaderBoardHolder;
 
     public void start(Context context, View view,int quizMode){
 
@@ -143,6 +149,26 @@ public class DialogWaiterVS {
         oppoLevelText=(TextView) view1.findViewById(R.id.oppoLevelText);
 
         cancelButton=(Button) view1.findViewById(R.id.cancelButton);
+
+        CardView share=(CardView) view1.findViewById(R.id.share);
+
+
+        String myNameStr=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context);
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareIntent=new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plane");
+                String shareBody=myNameStr+" Has Created A Room To Play With You.\n"+"Here's Your Room Code : "+roomCodeInt+".";
+                String sharesub="Multiplayer Quiz Trivia";
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
+                shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                context.startActivity(Intent.createChooser(shareIntent,"Room Code"));
+            }
+        });
+
+
 
         myName.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context));
         Glide.with(context).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context)).apply(RequestOptions
@@ -193,11 +219,12 @@ public class DialogWaiterVS {
         TextView roomCode=(TextView) view1.findViewById(R.id.roomCode);
 
         RoomCodeGenerator roomCodeGenerator=new RoomCodeGenerator();
-        int roomCodeInt=roomCodeGenerator.start();
+        roomCodeInt=roomCodeGenerator.start();
 
         roomCode.setText("Code : "+String.valueOf(roomCodeInt));
 
         OnlineDetailHolder onlineDetailHolder=new OnlineDetailHolder(mAuth.getCurrentUser().getUid(),quizMode,roomCodeInt);
+
 
         table_user.child("VS_ARENA").child(mAuth.getCurrentUser().getUid()).setValue(onlineDetailHolder).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -207,17 +234,16 @@ public class DialogWaiterVS {
                 listenerOppoConnected=new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(incrementer==1) {
-
-
 
                             try {
 
                                 String Player2UID = snapshot.getValue(String.class);
-                                cancelButton.setEnabled(false);
+
                                 Log.i("Player 2 UID",Player2UID);
                                 table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").removeEventListener(listenerOppoConnected);
                                 table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+
 
 
                                     table_user.child("LeaderBoard").child(Player2UID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -226,9 +252,8 @@ public class DialogWaiterVS {
 
 
                                             try {
-                                            LeaderBoardHolder leaderBoardHolder = snapshot.getValue(LeaderBoardHolder.class);
+                                                leaderBoardHolder = snapshot.getValue(LeaderBoardHolder.class);
 
-                                            String crashTester=leaderBoardHolder.getImageUrl();
 
 
                                             OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter = new OneVSOneOpponentDataSetter(leaderBoardHolder, oppoImage, oppoName, highestScore, totalTime, oppoRatio, oppoAccu, shimmerOppo, context, mainlinearLayout, oppoBatchCardView, oppoBatch, oppoLevelText);
@@ -240,9 +265,12 @@ public class DialogWaiterVS {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         FirstTime firstTime = snapshot.getValue(FirstTime.class);
-                                                        LeaderBoardHolder leaderBoardHolder = new LeaderBoardHolder(firstTime.getUserName(), 0, 0, 0, 0, firstTime.getImageURL(), 0);
+                                                        leaderBoardHolder = new LeaderBoardHolder(firstTime.getUserName(), 0, 0, 0, 0, firstTime.getImageURL(), 0);
                                                         OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter = new OneVSOneOpponentDataSetter(leaderBoardHolder, oppoImage, oppoName, highestScore, totalTime, oppoRatio, oppoAccu, shimmerOppo, context, mainlinearLayout, oppoBatchCardView, oppoBatch, oppoLevelText);
                                                         oneVSOneOpponentDataSetter.start();
+
+
+
                                                     }
 
                                                     @Override
@@ -261,6 +289,10 @@ public class DialogWaiterVS {
 
                                         }
                                     });
+
+
+                                ConnectionStatus connectionStatus=new ConnectionStatus();
+                                connectionStatus.myStatusSetter();
 
 
 
@@ -283,6 +315,18 @@ public class DialogWaiterVS {
 
                                 cancelButton.setTextSize(10f);
 
+
+                                table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+
+                                cancelButton.setEnabled(false);
+
+                                table_user.child("VS_ARENA").child(mAuth.getCurrentUser().getUid()).removeValue();
+
                                 countDownTimerIntent = new CountDownTimer(1000 * 10, 1000) {
                                     @Override
                                     public void onTick(long l) {
@@ -296,7 +340,10 @@ public class DialogWaiterVS {
                                                 Intent intent = new Intent(context, VsNormalQuiz.class);
                                                 intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
                                                 intent.putExtra("playerNum",1);
+                                                intent.putExtra("oppoImgStr",leaderBoardHolder.getImageUrl());
+                                                intent.putExtra("oppoName",leaderBoardHolder.getUsername());
                                                 intent.putExtra("oppoUID",Player2UID);
+                                                intent.putExtra("mode",quizMode);
                                                 context.startActivity(intent);
                                                 ((Activity) context).finish();
                                                 break;
@@ -304,7 +351,10 @@ public class DialogWaiterVS {
                                                 Intent intent1 = new Intent(context, VsPictureQuiz.class);
                                                 intent1.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
                                                 intent1.putExtra("playerNum",1);
+                                                intent1.putExtra("oppoImgStr",leaderBoardHolder.getImageUrl());
+                                                intent1.putExtra("oppoName",leaderBoardHolder.getUsername());
                                                 intent1.putExtra("oppoUID",Player2UID);
+                                                intent1.putExtra("mode",quizMode);
                                                 context.startActivity(intent1);
                                                 ((Activity) context).finish();
                                                 break;
@@ -312,7 +362,10 @@ public class DialogWaiterVS {
                                                 Intent intent2 = new Intent(context, VsAudioQuiz.class);
                                                 intent2.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
                                                 intent2.putExtra("playerNum",1);
+                                                intent2.putExtra("oppoImgStr",leaderBoardHolder.getImageUrl());
+                                                intent2.putExtra("oppoName",leaderBoardHolder.getUsername());
                                                 intent2.putExtra("oppoUID",Player2UID);
+                                                intent2.putExtra("mode",quizMode);
                                                 context.startActivity(intent2);
                                                 ((Activity) context).finish();
                                                 break;
@@ -320,7 +373,10 @@ public class DialogWaiterVS {
                                                 Intent intent3 = new Intent(context, VsVideoQuiz.class);
                                                 intent3.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
                                                 intent3.putExtra("playerNum",1);
+                                                intent3.putExtra("oppoImgStr",leaderBoardHolder.getImageUrl());
+                                                intent3.putExtra("oppoName",leaderBoardHolder.getUsername());
                                                 intent3.putExtra("oppoUID",Player2UID);
+                                                intent3.putExtra("mode",quizMode);
                                                 context.startActivity(intent3);
                                                 ((Activity) context).finish();
                                                 break;
@@ -333,9 +389,7 @@ public class DialogWaiterVS {
                                 e.printStackTrace();
                             }
 
-                        }else{
-                            incrementer=1;
-                        }
+
                     }
 
                     @Override
@@ -347,6 +401,10 @@ public class DialogWaiterVS {
             }
         });
     }
+
+
+
+
 
     public void normalQuizNumberUploader(ArrayList<Integer> listAns){
         Random random=new Random();

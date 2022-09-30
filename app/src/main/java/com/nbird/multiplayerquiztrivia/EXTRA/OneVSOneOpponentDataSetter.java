@@ -55,7 +55,7 @@ public class OneVSOneOpponentDataSetter {
         oppoRatio.setText("Correct/Wrong : "+leaderBoardHolder.getCorrect()+"/"+leaderBoardHolder.getWrong());
 
         try{
-            int accuStr=(leaderBoardHolder.getCorrect()/(leaderBoardHolder.getCorrect()+leaderBoardHolder.getWrong()))*100;
+            int accuStr=(leaderBoardHolder.getCorrect()*100)/(leaderBoardHolder.getCorrect()+leaderBoardHolder.getWrong());
             oppoAccu.setText("Accuracy : "+String.valueOf(accuStr)+"%");
         }catch (Exception e){
             oppoAccu.setText("Accuracy : "+"0%");

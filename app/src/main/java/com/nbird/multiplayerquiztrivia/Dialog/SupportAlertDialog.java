@@ -55,13 +55,19 @@ public class SupportAlertDialog {
         this.context=context;
     }
 
+
     public void showLoadingDialog(){
 
         loadingDialog=new Dialog(context);
         loadingDialog.setContentView(R.layout.loading_screen);
         loadingDialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         loadingDialog.setCancelable(true);
-        loadingDialog.show();
+        try{
+            loadingDialog.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -69,10 +75,8 @@ public class SupportAlertDialog {
          try{
              loadingDialog.dismiss();
          }catch (Exception e){
-
+            e.printStackTrace();
          }
-
-
     }
 
 

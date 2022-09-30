@@ -220,10 +220,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .bitmapTransform(new RoundedCorners(18)))
                 .into(nav_image123);
 
+        try{
 
-        table_user.child("VS_PLAY").child("DataExchange").child(mAuth.getCurrentUser().getUid()).removeValue();
-        table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).removeValue();
-        table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
+            table_user.child("VS_REQUEST").child(mAuth.getCurrentUser().getUid()).removeValue();
+            table_user.child("VS_RESPONSE").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+            table_user.child("VS_PLAY").child("DataExchange").child(mAuth.getCurrentUser().getUid()).removeValue();
+            table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).removeValue();
+            table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
+            //   table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeValue();
+            table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).removeValue();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
     }
 
 

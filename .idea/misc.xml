@@ -3,14 +3,36 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/border_theme.xml" value="0.1925" />
+        <entry key="app/src/main/res/drawable/border_theme_2.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/loading_back.xml" value="0.1095" />
+        <entry key="app/src/main/res/layout/activity_normal_audio_quiz.xml" value="0.1721014492753623" />
         <entry key="app/src/main/res/layout/activity_normal_picture_quiz.xml" value="0.23641304347826086" />
+        <entry key="app/src/main/res/layout/activity_normal_single_quiz.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/activity_normal_video_quiz.xml" value="0.12664640324214793" />
+        <entry key="app/src/main/res/layout/activity_vs_audio_quiz.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/activity_vs_normal_quiz.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_vs_picture_quiz.xml" value="0.23641304347826086" />
-        <entry key="app/src/main/res/layout/dialog_result_vs.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_vs_video_quiz.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/dialog_audience_ll.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_category.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/dialog_expert_advice_ll.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_join_layout.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/dialog_model_1.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/dialog_model_2.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/dialog_online_local.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/dialog_profile_selection.xml" value="0.17346014492753623" />
+        <entry key="app/src/main/res/layout/dialog_result_single_player.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_result_vs.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/dialog_select_mode.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_sign_up.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/layout.xml" value="0.38958333333333334" />
         <entry key="app/src/main/res/layout/loading_screen.xml" value="0.12664640324214793" />
         <entry key="app/src/main/res/layout/quit_asker_layout.xml" value="0.165" />
         <entry key="app/src/main/res/layout/quiz_asker_layout.xml" value="0.1171875" />
+        <entry key="app/src/main/res/layout/waiting_vs_dialog.xml" value="0.33" />
       </map>
     </option>
   </component>

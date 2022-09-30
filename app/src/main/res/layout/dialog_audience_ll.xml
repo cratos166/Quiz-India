@@ -7,7 +7,8 @@
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:scaleX="0.85"
     android:scaleY="0.85"
-    android:background="@color/transparent"
+
+    android:background="@drawable/border_theme"
     android:id="@+id/layoutDialogContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
