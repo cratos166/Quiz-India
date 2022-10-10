@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nbird.multiplayerquiztrivia.Dialog.DialogOnlineLocal;
 import com.nbird.multiplayerquiztrivia.Dialog.DialogQuizMode;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.JoinCreateTournamentDialoge;
 
 import java.util.List;
 
@@ -63,6 +63,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         DialogQuizMode dialogQuizMode1 =new DialogQuizMode();
                         dialogQuizMode1.start(mContext,holder.cardView,1);
                        break;
+                    case 2:
+                        JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
+                        joinCreateTournamentDialoge.start(mContext,holder.cardView);
 
 
 
