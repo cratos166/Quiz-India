@@ -153,6 +153,7 @@ public class JoinCreateTournamentDialoge {
                 }
 
                 Intent intent=new Intent(context, LobbyActivity.class);
+                intent.putExtra("playerNum",1);
                 context.startActivity(intent);
                 ((Activity) context).finish();
 

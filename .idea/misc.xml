@@ -6,7 +6,8 @@
         <entry key="app/src/main/res/drawable/border_theme.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/border_theme_2.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/loading_back.xml" value="0.1095" />
-        <entry key="app/src/main/res/layout/activity_lobby.xml" value="0.2755208333333333" />
+        <entry key="app/src/main/res/drawable/single_color_3.xml" value="0.2535" />
+        <entry key="app/src/main/res/layout/activity_lobby.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2755208333333333" />
         <entry key="app/src/main/res/layout/activity_normal_audio_quiz.xml" value="0.1721014492753623" />
         <entry key="app/src/main/res/layout/activity_normal_picture_quiz.xml" value="0.23641304347826086" />
@@ -24,6 +25,7 @@
         <entry key="app/src/main/res/layout/dialog_audience_ll.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/dialog_category.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_expert_advice_ll.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_facts.xml" value="0.335" />
         <entry key="app/src/main/res/layout/dialog_join_layout.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_model_1.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/dialog_model_2.xml" value="0.4036458333333333" />
@@ -33,12 +35,14 @@
         <entry key="app/src/main/res/layout/dialog_result_vs.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_select_mode.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/dialog_sign_up.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_trouble_shoot.xml" value="0.259375" />
         <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.25" />
         <entry key="app/src/main/res/layout/header.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/layout.xml" value="0.38958333333333334" />
         <entry key="app/src/main/res/layout/leader_board_listview.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/loading_screen.xml" value="0.12664640324214793" />
+        <entry key="app/src/main/res/layout/lobby_detail_layout.xml" value="0.302536231884058" />
         <entry key="app/src/main/res/layout/one_vs_one_leaderboard.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/quit_asker_layout.xml" value="0.165" />
         <entry key="app/src/main/res/layout/quiz_asker_layout.xml" value="0.1171875" />
@@ -48,6 +52,8 @@
         <entry key="app/src/main/res/layout/tournament_join_create_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/waiting_vs_dialog.xml" value="0.33" />
         <entry key="app/src/main/res/menu/side_menu.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3045" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/icon.xml" value="0.3045" />
       </map>
     </option>
   </component>

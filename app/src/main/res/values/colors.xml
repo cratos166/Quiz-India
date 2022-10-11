@@ -27,6 +27,8 @@
 
     <color name="dark_back_4">#2E323C</color>
 
+    <color name="icon_back">#5583C8</color>
+
     <color name="layer_0">#6A7592</color>
     <color name="layer_1">#2A3551</color>
     <color name="layer_2">#252E4B</color>
