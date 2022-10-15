@@ -9,23 +9,25 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.FIREBASE.VS.RoomCodeGenerator;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
+import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
@@ -45,7 +47,7 @@ public class JoinCreateTournamentDialoge {
     public void start(Context context, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
-        View view1 = LayoutInflater.from(context).inflate(R.layout.tournament_join_create_dialog, (ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
+        View view1 = LayoutInflater.from(context).inflate(R.layout.dialog_tournament_join_create, (ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
         builder.setCancelable(true);
 
@@ -77,7 +79,8 @@ public class JoinCreateTournamentDialoge {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                JoinWithPasswordDialog joinWithPasswordDialog=new JoinWithPasswordDialog(context,joinButton);
+                joinWithPasswordDialog.start();
             }
         });
 
@@ -88,8 +91,10 @@ public class JoinCreateTournamentDialoge {
             }
         });
 
-
     }
+
+
+
 
 
 
@@ -145,22 +150,78 @@ public class JoinCreateTournamentDialoge {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                supportAlertDialog.dismissLoadingDialog();
-                try{
-                    alertDialog.dismiss();
-                }catch (Exception e){
 
-                }
+                table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                Intent intent=new Intent(context, LobbyActivity.class);
-                intent.putExtra("playerNum",1);
-                intent.putExtra("roomCode",String.valueOf(roomCodeInt));
-                context.startActivity(intent);
-                ((Activity) context).finish();
+                        try{
+                            LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
+
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    supportAlertDialog.dismissLoadingDialog();
+                                    try{
+                                        alertDialog.dismiss();
+                                    }catch (Exception e){
+
+                                    }
+
+                                    Intent intent=new Intent(context, LobbyActivity.class);
+                                    intent.putExtra("playerNum",1);
+                                    intent.putExtra("roomCode",String.valueOf(roomCodeInt));
+                                    context.startActivity(intent);
+                                    ((Activity) context).finish();
+                                }
+                            });
+
+                        }catch (Exception e){
+                            String name=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context);
+                            String imageURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context);
+                            LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(name,0,0,0,0,imageURL,0);
+
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    supportAlertDialog.dismissLoadingDialog();
+                                    try{
+                                        alertDialog.dismiss();
+                                    }catch (Exception e){
+
+                                    }
+
+                                    Intent intent=new Intent(context, LobbyActivity.class);
+                                    intent.putExtra("playerNum",1);
+                                    intent.putExtra("roomCode",String.valueOf(roomCodeInt));
+                                    context.startActivity(intent);
+                                    ((Activity) context).finish();
+                                }
+                            });
+
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+
+
+
+
+
 
 
             }
         });
+
 
 
     }

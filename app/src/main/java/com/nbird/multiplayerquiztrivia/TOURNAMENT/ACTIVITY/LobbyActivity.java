@@ -32,6 +32,7 @@ import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.PrivacyDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.SettingDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.TroubleShootDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.SERVER.DataSetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +102,10 @@ public class LobbyActivity extends AppCompatActivity {
         recyclerview.setAdapter(myAdapter);
 
 
-        myDataSetter();
+     //   playerDataSetter();
+        DataSetter dataSetter=new DataSetter();
+        dataSetter.getPlayerData(roomCode,playerDataArrayList,myAdapter);
+
 
 
         SettingDialog settingDialog=new SettingDialog(LobbyActivity.this,roomCode);
@@ -236,50 +240,6 @@ public class LobbyActivity extends AppCompatActivity {
             }
         };
         table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").addValueEventListener(modeListener);
-
-    }
-
-
-
-
-    private void myDataSetter(){
-
-        table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
-                    LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
-
-                    float acc=((leaderBoardHolder.getCorrect()*100)/leaderBoardHolder.getWrong());
-
-                    int min=leaderBoardHolder.getTotalTime()/60;
-                    int sec=leaderBoardHolder.getTotalTime()%60;
-
-                    String totalTime=min+" min "+sec+" sec";
-                    String accStr=acc+"%";
-                    String highestScore=String.valueOf(leaderBoardHolder.getScore());
-                    playerDataArrayList.add(new Details(leaderBoardHolder.getImageUrl(),leaderBoardHolder.getUsername(),totalTime,accStr,highestScore));
-
-                    myAdapter.notifyDataSetChanged();
-
-                }catch (Exception e){
-                    String myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, LobbyActivity.this);
-                    String myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, LobbyActivity.this);
-                    String totalTime="0 min 0 sec";
-                    String accStr="0%";
-                    String highestScore="0";
-                    playerDataArrayList.add(new Details(myPicURL,myName,totalTime,accStr,highestScore));
-                    myAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
 
     }
 
