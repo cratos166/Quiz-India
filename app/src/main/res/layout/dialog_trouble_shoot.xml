@@ -1,8 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/cardview_id"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:scaleX="0.7"
+    android:scaleY="0.7"
+    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="2dp"
+    android:background="@drawable/border_theme"
+    android:layout_marginBottom="5dp"
+    app:ignore="NamespaceTypo">
 
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/slideViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/nextButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        shimmer:layout_constraintBottom_toTopOf="@+id/dotLayout"
+        shimmer:layout_constraintEnd_toEndOf="parent"
+        shimmer:layout_constraintStart_toStartOf="parent"
+        shimmer:layout_constraintTop_toTopOf="parent">
+
+
+    </androidx.viewpager.widget.ViewPager>
+
+
+    <LinearLayout
+        android:id="@+id/dotLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nextButton"
+        app:layout_constraintStart_toEndOf="@+id/previousButton"
+        app:layout_constraintTop_toBottomOf="@+id/slideViewPager"
+        shimmer:layout_constraintBottom_toBottomOf="parent"
+        shimmer:layout_constraintEnd_toStartOf="@+id/nextButton"
+        shimmer:layout_constraintStart_toEndOf="@+id/previousButton">
+
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/previousButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:outlineAmbientShadowColor="@color/level_0"
+        android:scaleX="0.95"
+        android:scaleY="0.95"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slideViewPager"
+        cardview:cardCornerRadius="27dp"
+        shimmer:layout_constraintBottom_toBottomOf="@+id/nextButton"
+        shimmer:layout_constraintStart_toStartOf="parent"
+        shimmer:layout_constraintTop_toTopOf="@+id/nextButton">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_button"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/arrow_back"
+                android:scaleX="0.6"
+                android:scaleY="0.6" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/nextButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:foreground="?selectableItemBackground"
+        android:outlineAmbientShadowColor="@color/level_0"
+        android:scaleX="0.95"
+        android:scaleY="0.95"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        cardview:cardCornerRadius="27dp"
+        shimmer:layout_constraintBottom_toBottomOf="@+id/dotLayout"
+        shimmer:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_button"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/next_done_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/arrow_forward"
+                android:scaleX="0.6"
+                android:scaleY="0.6" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 
 

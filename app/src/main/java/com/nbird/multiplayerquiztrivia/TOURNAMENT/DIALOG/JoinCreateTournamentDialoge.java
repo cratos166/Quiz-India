@@ -134,14 +134,14 @@ public class JoinCreateTournamentDialoge {
          */
 
 
-        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,2,myPicURL,roomCodeInt,1,1,1,true);
+        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true);
 
         Dialog dialog = null;
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
         supportAlertDialog.showLoadingDialog();
 
 
-        table_user.child("TOURNAMENT").child("ROOM").child(mAuth.getCurrentUser().getUid()).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
+        table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -154,6 +154,7 @@ public class JoinCreateTournamentDialoge {
 
                 Intent intent=new Intent(context, LobbyActivity.class);
                 intent.putExtra("playerNum",1);
+                intent.putExtra("roomCode",String.valueOf(roomCodeInt));
                 context.startActivity(intent);
                 ((Activity) context).finish();
 

@@ -5,12 +5,12 @@ public class Room {
     private String hostUID;
     private String hostName;
     private int gameMode;
-    private String hostImageURL;
-    private int roomCode,numberOfPlayers,time,numberOfQuestions;
+    private String hostImageURL,roomCode;
+    private int numberOfPlayers,time,numberOfQuestions;
     private boolean privacy;
 
 
-    public Room(String hostUID, String hostName, int gameMode, String hostImageURL, int roomCode, int numberOfPlayers, int time, int numberOfQuestions, boolean privacy) {
+    public Room(String hostUID, String hostName, int gameMode, String hostImageURL, String roomCode, int numberOfPlayers, int time, int numberOfQuestions, boolean privacy) {
         this.hostUID = hostUID;
         this.hostName = hostName;
         this.gameMode = gameMode;
@@ -58,11 +58,11 @@ public class Room {
         this.hostImageURL = hostImageURL;
     }
 
-    public int getRoomCode() {
+    public String getRoomCode() {
         return roomCode;
     }
 
-    public void setRoomCode(int roomCode) {
+    public void setRoomCode(String roomCode) {
         this.roomCode = roomCode;
     }
 

@@ -11,7 +11,7 @@ public class RoomCodeGenerator {
 
     public int start(){
         Random random=new Random();
-        int int_random = random.nextInt(98000)+1000;
+        int int_random = random.nextInt(980000000)+10000000;
         return int_random;
     }
 
