@@ -119,6 +119,12 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
 
                 String roomCode1=mData.get(position).getRoomCode();
 
+
+                Dialog dialog=null;
+                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,mContext);
+                supportAlertDialog.showLoadingDialog();
+
+
                 table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("active").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -140,7 +146,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
 
-                                                        joiner(position);
+                                                        joiner(position,supportAlertDialog);
 
                                                     }
                                                 });
@@ -186,10 +192,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
     }
 
 
-    private void joiner(int position){
-        Dialog dialog=null;
-        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,mContext);
-        supportAlertDialog.showLoadingDialog();
+    private void joiner(int position, SupportAlertDialog supportAlertDialog){
 
 
         ConnectionStatus connectionStatus=new ConnectionStatus();

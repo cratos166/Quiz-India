@@ -83,4 +83,35 @@ public class ConnectionStatus {
     }
 
 
+
+    public void tournamentMAINS_STATUS(String roomCode){
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+
+
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    });
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").onDisconnect().setValue(false);
+                }
+                else {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
 }

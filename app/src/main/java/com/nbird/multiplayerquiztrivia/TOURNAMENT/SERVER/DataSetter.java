@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDataAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
 
 import java.util.ArrayList;
 
@@ -38,16 +39,27 @@ public class DataSetter {
 
 
                     try{
-                        LeaderBoardHolder leaderBoardHolder=dataSnapshot.getValue(LeaderBoardHolder.class);
-                        float acc=((leaderBoardHolder.getCorrect()*100)/leaderBoardHolder.getWrong());
 
-                        int min=leaderBoardHolder.getTotalTime()/60;
-                        int sec=leaderBoardHolder.getTotalTime()%60;
 
-                        String totalTime=min+" min "+sec+" sec";
-                        String accStr=acc+"%";
-                        String highestScore=String.valueOf(leaderBoardHolder.getScore());
-                        playerDataArrayList.add(new Details(leaderBoardHolder.getImageUrl(),leaderBoardHolder.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
+
+                        PlayerInfo playerInfo=dataSnapshot.getValue(PlayerInfo.class);
+
+
+                        if(playerInfo.isActive()){
+                            float acc=((playerInfo.getCorrect()*100)/playerInfo.getWrong());
+
+                            int min=playerInfo.getTotalTime()/60;
+                            int sec=playerInfo.getTotalTime()%60;
+
+                            String totalTime=min+" min "+sec+" sec";
+                            String accStr=acc+"%";
+                            String highestScore=String.valueOf(playerInfo.getScore());
+                            playerDataArrayList.add(new Details(playerInfo.getImageUrl(),playerInfo.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
+
+                        }else{
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(dataSnapshot.getKey()).removeValue();
+                        }
+
 
 
                     }catch (Exception e){
@@ -66,7 +78,7 @@ public class DataSetter {
 
             }
         };
-        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).orderByChild("active").equalTo(true).addValueEventListener(valueEventListener);
+        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).addValueEventListener(valueEventListener);
 
 
 

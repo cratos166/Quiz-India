@@ -9,8 +9,9 @@ public class Room {
     private int numberOfPlayers,time,numberOfQuestions;
     private boolean privacy;
     private boolean isActive;
+    private boolean hostActive;
 
-    public Room(String hostUID, String hostName, int gameMode, String hostImageURL, String roomCode, int numberOfPlayers, int time, int numberOfQuestions, boolean privacy, boolean isActive) {
+    public Room(String hostUID, String hostName, int gameMode, String hostImageURL, String roomCode, int numberOfPlayers, int time, int numberOfQuestions, boolean privacy, boolean isActive,boolean hostActive) {
         this.hostUID = hostUID;
         this.hostName = hostName;
         this.gameMode = gameMode;
@@ -21,11 +22,21 @@ public class Room {
         this.numberOfQuestions = numberOfQuestions;
         this.privacy = privacy;
         this.isActive = isActive;
+        this.hostActive=hostActive;
     }
 
 
 
     public Room() {
+    }
+
+
+    public boolean isHostActive() {
+        return hostActive;
+    }
+
+    public void setHostActive(boolean hostActive) {
+        this.hostActive = hostActive;
     }
 
     public boolean isActive() {

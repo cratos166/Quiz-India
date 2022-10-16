@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +39,7 @@ import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.SettingDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.TroubleShootDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.SERVER.DataSetter;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.SERVER.HostTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +73,7 @@ public class LobbyActivity extends AppCompatActivity {
     Boolean privacy=true;
 
 
-    ValueEventListener valueEventListener,chatEventListener;
+    ValueEventListener valueEventListener,chatEventListener,hostEventListener;
     Button startButton;
 
     String myName,myPicStr;
@@ -147,8 +149,11 @@ public class LobbyActivity extends AppCompatActivity {
             removePlayerButton.setVisibility(View.GONE);
 
 
+            HostTracker hostTracker=new HostTracker(hostEventListener,LobbyActivity.this,roomCode);
+            hostTracker.start();
+
         }else{
-            appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.ROOM_CODE_TOURNAMENT, LobbyActivity.this, roomCode);
+//            appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.ROOM_CODE_TOURNAMENT, LobbyActivity.this, roomCode);
         }
 
 

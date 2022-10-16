@@ -136,8 +136,22 @@ public class JoinCreateTournamentDialoge {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    Room room=dataSnapshot.getValue(Room.class);
-                    list.add(room);
+                    try{
+                        Room room=dataSnapshot.getValue(Room.class);
+
+                        if(room.isHostActive()){
+                            list.add(room);
+                        }else{
+                            table_user.child("TOURNAMENT").child("ROOM").child(dataSnapshot.getKey()).removeValue();
+                            table_user.child("TOURNAMENT").child("CHAT").child(dataSnapshot.getKey()).removeValue();
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(dataSnapshot.getKey()).removeValue();
+                        }
+
+
+                    }catch (Exception e){
+
+                    }
+
                 }
                 categoryAdapter.notifyDataSetChanged();
 
@@ -173,9 +187,6 @@ public class JoinCreateTournamentDialoge {
         MODE 4 : PICTURE BUZZER
          */
 
-
-
-
         RoomCodeGenerator roomCodeGenerator=new RoomCodeGenerator();
         int roomCodeInt=roomCodeGenerator.start();
 
@@ -201,7 +212,7 @@ public class JoinCreateTournamentDialoge {
          */
 
 
-        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,true);
+        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,true,true);
 
         Dialog dialog = null;
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
@@ -210,7 +221,7 @@ public class JoinCreateTournamentDialoge {
 
         ConnectionStatus connectionStatus=new ConnectionStatus();
 //        connectionStatus.myStatusSetter();
-        table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).removeValue();
+      //  table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).removeValue();
         table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -226,7 +237,7 @@ public class JoinCreateTournamentDialoge {
                             PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true);
 
 
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).removeValue();
+                    //        table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).removeValue();
                             table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -239,7 +250,7 @@ public class JoinCreateTournamentDialoge {
 
 
                                     connectionStatus.tournamentStatusSetter(String.valueOf(roomCodeInt));
-
+                                    connectionStatus.tournamentMAINS_STATUS(String.valueOf(roomCodeInt));
 
                                     Intent intent=new Intent(context, LobbyActivity.class);
                                     intent.putExtra("playerNum",1);
@@ -269,6 +280,7 @@ public class JoinCreateTournamentDialoge {
                                     }
 
                                     connectionStatus.tournamentStatusSetter(String.valueOf(roomCodeInt));
+                                    connectionStatus.tournamentMAINS_STATUS(String.valueOf(roomCodeInt));
 
                                     Intent intent=new Intent(context, LobbyActivity.class);
                                     intent.putExtra("playerNum",1);
