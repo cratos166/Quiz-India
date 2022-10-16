@@ -5,6 +5,9 @@
       <map>
         <entry key="app/src/main/res/drawable/border_theme.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/border_theme_2.xml" value="0.1925" />
+        <entry key="app/src/main/res/drawable/cancel_icon.xml" value="0.28" />
+        <entry key="app/src/main/res/drawable/chat_asset.xml" value="0.4" />
+        <entry key="app/src/main/res/drawable/custom_progressbar.xml" value="0.28" />
         <entry key="app/src/main/res/drawable/done_button.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/double_color_1.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/double_color_2.xml" value="0.284" />
@@ -35,6 +38,7 @@
         <entry key="app/src/main/res/layout/asset_ava.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/asset_mainmenuhorizontalslide.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/cardviewmainmenu.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/chat_item.xml" value="0.5661458333333333" />
         <entry key="app/src/main/res/layout/data_placeholder_layout.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/dialog_anim_text_button.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/layout/dialog_audience_ll.xml" value="0.21822916666666667" />
@@ -53,6 +57,7 @@
         <entry key="app/src/main/res/layout/dialog_select_mode.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/dialog_setting.xml" value="0.5434782608695652" />
         <entry key="app/src/main/res/layout/dialog_sign_up.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_tournament_join_create.xml" value="0.12664640324214793" />
         <entry key="app/src/main/res/layout/dialog_trouble_shoot.xml" value="0.31849365234375004" />
         <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.25" />
@@ -68,6 +73,9 @@
         <entry key="app/src/main/res/layout/shimmer_red.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/slidelayout.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/tournament_join_create_dialog.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/tournament_joining_listview.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/layout/tournament_remove_player_item.xml" value="0.27447916666666666" />
+        <entry key="app/src/main/res/layout/tournament_remove_player_layout.xml" value="0.2755208333333333" />
         <entry key="app/src/main/res/layout/troubleshootitem.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/layout/waiting_vs_dialog.xml" value="0.33" />
         <entry key="app/src/main/res/menu/side_menu.xml" value="0.4036458333333333" />

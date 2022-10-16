@@ -518,31 +518,52 @@
                 android:layout_marginLeft="10dp"
                 android:fontFamily="@font/ubuntu"
                 android:text="Room Code : 452309"
+                android:layout_gravity="center"
                 android:textSize="10dp"
                 android:textColor="@color/white"
                 />
 
 
             <Button
-                android:id="@+id/startButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/shareButton"
+                android:layout_width="60dp"
+                android:layout_height="25dp"
                 android:clickable="true"
-                android:scaleX="0.6"
-                android:scaleY="0.6"
                 android:layout_gravity="center"
                 android:background="@drawable/next_button"
                 android:fontFamily="@font/ubuntu"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:text="Share"
+                android:layout_margin="5dp"
                 android:textColor="#000000"
-                android:textSize="15dp"
+                android:textSize="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center"
+                android:background="@drawable/border"/>
 
+            <TextView
+                android:id="@+id/hostName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/ubuntu"
+                android:text="Host : KAAL"
+                android:layout_gravity="center"
+                android:textSize="10dp"
+                android:textColor="@color/text_head"
+                />
 
 
         </LinearLayout>
@@ -563,6 +584,7 @@
         android:gravity="center"
         android:scaleX="0.7"
         android:scaleY="0.7"
+        android:padding="5dp"
         android:text="START"
         android:textColor="@color/dark_back_4"
         android:textSize="20dp"

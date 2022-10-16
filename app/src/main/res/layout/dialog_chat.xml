@@ -7,6 +7,8 @@
     android:foreground="?selectableItemBackground"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     cardview:cardCornerRadius="5dp"
+    android:scaleY="0.8"
+    android:scaleX="0.8"
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="5dp">
@@ -42,8 +44,8 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_margin="5dp"
-                    android:scaleY="1.5"
-                    android:scaleX="1.5"
+                    android:scaleY="1"
+                    android:scaleX="1"
                     android:layout_gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="15dp"
                         android:textColor="@color/text_head"
-                        android:fontFamily="@font"
+                        android:fontFamily="@font/ubuntu"
                         android:layout_margin="10dp"
                         android:textAlignment="center"
                         android:text="Discuss About The Game."/>
@@ -99,6 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_margin="5dp"
+                    android:padding="2dp"
                     android:background="@drawable/single_color_3"
                     android:layout_marginTop="10dp"
                     android:scrollbars="horizontal"
@@ -129,7 +132,7 @@
                         android:layout_marginLeft="20dp"
                         android:fontFamily="@font/ubuntu"
                         android:textColorHint="@color/text_head"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/text_head"/>
 
 
 

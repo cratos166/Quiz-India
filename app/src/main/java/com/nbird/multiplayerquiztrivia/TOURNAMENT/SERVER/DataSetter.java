@@ -25,10 +25,15 @@ public class DataSetter {
     public DataSetter() {
     }
 
-    public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter){
-        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter, ValueEventListener valueEventListener){
+
+
+        valueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                playerDataArrayList.clear();
+
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                     LeaderBoardHolder leaderBoardHolder=dataSnapshot.getValue(LeaderBoardHolder.class);
                     float acc=((leaderBoardHolder.getCorrect()*100)/leaderBoardHolder.getWrong());
@@ -39,7 +44,7 @@ public class DataSetter {
                     String totalTime=min+" min "+sec+" sec";
                     String accStr=acc+"%";
                     String highestScore=String.valueOf(leaderBoardHolder.getScore());
-                    playerDataArrayList.add(new Details(leaderBoardHolder.getImageUrl(),leaderBoardHolder.getUsername(),totalTime,accStr,highestScore));
+                    playerDataArrayList.add(new Details(leaderBoardHolder.getImageUrl(),leaderBoardHolder.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
 
                     myAdapter.notifyDataSetChanged();
                 }
@@ -49,7 +54,11 @@ public class DataSetter {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).addValueEventListener(valueEventListener);
+
+
+
     }
 
 }

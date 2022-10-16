@@ -9,10 +9,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,13 +28,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.FIREBASE.ConnectionStatus;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.RecyclerViewLeaderBoardAdapter;
 import com.nbird.multiplayerquiztrivia.FIREBASE.VS.RoomCodeGenerator;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.RoomListAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Room;
+
+import java.util.ArrayList;
 
 public class JoinCreateTournamentDialoge {
 
@@ -42,7 +50,9 @@ public class JoinCreateTournamentDialoge {
 
     ShimmerFrameLayout shimmer;
     AppData appData;
-
+    RecyclerView recyclerView;
+    ArrayList<Room> list;
+    RoomListAdapter categoryAdapter;
 
     public void start(Context context, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
@@ -56,10 +66,24 @@ public class JoinCreateTournamentDialoge {
         Button joinButton = (Button) view1.findViewById(R.id.joinPrivateRoom);
 
         shimmer=view1.findViewById(R.id.shimmer);
+        recyclerView=view1.findViewById(R.id.recyclerView);
 
         shimmer.startShimmerAnimation();
 
         appData=new AppData();
+
+
+        list=new ArrayList<>();
+
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(recyclerView.VERTICAL);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        categoryAdapter = new RoomListAdapter(context,list);
+        recyclerView.setAdapter(categoryAdapter);
 
 
 
@@ -73,7 +97,7 @@ public class JoinCreateTournamentDialoge {
 
         }
 
-
+        displayDataOnRecyclerView(context);
 
 
         joinButton.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +117,30 @@ public class JoinCreateTournamentDialoge {
 
     }
 
+    private void displayDataOnRecyclerView(Context context){
+        table_user.child("TOURNAMENT").child("ROOM").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    Room room=dataSnapshot.getValue(Room.class);
+                    list.add(room);
+                }
+                categoryAdapter.notifyDataSetChanged();
+
+                shimmer.stopShimmerAnimation();
+                shimmer.setVisibility(View.GONE);
+
+                if(list.size()==0){
+                    Toast.makeText(context, "No Rooms Available! Please Create one.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
 
 
@@ -139,12 +187,15 @@ public class JoinCreateTournamentDialoge {
          */
 
 
-        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true);
+        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,true);
 
         Dialog dialog = null;
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
         supportAlertDialog.showLoadingDialog();
 
+
+        ConnectionStatus connectionStatus=new ConnectionStatus();
+        connectionStatus.myStatusSetter();
 
         table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -158,6 +209,9 @@ public class JoinCreateTournamentDialoge {
                         try{
                             LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
 
+
+
+
                             table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -168,9 +222,13 @@ public class JoinCreateTournamentDialoge {
 
                                     }
 
+
+
+
                                     Intent intent=new Intent(context, LobbyActivity.class);
                                     intent.putExtra("playerNum",1);
                                     intent.putExtra("roomCode",String.valueOf(roomCodeInt));
+                                    intent.putExtra("hostName",myName);
                                     context.startActivity(intent);
                                     ((Activity) context).finish();
                                 }
@@ -194,6 +252,7 @@ public class JoinCreateTournamentDialoge {
                                     Intent intent=new Intent(context, LobbyActivity.class);
                                     intent.putExtra("playerNum",1);
                                     intent.putExtra("roomCode",String.valueOf(roomCodeInt));
+                                    intent.putExtra("hostName",myName);
                                     context.startActivity(intent);
                                     ((Activity) context).finish();
                                 }
