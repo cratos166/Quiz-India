@@ -34,6 +34,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Room;
 
 public class JoinWithPasswordDialog {
@@ -79,12 +80,13 @@ public class JoinWithPasswordDialog {
             @Override
             public void onClick(View view) {
 
-                String roomCode=codeEditText.getText().toString();
+                String roomCode=codeEditText.getText().toString().trim();
+                Log.i("roomcode",roomCode);
 
                 if(roomCode.equals("")){
                     codeEditText.setError("Fields Cannot Be Empty");
                 }else{
-                    joiner(roomCode,codeEditText);
+                    joiner(roomCode,codeEditText,alertDialog);
                 }
 
 
@@ -95,19 +97,10 @@ public class JoinWithPasswordDialog {
     }
 
 
-    private void joiner(String roomCode,EditText codeEditText){ 
+    private void joiner(String roomCode,EditText codeEditText,AlertDialog alertDialog){
         Dialog loadingDialog = null;
         SupportAlertDialog supportAlertDialog = new SupportAlertDialog(loadingDialog,context);
         supportAlertDialog.showLoadingDialog();
-
-
-        ConnectionStatus connectionStatus=new ConnectionStatus();
-        connectionStatus.myStatusSetter();
-
-
-
-
-
 
 
 
@@ -118,9 +111,12 @@ public class JoinWithPasswordDialog {
                     Room room=snapshot.getValue(Room.class);
 
 
+
                     String hostUID=room.getHostUID();
                     Log.i("Host UID",hostUID);
 
+                    ConnectionStatus connectionStatus=new ConnectionStatus();
+//                    connectionStatus.myStatusSetter();
 
 
                     if(room.getNumberOfPlayers()<AppString.TOURNAMENT_MAX_PLAYERS){
@@ -141,12 +137,27 @@ public class JoinWithPasswordDialog {
                                         try{
                                             LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
 
-                                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(room.getRoomCode())).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+
+
+                                            PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true);
+
+                                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(room.getRoomCode())).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    supportAlertDialog.dismissLoadingDialog();
+
+
+                                                    connectionStatus.tournamentStatusSetter(roomCode);
+
+
                                                     try{
                                                         supportAlertDialog.dismissLoadingDialog();
+                                                    }catch (Exception e){
+
+                                                    }
+
+                                                    try{
+                                                        alertDialog.dismiss();
                                                     }catch (Exception e){
 
                                                     }
@@ -168,12 +179,19 @@ public class JoinWithPasswordDialog {
                                             table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(room.getRoomCode())).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
-                                                    supportAlertDialog.dismissLoadingDialog();
                                                     try{
                                                         supportAlertDialog.dismissLoadingDialog();
                                                     }catch (Exception e){
 
                                                     }
+
+                                                    try{
+                                                        alertDialog.dismiss();
+                                                    }catch (Exception e){
+
+                                                    }
+
+                                                    connectionStatus.tournamentStatusSetter(roomCode);
 
                                                     Intent intent=new Intent(context, LobbyActivity.class);
                                                     intent.putExtra("playerNum",2);
@@ -213,6 +231,7 @@ public class JoinWithPasswordDialog {
 
 
                 }catch (Exception e){
+                    e.printStackTrace();
                     supportAlertDialog.dismissLoadingDialog();
                     Log.i("error","error");
                     codeEditText.setError("No room available with this room code.");

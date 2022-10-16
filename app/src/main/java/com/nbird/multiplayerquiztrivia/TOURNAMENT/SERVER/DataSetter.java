@@ -35,19 +35,30 @@ public class DataSetter {
                 playerDataArrayList.clear();
 
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    LeaderBoardHolder leaderBoardHolder=dataSnapshot.getValue(LeaderBoardHolder.class);
-                    float acc=((leaderBoardHolder.getCorrect()*100)/leaderBoardHolder.getWrong());
 
-                    int min=leaderBoardHolder.getTotalTime()/60;
-                    int sec=leaderBoardHolder.getTotalTime()%60;
 
-                    String totalTime=min+" min "+sec+" sec";
-                    String accStr=acc+"%";
-                    String highestScore=String.valueOf(leaderBoardHolder.getScore());
-                    playerDataArrayList.add(new Details(leaderBoardHolder.getImageUrl(),leaderBoardHolder.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
+                    try{
+                        LeaderBoardHolder leaderBoardHolder=dataSnapshot.getValue(LeaderBoardHolder.class);
+                        float acc=((leaderBoardHolder.getCorrect()*100)/leaderBoardHolder.getWrong());
 
-                    myAdapter.notifyDataSetChanged();
+                        int min=leaderBoardHolder.getTotalTime()/60;
+                        int sec=leaderBoardHolder.getTotalTime()%60;
+
+                        String totalTime=min+" min "+sec+" sec";
+                        String accStr=acc+"%";
+                        String highestScore=String.valueOf(leaderBoardHolder.getScore());
+                        playerDataArrayList.add(new Details(leaderBoardHolder.getImageUrl(),leaderBoardHolder.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
+
+
+                    }catch (Exception e){
+
+                    }
+
                 }
+
+
+                myAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -55,7 +66,7 @@ public class DataSetter {
 
             }
         };
-        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).addValueEventListener(valueEventListener);
+        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).orderByChild("active").equalTo(true).addValueEventListener(valueEventListener);
 
 
 

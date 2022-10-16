@@ -65,7 +65,7 @@ public class LobbyActivity extends AppCompatActivity {
 
     String roomCode,hostNameStr;
 
-    TextView privacyTextView,questionTextView,timeTextView,modeTextView,hostName;
+    TextView privacyTextView,questionTextView,timeTextView,modeTextView,hostName,roomCodeTextView;
 
     int numberofQuestion=1,gameMode=1,timeInt=1;
     Boolean privacy=true;
@@ -105,13 +105,17 @@ public class LobbyActivity extends AppCompatActivity {
         privacyButton=(CardView) findViewById(R.id.cardchat) ;
         startButton=(Button) findViewById(R.id.startButton);
 
+        roomCodeTextView=(TextView) findViewById(R.id.roomCodeTextView);
+
+
+
 
 
         myPlayerNum=getIntent().getIntExtra("playerNum",1);
         roomCode=getIntent().getStringExtra("roomCode");
         hostNameStr=getIntent().getStringExtra("hostName");
 
-
+        roomCodeTextView.setText("Room Code : "+roomCode);
 
         playerDataArrayList=new ArrayList<>();
 
@@ -143,11 +147,8 @@ public class LobbyActivity extends AppCompatActivity {
             removePlayerButton.setVisibility(View.GONE);
 
 
-
-
-
         }else{
-
+            appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.ROOM_CODE_TOURNAMENT, LobbyActivity.this, roomCode);
         }
 
 

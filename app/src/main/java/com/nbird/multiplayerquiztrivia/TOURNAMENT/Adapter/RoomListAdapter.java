@@ -36,6 +36,7 @@ import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Room;
 
 import java.util.List;
@@ -192,7 +193,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
 
 
         ConnectionStatus connectionStatus=new ConnectionStatus();
-        connectionStatus.myStatusSetter();
+      //  connectionStatus.myStatusSetter();
 
         table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -201,7 +202,10 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                 try{
                     LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
 
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true);
+
+
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             try{
@@ -209,6 +213,10 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                             }catch (Exception e){
 
                             }
+
+
+                            connectionStatus.tournamentStatusSetter(mData.get(position).getRoomCode());
+
 
                             Intent intent=new Intent(mContext, LobbyActivity.class);
                             intent.putExtra("playerNum",2);
@@ -227,7 +235,11 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                     String imageURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,mContext);
                     LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(name,0,0,0,0,imageURL,0);
 
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(leaderBoardHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true);
+
+
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             try{
@@ -235,6 +247,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                             }catch (Exception e){
 
                             }
+
+
+                            connectionStatus.tournamentStatusSetter(mData.get(position).getRoomCode());
 
                             Intent intent=new Intent(mContext, LobbyActivity.class);
                             intent.putExtra("playerNum",2);

@@ -70,6 +70,7 @@ import com.nbird.multiplayerquiztrivia.Model.FirstTime;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -222,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try{
 
+
+
             table_user.child("VS_REQUEST").child(mAuth.getCurrentUser().getUid()).removeValue();
             table_user.child("VS_RESPONSE").child(mAuth.getCurrentUser().getUid()).removeValue();
 
@@ -230,6 +233,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             table_user.child("VS_PLAY").child("PlayerCurrentAns").child(mAuth.getCurrentUser().getUid()).removeValue();
             //   table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeValue();
             table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).removeValue();
+
+            String roomCode=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.ROOM_CODE_TOURNAMENT,MainActivity.this);
+
+            if(!roomCode.equals("1")&&!roomCode.equals("")){
+
+                table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeValue();
+                table_user.child("TOURNAMENT").child("ROOM").child(roomCode).removeValue();
+                table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
+
+                appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.ROOM_CODE_TOURNAMENT, MainActivity.this, "1");
+            }
+
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
