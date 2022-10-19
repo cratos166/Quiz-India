@@ -71,6 +71,7 @@ import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.BasicDialog;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -208,6 +209,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         for(int i=1;i<=3;i++){
             dataForHorizontalSlide();
+        }
+
+
+        int notificationOfHost=getIntent().getIntExtra("notificationOfHost",0);
+
+        if(notificationOfHost==1){
+            BasicDialog basicDialog=new BasicDialog(MainActivity.this,toolbar,"Notification.","Your previous room was dissolved because your host left the game.","Okay",R.raw.notification_anim);
+            basicDialog.start();
+        }else if(notificationOfHost==2){
+            BasicDialog basicDialog=new BasicDialog(MainActivity.this,toolbar,"Notification.","Your were kicked out by the host from the room.","Okay",R.raw.notification_anim);
+            basicDialog.start();
         }
 
 

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,6 +67,7 @@ public class JoinCreateTournamentDialoge {
         Button createButton = (Button) view1.findViewById(R.id.createButton);
         Button joinButton = (Button) view1.findViewById(R.id.joinPrivateRoom);
         Button cancelButton=(Button) view1.findViewById(R.id.cancelButton);
+        CardView refresh=(CardView) view1.findViewById(R.id.refresh);
 
         shimmer=view1.findViewById(R.id.shimmer);
         recyclerView=view1.findViewById(R.id.recyclerView);
@@ -102,6 +104,14 @@ public class JoinCreateTournamentDialoge {
         displayDataOnRecyclerView(context);
 
 
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayDataOnRecyclerView(context);
+            }
+        });
+
+
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,9 +142,18 @@ public class JoinCreateTournamentDialoge {
     }
 
     private void displayDataOnRecyclerView(Context context){
+        Dialog dialog=null;
+        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
+        supportAlertDialog.showLoadingDialog();
+
+
         table_user.child("TOURNAMENT").child("ROOM").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                list.clear();
+
+                supportAlertDialog.dismissLoadingDialog();
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                     try{
                         Room room=dataSnapshot.getValue(Room.class);

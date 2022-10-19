@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -76,11 +79,17 @@ public class NormalSingleQuiz extends AppCompatActivity {
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    QuizTimer timer;
+//    QuizTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
     HighestScore highestScore;
+
+
+    int minutes=2;
+    int second=59;
+    String minutestext;
+    String secondtext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,12 +231,80 @@ public class NormalSingleQuiz extends AppCompatActivity {
         });
     }
 
+
+    public void setCountDownTimer(int totalTime, int interval, TextView clockTextView, CardView clockCardView){
+
+            countDownTimer=new CountDownTimer(totalTime, interval) {
+
+
+                @SuppressLint("ResourceAsColor")
+                public void onTick(long millisUntilFinished) {
+
+
+                    if(second==0){
+                        minutes--;
+                        minutestext="0"+String.valueOf(minutes);
+                        second=59;
+                        if(second<10){
+                            secondtext="0"+String.valueOf(second);
+                        }else{
+                            secondtext=String.valueOf(second);
+                        }
+                        clockTextView.setText(minutestext+":"+secondtext+" ");
+
+                    }else{
+                        minutestext="0"+String.valueOf(minutes);
+                        if(second<10){
+                            secondtext="0"+String.valueOf(second);
+                        }else{
+                            secondtext=String.valueOf(second);
+                        }
+                        clockTextView.setText(minutestext+":"+secondtext+" ");
+                        second--;
+                    }
+
+                    //Last 15 seconds end animation
+                    if(minutes==0 && second<=15){
+
+                        clockTextView.setTextColor(R.color.red);
+
+                        //Continuous zoomIn - zoomOut
+                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
+                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
+
+                        scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                        scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+
+                        scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                        scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                        AnimatorSet scaleAnim = new AnimatorSet();
+                        scaleAnim.setDuration(500);
+                        scaleAnim.play(scaleX).with(scaleY);
+
+                        scaleAnim.start();
+                    }
+
+                }
+                public void onFinish() {
+
+                    Toast.makeText(NormalSingleQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
+                    quizFinishDialog();
+
+
+                }
+
+            }.start();
+
+    }
+
             public void mainManupulations(){
 
                 num++;
                 if (num == 10) {
-                    timer=new QuizTimer(countDownTimer,60000*3,1000,NormalSingleQuiz.this,timerText,clockCardView);
-                    timer.start();
+                    setCountDownTimer(60000*3,1000,timerText,clockCardView);
+//                    timer=new QuizTimer(countDownTimer,60000*3,1000,NormalSingleQuiz.this,timerText,clockCardView);
+//                    timer.start();
                     if (list.size() > 0) {
                         for (int i = 0; i < 4; i++) {
                             linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -398,13 +475,13 @@ public class NormalSingleQuiz extends AppCompatActivity {
     public void quizFinishDialog(){
 
                try{
-                   timer.getCountDownTimer().cancel();
+                   countDownTimer.cancel();
                }catch (Exception e){
                    e.printStackTrace();
                }
 
-               int minutesLeft=timer.getMinutes();
-               int secondsLeft=timer.getSecond();
+               int minutesLeft=minutes;
+               int secondsLeft=second;
 
                 String timeTakenString;
                if((60-secondsLeft)>10){
@@ -415,7 +492,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
                int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
 
-               ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
+               ScoreGenerator scoreGenerator=new ScoreGenerator(minutes,second,lifelineSum,score);
 
                totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
                totalScore.setSingleModeScore();
@@ -474,7 +551,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalSingleQuiz.this,timer.getCountDownTimer(),option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalSingleQuiz.this,countDownTimer,option1,songActivity);
         quizCancelDialog.start();
     }
 

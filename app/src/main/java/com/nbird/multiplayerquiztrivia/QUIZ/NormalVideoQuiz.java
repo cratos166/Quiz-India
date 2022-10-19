@@ -49,6 +49,7 @@ import com.nbird.multiplayerquiztrivia.LL.LL_Video_Quiz;
 import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
+import com.nbird.multiplayerquiztrivia.Timers.NormalVidQuizTimer;
 import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    QuizTimer timer;
+    NormalVidQuizTimer timer;
     LL_Video_Quiz lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
@@ -253,7 +254,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
 
         num++;
         if (num == 10) {
-            timer=new QuizTimer(countDownTimer,60000*3,1000,NormalVideoQuiz.this,timerText,clockCardView);
+            timer=new NormalVidQuizTimer(countDownTimer,60000*3,1000,NormalVideoQuiz.this,timerText,clockCardView);
             timer.start();
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {

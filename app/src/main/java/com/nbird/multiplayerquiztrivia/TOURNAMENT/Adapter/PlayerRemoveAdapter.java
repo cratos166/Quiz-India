@@ -49,13 +49,7 @@ public class PlayerRemoveAdapter extends RecyclerView.Adapter<PlayerRemoveAdapte
     }
 
 
-    private void manupulator(){
-        Arrays.fill(arr, 0);
 
-
-
-
-    }
 
 
 

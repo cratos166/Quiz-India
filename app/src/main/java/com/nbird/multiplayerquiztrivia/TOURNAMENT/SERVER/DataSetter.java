@@ -4,6 +4,8 @@ import android.widget.Adapter;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -67,6 +69,14 @@ public class DataSetter {
                     }
 
                 }
+
+
+                table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfPlayers").setValue(playerDataArrayList.size()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
 
 
                 myAdapter.notifyDataSetChanged();

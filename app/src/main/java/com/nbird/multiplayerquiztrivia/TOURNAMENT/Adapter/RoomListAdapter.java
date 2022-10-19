@@ -139,17 +139,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                                             int player=snapshot.getValue(Integer.class);
                                             if(player<AppString.TOURNAMENT_MAX_PLAYERS){
 
-                                                int numberOfPlayers=player+1;
 
+                                                joiner(position,supportAlertDialog);
 
-                                                table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("numberOfPlayers").setValue(numberOfPlayers).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                                        joiner(position,supportAlertDialog);
-
-                                                    }
-                                                });
 
 
                                             }

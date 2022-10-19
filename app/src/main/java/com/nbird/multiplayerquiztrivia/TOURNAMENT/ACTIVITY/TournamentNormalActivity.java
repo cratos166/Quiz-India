@@ -1,18 +1,16 @@
-package com.nbird.multiplayerquiztrivia.QUIZ;
+package com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +27,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,10 +45,14 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
+import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
+
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
-import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.AnswerUploader;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.PlayerDisplayInQuiz;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.TIMERS.NormalTournamentTimer;
 import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.util.ArrayList;
@@ -56,49 +60,61 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class NormalPictureQuiz extends AppCompatActivity {
+public class TournamentNormalActivity extends AppCompatActivity {
 
 
     TextView questionTextView,scoreBoard,timerText;
     Button option1,option2,option3,option4,nextButton;
     LinearLayout linearLayout,linearLayoutexpert,linearLayoutAudience,linearLayoutFiftyFifty,linearLayoutSwap;
     CardView audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL,clockCardView;
-    LottieAnimationView anim11,anim12,anim13,anim14,anim15,anim16,anim17,anim18,anim19,anim20;
-    ImageView myPic, questionImage;
+
     Dialog loadingDialog;
     CountDownTimer countDownTimer;
 
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference myRef=database.getReference();
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
+    DatabaseReference table_user = database.getReference("NEW_APP");
 
     private List<questionHolder> list;
     ArrayList<LottieAnimationView> animationList;
     ArrayList<Boolean> animList;
 
-    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category;
+    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count;
     String myName,myPicURL;
 
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    QuizTimer timer;
+    NormalTournamentTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
     HighestScore highestScore;
-    PicLoader picLoader;
+
+    ArrayList<Integer> listAns;
+    String roomCode;
+    int time;
+
+    AnswerUploader answerUploader;
+
+    PlayerDisplayInQuiz playerDisplayInQuiz;
+
+    ValueEventListener playerInfoGetterListener;
+    RecyclerView recyclerView;
 
 
-    int minutes=2;
-    int second=59;
-    String minutestext;
-    String secondtext;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_normal_picture_quiz);
+        setContentView(R.layout.activity_tournament_normal);
+
+        listAns=getIntent().getIntegerArrayListExtra("answerInt");
+        roomCode=getIntent().getStringExtra("roomCode");
+        time=getIntent().getIntExtra("time",180);
 
 
         list=new ArrayList<>();
@@ -106,6 +122,8 @@ public class NormalPictureQuiz extends AppCompatActivity {
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
 
+
+        songStopperAndResumer();
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -124,56 +142,48 @@ public class NormalPictureQuiz extends AppCompatActivity {
         linearLayoutAudience=(LinearLayout) findViewById(R.id.linearLayoutAudience) ;
         linearLayoutFiftyFifty=(LinearLayout) findViewById(R.id.linearLayoutfiftyfifty) ;
         linearLayoutSwap=(LinearLayout) findViewById(R.id.linearLayoutSwap) ;
-        anim11=(LottieAnimationView) findViewById(R.id.anim11);
-        anim12=(LottieAnimationView) findViewById(R.id.anim12);
-        anim13=(LottieAnimationView) findViewById(R.id.anim13);
-        anim14=(LottieAnimationView) findViewById(R.id.anim14);
-        anim15=(LottieAnimationView) findViewById(R.id.anim15);
-        anim16=(LottieAnimationView) findViewById(R.id.anim16);
-        anim17=(LottieAnimationView) findViewById(R.id.anim17);
-        anim18=(LottieAnimationView) findViewById(R.id.anim18);
-        anim19=(LottieAnimationView) findViewById(R.id.anim19);
-        anim20=(LottieAnimationView) findViewById(R.id.anim20);
-        myPic=(ImageView) findViewById(R.id.myPic);
-        questionImage=(ImageView) findViewById(R.id.questionImage);
+        recyclerView=(RecyclerView) findViewById(R.id.recyclerView) ;
+
+
         clockCardView = (CardView) findViewById(R.id.cardView3);
 
-        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, NormalPictureQuiz.this);
-        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, NormalPictureQuiz.this);
-        Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
-                .bitmapTransform(new RoundedCorners(18)))
-                .into(myPic);
+        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, TournamentNormalActivity.this);
+        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, TournamentNormalActivity.this);
+//        Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
+//                        .bitmapTransform(new RoundedCorners(18)))
+//                .into(myPic);
 
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
 
-        animationList.add(anim11);animationList.add(anim12);animationList.add(anim13);animationList.add(anim14);animationList.add(anim15);
-        animationList.add(anim16);animationList.add(anim17);animationList.add(anim18);animationList.add(anim19);animationList.add(anim20);
 
-        supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalPictureQuiz.this);
+
+        supportAlertDialog=new SupportAlertDialog(loadingDialog,TournamentNormalActivity.this);
         supportAlertDialog.showLoadingDialog();
-
-        timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
-
-        songStopperAndResumer();
 
         lifeLine();
         questionSelector();
-
-        picLoader=new PicLoader(timer,questionImage,supportAlertDialog);
-        picLoader.start();
-
-
 
         totalScore=new TotalScore();
         totalScore.getSingleModeScore();
 
         highestScore=new HighestScore();
         highestScore.start();
+
+
+
+
+        answerUploader=new AnswerUploader(roomCode,myName,myPicURL);
+        answerUploader.start();
+
+        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentNormalActivity.this,playerInfoGetterListener,roomCode,recyclerView);
+        playerDisplayInQuiz.start();
+        
     }
+
 
     public void lifeLine(){
 
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalPictureQuiz.this);
+        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,TournamentNormalActivity.this);
 
         fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
         audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
@@ -198,51 +208,37 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
 
     public void questionSelector() {
-        for(int i=0;i<11;i++){
-            Random rand = new Random();
-            int setNumber = rand.nextInt(4999)+1;
-            if(setNumber>1210&&setNumber<2000){
-                setNumber=setNumber-1000;
-            }
-            fireBaseData(setNumber);
+        for (int i = 0; i < listAns.size(); i++) {
+            int setNumber=listAns.get(i);
+            fireBaseData2(setNumber);
         }
     }
 
-    public void fireBaseData ( int setNumber){
-        myRef.child("PictureQuizMain").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+    public void fireBaseData2 ( int setNumber){
+        myRef.child("NormalQuizBIGJSON").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.add(snapshot.getValue(questionHolder.class));
-                try{
-                    Glide.with(getBaseContext())
-                            .load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).preload(20,10)).preload(20,10)).preload(20,10))
-                            .preload(20, 10);
-                }catch (Exception e){
-
-                }
                 mainManupulations();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(NormalPictureQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(TournamentNormalActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 supportAlertDialog.dismissLoadingDialog();
                 finish();
             }
         });
     }
 
-
-
-
-
     public void mainManupulations(){
 
         num++;
-        if (num == 10) {
-//            setCountDownTimer(60000*3,1000,timerText,clockCardView);
-//            timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
-//            timer.start();
+        if (num == listAns.size()) {
+            timer=new NormalTournamentTimer(countDownTimer,time*1000,1000,TournamentNormalActivity.this,timerText,clockCardView);
+            timer.start();
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
                     linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -271,16 +267,16 @@ public class NormalPictureQuiz extends AppCompatActivity {
                         position++;
                         llManupulator.True();
 
-                        if (swapnum == 0) { if (position == 10) { quizFinishDialog();return; } } else { if (position == 11) { quizFinishDialog();return; } }
+                        if (swapnum == 0) { if (position == listAns.size()-1) { quizFinishDialog();return; } } else { if (position == listAns.size()) { quizFinishDialog();return; } }
                         count = 0;
                         playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
                     }
                 });
             } else {
                 finish();
-                Toast.makeText(NormalPictureQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TournamentNormalActivity.this, "No Questions", Toast.LENGTH_SHORT).show();
             }
-//            supportAlertDialog.dismissLoadingDialog();
+            supportAlertDialog.dismissLoadingDialog();
         }
     }
 
@@ -293,17 +289,6 @@ public class NormalPictureQuiz extends AppCompatActivity {
                 if(value==0 && count<4){
                     String option="";
                     if(count==0){
-
-                        String linkHolder=list.get(position).getQuestionPicture();
-                        try{
-                            Glide.with(getBaseContext())
-                                    .load(linkHolder)
-                                    .error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder))))
-                                    .into(questionImage);
-                        }catch (Exception e){
-
-                        }
-
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
                         linearLayout.getChildAt(0).setBackgroundResource(R.drawable.border_theme_2);
@@ -334,9 +319,9 @@ public class NormalPictureQuiz extends AppCompatActivity {
                     try {
                         ((TextView) view).setText(data);
                         if(swapnum==0){
-                            scoreBoard.setText((position+1)+"/10 ");
+                            scoreBoard.setText((position+1)+"/"+listAns.size());
                         }else{
-                            scoreBoard.setText((position)+"/10 ");
+                            scoreBoard.setText((position)+"/"+listAns.size());
                         }
                     } catch (ClassCastException ex) {
                         ((Button) view).setText(data);
@@ -356,7 +341,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
     public void playMusic(int id){
         MediaPlayer musicNav;
-        musicNav = MediaPlayer.create(NormalPictureQuiz.this,id);
+        musicNav = MediaPlayer.create(TournamentNormalActivity.this,id);
         musicNav.start();
         musicNav.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -376,19 +361,25 @@ public class NormalPictureQuiz extends AppCompatActivity {
         llManupulator.False();
 
         if(selectedOption.getText().toString().equals(list.get(position).getCorrectAnswer())){
+
+            answerUploader.upload(1);
             //correct
             playMusic(R.raw.correctmusic);
-            ANIM_MANU(R.raw.tickanim);
+//            ANIM_MANU(R.raw.tickanim);
             animList.add(true);
             selectedOption.setBackgroundResource(R.drawable.option_right);
             //green color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
             selectedOption.setShadowLayer(3,1,1,R.color.green);
             score++;
+
+
         }else {
+
+            answerUploader.upload(2);
             //incorrect
             playMusic(R.raw.wrongansfinal);
-            ANIM_MANU(R.raw.wronganim);
+//            ANIM_MANU(R.raw.wronganim);
             animList.add(false);
             selectedOption.setBackgroundResource(R.drawable.option_wrong);     //red color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
@@ -400,13 +391,13 @@ public class NormalPictureQuiz extends AppCompatActivity {
         }
     }
 
-    public void ANIM_MANU(int id){
-        myPosition++;
-        LottieAnimationView anim=animationList.get(myPosition);
-        anim.setAnimation(id);
-        anim.playAnimation();
-        anim.loop(false);
-    }
+//    public void ANIM_MANU(int id){
+//        myPosition++;
+//        LottieAnimationView anim=animationList.get(myPosition);
+//        anim.setAnimation(id);
+//        anim.playAnimation();
+//        anim.loop(false);
+//    }
 
 
 
@@ -457,12 +448,27 @@ public class NormalPictureQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultHandling resultHandling =new ResultHandling(NormalPictureQuiz.this,map,animList,score,timeTakenString,
-                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,2,timeTakenInt);
+        DataExchangeHolder dataExchangeHolder=new DataExchangeHolder(map,animList,score,timeTakenString,lifelineSum,0,scoreGenerator.start(),myName,myPicURL,timeTakenInt);
 
-        resultHandling.start();
+        table_user.child("TOURNAMENT").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+
+                Intent intent=new Intent(TournamentNormalActivity.this,ScoreActivity.class);
+                intent.putExtra("roomCode",roomCode);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+
+
     }
+
+
+
 
 
 
@@ -470,7 +476,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
         CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
         final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
         final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
-        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this)){
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this)){
             songActivity=new SongActivity(this);
             songActivity.startMusic();
         }else{
@@ -480,28 +486,25 @@ public class NormalPictureQuiz extends AppCompatActivity {
         cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this)){
+                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this)){
                     songActivity.songStop();
                     Speaker.setBackgroundResource(R.drawable.usedicon);
                     speakerImage.setBackgroundResource(R.drawable.music_off);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this,false);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this,false);
                 }else{
-                    songActivity=new SongActivity(NormalPictureQuiz.this);
+                    songActivity=new SongActivity(TournamentNormalActivity.this);
                     songActivity.startMusic();
                     Speaker.setBackgroundResource(R.drawable.single_color_2);
                     speakerImage.setBackgroundResource(R.drawable.music_on);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this,true);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this,true);
                 }
             }
         });
     }
 
-
-
-
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalPictureQuiz.this,timer.getCountDownTimer(),option1,songActivity);
-        quizCancelDialog.start();
+//        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(TournamentNormalActivity.this,timer.getCountDownTimer(),option1,songActivity);
+//        quizCancelDialog.start();
     }
 
     @Override
@@ -513,7 +516,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
         Runtime.getRuntime().gc();
     }
-    
-    
-    
+
+
+
 }

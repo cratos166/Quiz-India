@@ -38,6 +38,9 @@ public class DialogModel_2 {
 
 
 
+
+
+
     public void start(){
         AlertDialog.Builder builderRemove=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
         View viewRemove1= LayoutInflater.from(context).inflate(R.layout.dialog_model_2,(ConstraintLayout) v.findViewById(R.id.layoutDialogContainer),false);

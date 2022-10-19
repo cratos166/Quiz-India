@@ -48,6 +48,7 @@ import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
+import com.nbird.multiplayerquiztrivia.Timers.NormalAudQuizTimer;
 import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
 import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
@@ -83,7 +84,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    QuizTimer timer;
+    NormalAudQuizTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
@@ -96,6 +97,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
     SeekBar seekBar;
     LinearLayout linearFun1;
     MediaPlayer music;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,14 +184,14 @@ public class NormalAudioQuiz extends AppCompatActivity {
         supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalAudioQuiz.this);
         supportAlertDialog.showLoadingDialog();
 
-        timer=new QuizTimer(countDownTimer,60000*3,1000,NormalAudioQuiz.this,timerText,clockCardView);
+        timer=new NormalAudQuizTimer(countDownTimer,60000*3,1000,NormalAudioQuiz.this,timerText,clockCardView);
 
 
         lifeLine();
         questionSelector();
 
         picLoader=new PicLoader(timer,questionImage,supportAlertDialog);
-        picLoader.start();
+        picLoader.startAudio();
 
 
 

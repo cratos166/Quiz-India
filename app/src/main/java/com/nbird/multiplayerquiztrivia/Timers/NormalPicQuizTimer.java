@@ -4,23 +4,17 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.TournamentNormalActivity;
 
-public class QuizTimer extends NormalPictureQuiz {
+public class NormalPicQuizTimer extends NormalPictureQuiz {
 
     CountDownTimer countDownTimer;
     long totalTime;
@@ -35,7 +29,7 @@ public class QuizTimer extends NormalPictureQuiz {
     TextView clockTextView;
     CardView cardViewClock;
 
-    public QuizTimer(CountDownTimer countDownTimer, long totalTime, long interval, Context context, TextView clockTextView, CardView cardViewClock) {
+    public NormalPicQuizTimer(CountDownTimer countDownTimer, long totalTime, long interval, Context context, TextView clockTextView, CardView cardViewClock) {
         this.countDownTimer = countDownTimer;
         this.totalTime = totalTime;
         this.interval = interval;
@@ -129,6 +123,27 @@ public class QuizTimer extends NormalPictureQuiz {
                 quizFinishDialog();
 
 
+
+//                Intent scoreIntent = new Intent(context, scoreActivity.class);
+//                try{
+//                    songActivity.songStop();
+//                }catch (Exception e){
+//
+//                }
+//                scoreIntent.putExtra("score", score);
+//                scoreIntent.putExtra("lifeline",lifelineSum);
+//                scoreIntent.putExtra("minutes",minutes);
+//                scoreIntent.putExtra("seconds",second);
+//                scoreIntent.putExtra("minutestext",minutestext);
+//                scoreIntent.putExtra("secondtext",secondtext);
+//                scoreIntent.putExtra("milliholder",milliHolder);
+//                scoreIntent.putExtra("category",category);
+//                scoreIntent.putExtra("imageurl",imageurl);
+//                startActivity(scoreIntent);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//                if(countDownTimer!=null){
+//                    countDownTimer.cancel();}
+//                finish();
             }
 
         }.start();

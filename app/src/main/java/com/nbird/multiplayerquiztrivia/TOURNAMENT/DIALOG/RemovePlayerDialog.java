@@ -106,43 +106,43 @@ public class RemovePlayerDialog {
 
                 try{alertDialog.dismiss();}catch (Exception e){}
 
-                int tracker=0;
+           //     int tracker=0;
 
                 for(int i=0;i<arr.length;i++){
                     if(arr[i]==1){
-                        tracker++;
+                   //    tracker++;
                         table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(playerDataArrayList.get(i).getUid()).removeValue();
                     }
 
                 }
 
-                int finalTracker = tracker;
-                table_user.child("TOURNAMENT").child("ROOMS").child(roomCode).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        try{
-                            int players=snapshot.getValue(Integer.class);
-                            players=players- finalTracker;
-
-
-                            table_user.child("TOURNAMENT").child("ROOMS").child(roomCode).child("numberOfPlayers").setValue(players).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                }
-                            });
-
-
-                        }catch (Exception e){
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+//                int finalTracker = tracker;
+//                table_user.child("TOURNAMENT").child("ROOMS").child(roomCode).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        try{
+//                            int players=snapshot.getValue(Integer.class);
+//                            players=players- finalTracker;
+//
+//
+//                            table_user.child("TOURNAMENT").child("ROOMS").child(roomCode).child("numberOfPlayers").setValue(players).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//
+//                                }
+//                            });
+//
+//
+//                        }catch (Exception e){
+//
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
 
             }
         });

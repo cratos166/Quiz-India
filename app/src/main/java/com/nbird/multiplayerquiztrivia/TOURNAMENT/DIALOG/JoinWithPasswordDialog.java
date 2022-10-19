@@ -120,13 +120,6 @@ public class JoinWithPasswordDialog {
 
 
                     if(room.getNumberOfPlayers()<AppString.TOURNAMENT_MAX_PLAYERS){
-                        int numberOfPlayers=room.getNumberOfPlayers()+1;
-
-
-                        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfPlayers").setValue(numberOfPlayers).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-
 
 
 
@@ -215,9 +208,6 @@ public class JoinWithPasswordDialog {
                                 });
 
 
-
-                            }
-                        });
 
 
 

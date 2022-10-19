@@ -1,20 +1,28 @@
 package com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,15 +30,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
-import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
-import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
-import com.nbird.multiplayerquiztrivia.MAIN.RecyclerViewAdapter;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
+import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDataAdapter;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerRemoveAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.ChatDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.FactsDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.PrivacyDialog;
@@ -39,10 +43,9 @@ import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.SettingDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.TroubleShootDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.SERVER.DataSetter;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.SERVER.HostTracker;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 public class LobbyActivity extends AppCompatActivity {
 
@@ -73,10 +76,15 @@ public class LobbyActivity extends AppCompatActivity {
     Boolean privacy=true;
 
 
-    ValueEventListener valueEventListener,chatEventListener,hostEventListener;
+    ValueEventListener valueEventListener,chatEventListener,hostEventListener,myEventListener,questionGetterListener;
     Button startButton;
 
     String myName,myPicStr;
+
+
+    CountDownTimer countDownTimer;
+
+    ArrayList<Integer> listAns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,15 +109,17 @@ public class LobbyActivity extends AppCompatActivity {
         factButton=(CardView) findViewById(R.id.card1fact);
         chatButton=(CardView) findViewById(R.id.card1chat);
         settingButton=(CardView) findViewById(R.id.cardcancel);
+        cancelButton=(CardView) findViewById(R.id.card1cancel);
 
         removePlayerButton=(CardView) findViewById(R.id.removePlayer);
         troubleshoot=(CardView) findViewById(R.id.troubleshoot);
         privacyButton=(CardView) findViewById(R.id.cardchat) ;
         startButton=(Button) findViewById(R.id.startButton);
 
+
         roomCodeTextView=(TextView) findViewById(R.id.roomCodeTextView);
 
-
+        listAns=new ArrayList<>();
 
 
 
@@ -149,14 +159,72 @@ public class LobbyActivity extends AppCompatActivity {
             removePlayerButton.setVisibility(View.GONE);
 
 
-            HostTracker hostTracker=new HostTracker(hostEventListener,LobbyActivity.this,roomCode);
-            hostTracker.start();
+            hostTracker();
+
+            questionDownloader();
+
+            myEventListener=new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try{
+                        Boolean bb=snapshot.getValue(Boolean.class);
+                        if(bb==true){
+                         //   Toast.makeText(LobbyActivity.this, "true", Toast.LENGTH_SHORT).show();
+                        }else{
+                          //  Toast.makeText(LobbyActivity.this, "false", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }catch (Exception e){
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e1){}
+                        try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
+
+
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e1){}
+                        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e1){}
+                        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e1){}
+
+                        try{countDownTimer.cancel();}catch (Exception e1){}
+
+
+                        Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+                        intent.putExtra("notificationOfHost",2);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+
+            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").addValueEventListener(myEventListener);
+
+
 
         }else{
 //            appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.ROOM_CODE_TOURNAMENT, LobbyActivity.this, roomCode);
         }
 
 
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                quitLobbyActivity();
+
+
+
+
+            }
+        });
 
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,7 +301,208 @@ public class LobbyActivity extends AppCompatActivity {
 
 
 
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                questionUploader();
+
+                startButton.setTextSize(8.0f);
+
+                startButton.setEnabled(false);
+                startButton.setAlpha(0.7f);
+
+
+                privacyButton.setVisibility(View.GONE);
+                settingButton.setVisibility(View.GONE);
+                removePlayerButton.setVisibility(View.GONE);
+                cancelButton.setVisibility(View.INVISIBLE);
+
+
+
+
+            }
+        });
+
+
     }
+
+
+
+    private void questionDownloader(){
+
+
+
+
+
+        questionGetterListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    boolean bb=snapshot.getValue(Boolean.class);
+                    if(!bb){
+                        table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                try{
+
+                                    for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                        int holder=dataSnapshot.getValue(Integer.class);
+                                        listAns.add(holder);
+                                    }
+
+                                    timerStarter();
+                                }catch (Exception e){
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }catch (Exception e){
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").addValueEventListener(questionGetterListener);
+
+
+
+
+    }
+
+
+    private void intentFunction(){
+        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
+        try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
+        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
+        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
+
+        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
+        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
+        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
+        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
+        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
+
+
+        try{countDownTimer.cancel();}catch (Exception e){}
+
+
+        Intent intent=new Intent(LobbyActivity.this,TournamentNormalActivity.class);
+        intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+        intent.putExtra("roomCode",roomCode);
+
+        if(timeInt==1){
+            intent.putExtra("time",180);
+        }else if(timeInt==2){
+            intent.putExtra("time",270);
+        }else{
+            intent.putExtra("time",360);
+        }
+
+
+        startActivity(intent);
+        finish();
+
+    }
+
+
+
+
+    private void questionUploader(){
+
+        int number;
+        if(numberofQuestion==1){
+            number=10;
+        }else if(numberofQuestion==2){
+            number=15;
+        }else{
+            number=20;
+        }
+
+
+        if(gameMode==1||gameMode==3){
+            normalQuizNumberUploader(listAns,number);
+        }else if(gameMode==2||gameMode==4){
+            pictureQuizNumberUploader(listAns,number);
+        }
+
+
+    }
+
+
+    private void timerStarter(){
+        countDownTimer=new CountDownTimer(1000*10,1000) {
+            @Override
+            public void onTick(long l) {
+                startButton.setText("Game starts in "+l/1000);
+            }
+
+            @Override
+            public void onFinish() {
+                intentFunction();
+            }
+        }.start();
+    }
+
+
+    private void roomActivator(){
+
+        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                timerStarter();
+            }
+        });
+
+
+    }
+
+
+    public void normalQuizNumberUploader(ArrayList<Integer> listAns, int number){
+        Random random=new Random();
+        for(int i=0;i<=number;i++){
+            listAns.add(random.nextInt(6326)+1);
+        }
+
+        table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                roomActivator();
+            }
+        });
+    }
+
+    public void pictureQuizNumberUploader(ArrayList<Integer> listAns, int number){
+        Random random=new Random();
+
+        for(int i=0;i<=number;i++){
+            int setNumber = random.nextInt(4999)+1;
+            if(setNumber>1210&&setNumber<2000){
+                setNumber=setNumber-1000;
+            }
+            listAns.add(setNumber);
+        }
+        table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                roomActivator();
+            }
+        });
+    }
+
+
+
 
     private void settingsEventListner(){
         privacyListener=new ValueEventListener() {
@@ -352,5 +621,209 @@ public class LobbyActivity extends AppCompatActivity {
 
 
 
+    public void removerFunction(){
+
+        if(myPlayerNum==1){
+            table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeValue();
+                    table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).removeValue();
+
+
+
+                    try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
+                    try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
+
+                    try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
+                    try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
+
+                    try{countDownTimer.cancel();}catch (Exception e){}
+
+
+                    Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+
+                }
+            });
+        }else {
+
+            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+
+                    try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
+                    try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
+
+
+                    try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
+                    try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
+
+                    try{countDownTimer.cancel();}catch (Exception e){}
+
+                    Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                }
+            });
+
+
+
+        }
+
+
+    }
+
+
+    public void quitLobbyActivity(){
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(LobbyActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(LobbyActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+
+
+        Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
+        Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+
+        if(myPlayerNum==1){
+            textTitle.setText("You are the host. If you left the room, the whole room will be dissolved.\n\n You really want to quit ?");
+
+        }else{
+            textTitle.setText("You really want to quit ?");
+
+        }
+
+        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
+        anim.setAnimation(R.raw.exit_lobby);
+        anim.playAnimation();
+        anim.loop(true);
+
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                removerFunction();
+
+
+
+                try{
+                    alertDialog.dismiss();
+                }catch (Exception e){
+
+                }
+//                ((Activity)context).finish();
+            }
+        });
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+
+    public void hostTracker(){
+        hostEventListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try {
+                    boolean isActive=snapshot.getValue(Boolean.class);
+
+                    if(!isActive){
+                        Toast.makeText(LobbyActivity.this, "HOST LEFT", Toast.LENGTH_LONG).show();
+
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e1){}
+                        try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e1){}
+
+
+                        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
+                        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
+
+                        try{countDownTimer.cancel();}catch (Exception e){}
+
+
+
+                        Intent intent=new Intent(LobbyActivity.this, MainActivity.class);
+                        intent.putExtra("notificationOfHost",1);
+                        LobbyActivity.this.startActivity(intent);
+                        ((Activity) LobbyActivity.this).finish();
+
+
+
+                    }
+
+                }catch (Exception e){
+                    Toast.makeText(LobbyActivity.this, "HOST LEFT", Toast.LENGTH_LONG).show();
+
+                    try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e1){}
+                    try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e1){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e1){}
+
+
+                    try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e1){}
+                    try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e1){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e1){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e1){}
+                    try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e1){}
+
+                    try{countDownTimer.cancel();}catch (Exception e1){}
+
+                    Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+                    intent.putExtra("notificationOfHost",1);
+                    LobbyActivity.this.startActivity(intent);
+                    ((Activity) LobbyActivity.this).finish();
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").addValueEventListener(hostEventListener);
+
+    }
 
 }
