@@ -149,9 +149,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
         myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, TournamentNormalActivity.this);
         myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, TournamentNormalActivity.this);
-//        Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
-//                        .bitmapTransform(new RoundedCorners(18)))
-//                .into(myPic);
+
 
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
 
@@ -319,9 +317,9 @@ public class TournamentNormalActivity extends AppCompatActivity {
                     try {
                         ((TextView) view).setText(data);
                         if(swapnum==0){
-                            scoreBoard.setText((position+1)+"/"+listAns.size());
+                            scoreBoard.setText((position+1)+"/"+(listAns.size()-1));
                         }else{
-                            scoreBoard.setText((position)+"/"+listAns.size());
+                            scoreBoard.setText((position)+"/"+(listAns.size()-1));
                         }
                     } catch (ClassCastException ex) {
                         ((Button) view).setText(data);
@@ -458,6 +456,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
                 Intent intent=new Intent(TournamentNormalActivity.this,ScoreActivity.class);
                 intent.putExtra("roomCode",roomCode);
+                intent.putExtra("maxQuestions",list.size()-1);
                 startActivity(intent);
                 finish();
 
