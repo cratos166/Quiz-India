@@ -66,7 +66,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     case 2:
                         JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
                         joinCreateTournamentDialoge.start(mContext,holder.cardView);
-
+                        break;
 
 
                 }

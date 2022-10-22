@@ -23,6 +23,20 @@
         app:lottie_speed="1" />
 
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/party_popper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="fitXY"
+        android:elevation="-20dp"
+        app:lottie_speed="1" />
+
+
     <LinearLayout
         android:id="@+id/linear123"
         android:layout_width="match_parent"
@@ -51,10 +65,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
             android:orientation="vertical"
             android:padding="7dp"
             android:scaleX="0.95"
@@ -122,9 +135,23 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/next_button_3"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="QUIT"
+            android:textColor="@color/text_dis"
+            android:textSize="10sp" />
+
+
+        <Button
+            android:id="@+id/joinOrCreateOtherRoom"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/next_button_dark"
             android:fontFamily="@font/ubuntu_bold"
-            android:text="HOME"
+            android:text="Join or Create other room"
             android:textColor="@color/text_dis"
             android:textSize="10sp" />
 

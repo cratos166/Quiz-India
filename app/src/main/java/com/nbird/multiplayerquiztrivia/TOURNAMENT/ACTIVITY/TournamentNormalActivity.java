@@ -94,7 +94,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
     ArrayList<Integer> listAns;
     String roomCode;
-    int time;
+    int time,myPlayerNum;
 
     AnswerUploader answerUploader;
 
@@ -115,7 +115,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
         roomCode=getIntent().getStringExtra("roomCode");
         time=getIntent().getIntExtra("time",180);
-
+        myPlayerNum=getIntent().getIntExtra("playerNum",1);
 
         list=new ArrayList<>();
         appData=new AppData();
@@ -457,6 +457,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
                 Intent intent=new Intent(TournamentNormalActivity.this,ScoreActivity.class);
                 intent.putExtra("roomCode",roomCode);
                 intent.putExtra("maxQuestions",list.size()-1);
+                intent.putExtra("playerNum",myPlayerNum);
                 startActivity(intent);
                 finish();
 

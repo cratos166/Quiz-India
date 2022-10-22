@@ -147,7 +147,7 @@ public class JoinCreateTournamentDialoge {
         supportAlertDialog.showLoadingDialog();
 
 
-        table_user.child("TOURNAMENT").child("ROOM").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+        table_user.child("TOURNAMENT").child("ROOM").orderByChild("active").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -230,8 +230,14 @@ public class JoinCreateTournamentDialoge {
         PRIVACY FALSE : PRIVATE
          */
 
+        /*
+        ACTIVE 1 : IN LOBBY
+        ACTIVE 2 : IN QUIZ
+        ACTIVE 3 : IN SCORE ACTIVITY
+         */
 
-        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,true,true);
+
+        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,1,true);
 
         Dialog dialog = null;
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -45,6 +46,18 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         holder.setIsRecyclable(false);
+
+
+        if(dataExchangeHolderArrayList.get(position).getTotalScoreInt()==1){
+            holder.rank.setText(String.valueOf(dataExchangeHolderArrayList.get(position).getTotalScoreInt())+"st");
+        }else if(dataExchangeHolderArrayList.get(position).getTotalScoreInt()==2){
+            holder.rank.setText(String.valueOf(dataExchangeHolderArrayList.get(position).getTotalScoreInt())+"nd");
+        }else if(dataExchangeHolderArrayList.get(position).getTotalScoreInt()==3){
+            holder.rank.setText(String.valueOf(dataExchangeHolderArrayList.get(position).getTotalScoreInt())+"rd");
+        }else{
+            holder.rank.setText(String.valueOf(dataExchangeHolderArrayList.get(position).getTotalScoreInt())+"th");
+        }
+
 
         holder.myName.setText(dataExchangeHolderArrayList.get(position).getMyNameString());
         holder.correctAnswer.setText("Correct/Wrong : "+ dataExchangeHolderArrayList.get(position).getCorrectAnsInt()+"/"+String.valueOf(maxQuestion- dataExchangeHolderArrayList.get(position).getCorrectAnsInt()));
@@ -102,6 +115,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
 
 
 
+
+
+
     }
 
 
@@ -111,7 +127,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView myName,correctAnswer,timeTaken,lifeLineUsed,totalScore;
+        TextView myName,correctAnswer,timeTaken,lifeLineUsed,totalScore,rank;
         ImageView myPic;
 
         LinearLayout linearLayoutexpert,linearLayoutAudience,linearLayoutSwap,linearLayoutfiftyfifty;
@@ -127,6 +143,9 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
             correctAnswer=(TextView) itemView.findViewById(R.id.correctAnswer);
             timeTaken=(TextView) itemView.findViewById(R.id.timeTaken);
             lifeLineUsed=(TextView) itemView.findViewById(R.id.lifeLineUsed);
+            rank=(TextView) itemView.findViewById(R.id.rank);
+
+
 
             linearLayoutexpert=(LinearLayout) itemView.findViewById(R.id.linearLayoutexpert);
             linearLayoutAudience=(LinearLayout) itemView.findViewById(R.id.linearLayoutAudience);

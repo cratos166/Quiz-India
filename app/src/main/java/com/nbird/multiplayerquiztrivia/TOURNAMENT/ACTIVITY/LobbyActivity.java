@@ -340,8 +340,8 @@ public class LobbyActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
-                    boolean bb=snapshot.getValue(Boolean.class);
-                    if(!bb){
+                    int bb=snapshot.getValue(Integer.class);
+                    if(bb==2){
                         table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -401,7 +401,7 @@ public class LobbyActivity extends AppCompatActivity {
         Intent intent=new Intent(LobbyActivity.this,TournamentNormalActivity.class);
         intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
         intent.putExtra("roomCode",roomCode);
-
+        intent.putExtra("playerNum",myPlayerNum);
         if(timeInt==1){
             intent.putExtra("time",180);
         }else if(timeInt==2){
@@ -458,7 +458,7 @@ public class LobbyActivity extends AppCompatActivity {
 
     private void roomActivator(){
 
-        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").setValue(2).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 timerStarter();

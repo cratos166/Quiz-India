@@ -129,7 +129,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         try {
-                            if(snapshot.getValue(Boolean.class)){
+                            if(snapshot.getValue(Integer.class)==1){
 
 
                                 table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {
