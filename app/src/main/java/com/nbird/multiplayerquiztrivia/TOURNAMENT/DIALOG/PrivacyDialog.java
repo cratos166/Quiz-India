@@ -25,7 +25,7 @@ public class PrivacyDialog {
 
     Context context;
     RadioGroup radioGroup;
-    int privacyFinder=0;
+    Boolean privacy;
 
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference table_user = database.getReference("NEW_APP");
@@ -34,9 +34,11 @@ public class PrivacyDialog {
     String roomCode;
 
 
-    public PrivacyDialog(Context context,String roomCode) {
+
+    public PrivacyDialog(Context context, String roomCode, Boolean privacy) {
         this.context = context;
         this.roomCode=roomCode;
+        this.privacy=privacy;
     }
 
     public void start(View v){
@@ -63,7 +65,7 @@ public class PrivacyDialog {
         RadioButton radioButton1 = (RadioButton) radioGroup.findViewById(R.id.radio_public);
         RadioButton radioButton2 = (RadioButton) radioGroup.findViewById(R.id.radio_private);
         // Get the selected Radio Button
-        if(privacyFinder==0){
+        if(privacy){
             radioButton1.setChecked(true);
             radioButton2.setChecked(false);
         }else{
@@ -104,12 +106,12 @@ public class PrivacyDialog {
                 if (selectedId == -1) {
                     Toast.makeText(context, "Select Any One Option", Toast.LENGTH_LONG);
                 }else if(radioButton.getText().equals("Public")){
-                    privacyFinder=0;
+                    privacy=true;
                     privacyDataUploaderHost(true);
                     Toast.makeText(context, "Public", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();
                 }else{
-                    privacyFinder=1;
+                    privacy=false;
                     privacyDataUploaderHost(false);
                     Toast.makeText(context, "Private", Toast.LENGTH_SHORT).show();
                     alertDialog.dismiss();

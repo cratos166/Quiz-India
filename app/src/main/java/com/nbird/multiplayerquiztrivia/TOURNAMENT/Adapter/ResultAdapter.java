@@ -90,11 +90,10 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
 
 
 
-
-        list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
-        list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
         list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
         list.add(holder.anim16);list.add(holder.anim17);list.add(holder.anim18);list.add(holder.anim19);list.add(holder.anim20);
+        list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+        list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
 
 
         for(int i = 0; i< dataExchangeHolderArrayList.get(position).getAnimList().size(); i++){
@@ -153,6 +152,18 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
             linearLayoutfiftyfifty=(LinearLayout) itemView.findViewById(R.id.linearLayoutfiftyfifty);
             totalScore=(TextView) itemView.findViewById(R.id.totalScore);
 
+
+            anim11=(LottieAnimationView) itemView.findViewById(R.id.anim1);
+            anim12=(LottieAnimationView) itemView.findViewById(R.id.anim2);
+            anim13=(LottieAnimationView) itemView.findViewById(R.id.anim3);
+            anim14=(LottieAnimationView) itemView.findViewById(R.id.anim4);
+            anim15=(LottieAnimationView) itemView.findViewById(R.id.anim5);
+            anim16=(LottieAnimationView) itemView.findViewById(R.id.anim6);
+            anim17=(LottieAnimationView) itemView.findViewById(R.id.anim7);
+            anim18=(LottieAnimationView) itemView.findViewById(R.id.anim8);
+            anim19=(LottieAnimationView) itemView.findViewById(R.id.anim9);
+            anim20=(LottieAnimationView) itemView.findViewById(R.id.anim10);
+
              anim1=(LottieAnimationView) itemView.findViewById(R.id.anim11);
              anim2=(LottieAnimationView) itemView.findViewById(R.id.anim12);
              anim3=(LottieAnimationView) itemView.findViewById(R.id.anim13);
@@ -165,16 +176,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
              anim10=(LottieAnimationView) itemView.findViewById(R.id.anim20);
 
 
-             anim11=(LottieAnimationView) itemView.findViewById(R.id.anim1);
-             anim12=(LottieAnimationView) itemView.findViewById(R.id.anim2);
-             anim13=(LottieAnimationView) itemView.findViewById(R.id.anim3);
-             anim14=(LottieAnimationView) itemView.findViewById(R.id.anim4);
-             anim15=(LottieAnimationView) itemView.findViewById(R.id.anim5);
-             anim16=(LottieAnimationView) itemView.findViewById(R.id.anim6);
-             anim17=(LottieAnimationView) itemView.findViewById(R.id.anim7);
-             anim18=(LottieAnimationView) itemView.findViewById(R.id.anim8);
-             anim19=(LottieAnimationView) itemView.findViewById(R.id.anim9);
-             anim20=(LottieAnimationView) itemView.findViewById(R.id.anim10);
+
 
 
 

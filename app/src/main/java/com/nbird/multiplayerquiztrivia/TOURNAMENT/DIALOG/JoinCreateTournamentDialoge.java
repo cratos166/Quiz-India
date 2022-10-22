@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -147,7 +148,7 @@ public class JoinCreateTournamentDialoge {
         supportAlertDialog.showLoadingDialog();
 
 
-        table_user.child("TOURNAMENT").child("ROOM").orderByChild("active").equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+        table_user.child("TOURNAMENT").child("ROOM").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -155,21 +156,39 @@ public class JoinCreateTournamentDialoge {
 
                 supportAlertDialog.dismissLoadingDialog();
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+
                     try{
                         Room room=dataSnapshot.getValue(Room.class);
 
-                        if(room.isHostActive()){
-                            list.add(room);
-                        }else{
-                            table_user.child("TOURNAMENT").child("ROOM").child(dataSnapshot.getKey()).removeValue();
-                            table_user.child("TOURNAMENT").child("CHAT").child(dataSnapshot.getKey()).removeValue();
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(dataSnapshot.getKey()).removeValue();
-                        }
 
+
+
+                        if(room.isHostActive()){
+                            if(room.isActive()==1){
+                                if(room.isPrivacy()){
+                                    list.add(room);
+                                }
+                            }
+                        }else{
+
+                            table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(dataSnapshot.getKey())).removeValue();
+
+
+
+
+//                            table_user.child("TOURNAMENT").child("CHAT").child(dataSnapshot.getKey()).removeValue();
+//                            table_user.child("TOURNAMENT").child("PLAYERS").child(dataSnapshot.getKey()).removeValue();
+//                            table_user.child("TOURNAMENT").child("RESULT").child(dataSnapshot.getKey()).removeValue();
+//                            table_user.child("TOURNAMENT").child("QUESTIONS").child(dataSnapshot.getKey()).removeValue();
+//                            table_user.child("TOURNAMENT").child("ANSWERS").child(dataSnapshot.getKey()).removeValue();
+                        }
 
                     }catch (Exception e){
 
                     }
+
+
+
 
                 }
                 categoryAdapter.notifyDataSetChanged();

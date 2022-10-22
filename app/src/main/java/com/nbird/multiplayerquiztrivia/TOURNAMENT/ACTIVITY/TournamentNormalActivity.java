@@ -2,8 +2,10 @@ package com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
@@ -11,10 +13,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -45,6 +49,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
+import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 
@@ -389,13 +394,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
         }
     }
 
-//    public void ANIM_MANU(int id){
-//        myPosition++;
-//        LottieAnimationView anim=animationList.get(myPosition);
-//        anim.setAnimation(id);
-//        anim.playAnimation();
-//        anim.loop(false);
-//    }
+
 
 
 
@@ -503,8 +502,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-//        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(TournamentNormalActivity.this,timer.getCountDownTimer(),option1,songActivity);
-//        quizCancelDialog.start();
+        quitScoreActivityActivity();
     }
 
     @Override
@@ -517,6 +515,121 @@ public class TournamentNormalActivity extends AppCompatActivity {
         Runtime.getRuntime().gc();
     }
 
+    public void quitScoreActivityActivity(){
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(TournamentNormalActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(TournamentNormalActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+
+
+        Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
+        Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+
+
+        if(myPlayerNum==1){
+            textTitle.setText("You are the host. If you left the room, the whole room will be dissolved.\n\n You really want to quit ?");
+        }else {
+            textTitle.setText("You really want to quit ?");
+        }
+
+
+
+        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
+        anim.setAnimation(R.raw.exit_lobby);
+        anim.playAnimation();
+        anim.loop(true);
+
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Dialog dialog=null;
+                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentNormalActivity.this);
+                supportAlertDialog.showLoadingDialog();
+
+
+                if(myPlayerNum==1){
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            supportAlertDialog.dismissLoadingDialog();
+
+                            try{
+                                alertDialog.dismiss();
+                            }catch (Exception e){
+
+
+
+
+
+                            }
+
+                            intentMain();
+
+                        }
+                    });
+                }else{
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            supportAlertDialog.dismissLoadingDialog();
+
+                            try{
+                                alertDialog.dismiss();
+                            }catch (Exception e){
+
+                            }
+
+                            intentMain();
+
+
+
+                        }
+                    });
+                }
+
+
+            }
+        });
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+
+    private void intentMain(){
+        try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+
+        try{countDownTimer.cancel();}catch (Exception e){}
+
+
+        Intent intent=new Intent(TournamentNormalActivity.this,MainActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
 
 
 }

@@ -125,11 +125,15 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                 supportAlertDialog.showLoadingDialog();
 
 
+
+
+
                 table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("active").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         try {
                             if(snapshot.getValue(Integer.class)==1){
+
 
 
                                 table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {

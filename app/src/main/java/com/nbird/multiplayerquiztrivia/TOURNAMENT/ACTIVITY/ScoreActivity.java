@@ -67,7 +67,7 @@ public class ScoreActivity extends AppCompatActivity {
 
     LottieAnimationView party_popper;
 
-    Button reMatch,joinOrCreateOtherRoom;
+    Button reMatch,joinOrCreateOtherRoom,quitButton;
 
     Boolean winnerDeclared=false, isHostActive;
 
@@ -87,6 +87,7 @@ public class ScoreActivity extends AppCompatActivity {
         party_popper = (LottieAnimationView) findViewById(R.id.party_popper);
         reMatch = (Button) findViewById(R.id.reMatch);
         joinOrCreateOtherRoom = (Button) findViewById(R.id.joinOrCreateOtherRoom);
+        quitButton=(Button) findViewById(R.id.quitButton);
 
         playerDataArrayList = new ArrayList<>();
 
@@ -100,6 +101,7 @@ public class ScoreActivity extends AppCompatActivity {
 
 
         reMatch.setEnabled(false);
+        joinOrCreateOtherRoom.setVisibility(View.GONE);
 
 
 
@@ -123,12 +125,22 @@ public class ScoreActivity extends AppCompatActivity {
                              if(isHostActive){
                                  reMatch.setEnabled(true);
                              }else{
-                                reMatch.setEnabled(false);
+                                reMatch.setEnabled(true);
+                                joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
                              }
                          }
 
 
                     }catch (Exception e){
+
+                        isHostActive=false;
+
+
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").addValueEventListener(hostActiveEventListener);}catch (Exception e1){}
+
+                                reMatch.setEnabled(true);
+                                joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
+
 
                     }
                 }
@@ -143,6 +155,20 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
 
+
+
+        quitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                quitScoreActivityActivity();
+
+            }
+        });
+
+
         reMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +178,7 @@ public class ScoreActivity extends AppCompatActivity {
                     table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
                     table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).removeValue();
                     table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeValue();
+                    table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
 
                     roomEnter();
 
@@ -162,7 +189,6 @@ public class ScoreActivity extends AppCompatActivity {
 
                         BasicDialog basicDialog=new BasicDialog(ScoreActivity.this,reMatch,"Room Dissolved","Your host left the room because of which the room is dissolved. Please join or create some other room.","OKAY",R.raw.host_removed);
                         basicDialog.start();
-
 
                     }
                 }
@@ -175,6 +201,13 @@ public class ScoreActivity extends AppCompatActivity {
         joinOrCreateOtherRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);} catch (Exception e) {}
+                try {table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);} catch (Exception e) {}
+                try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);}catch (Exception e){}
+
+
+
                 JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
                 joinCreateTournamentDialoge.start(ScoreActivity.this,joinOrCreateOtherRoom);
             }
@@ -213,6 +246,10 @@ public class ScoreActivity extends AppCompatActivity {
                     }
 
                 }catch (Exception e){
+
+
+
+
 
                 }
             }
@@ -269,11 +306,52 @@ public class ScoreActivity extends AppCompatActivity {
                     if (playerInfo.isActive()) {
                         numberOfActivePlayer++;
                     } else {
-                        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(String.valueOf(dataSnapshot.getChildren())).removeValue();
+
+                        try{
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(String.valueOf(dataSnapshot.getKey())).removeValue();
+                        }catch (Exception e){
+
+                        }
+
                     }
 
 
                 }
+
+
+
+
+                try{
+
+                    if (numberOfActivePlayer == playerDataArrayList.size()) {
+
+                        resultComparator();
+                        Collections.reverse(playerDataArrayList);
+                        winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
+
+                        for (int i = 0; i < playerDataArrayList.size(); i++) {
+                            playerDataArrayList.get(i).setTotalScoreInt(i + 1);
+                        }
+
+
+                        resultAdapter.notifyDataSetChanged();
+                    } else {
+
+
+                        resultComparator();
+                        Collections.reverse(playerDataArrayList);
+                        for (int i = 0; i < playerDataArrayList.size(); i++) {
+                            playerDataArrayList.get(i).setTotalScoreInt(i + 1);
+                        }
+
+                        resultAdapter.notifyDataSetChanged();
+                    }
+
+                }catch (Exception e){
+
+                }
+
+
 
             }
 
@@ -309,7 +387,7 @@ public class ScoreActivity extends AppCompatActivity {
 
                     resultComparator();
 
-
+                    Collections.reverse(playerDataArrayList);
                     winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
 
                     for (int i = 0; i < playerDataArrayList.size(); i++) {
@@ -356,13 +434,16 @@ public class ScoreActivity extends AppCompatActivity {
 
 
 
-
-
     private void winnerDialog(String imageURL, String nameStr) {
 
         winnerDeclared=true;
 
         reMatch.setEnabled(true);
+
+
+        try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);} catch (Exception e) {}
+        try {table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);} catch (Exception e) {}
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ScoreActivity.this, R.style.AlertDialogTheme);
 
@@ -409,8 +490,140 @@ public class ScoreActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+
+
+    public void quitScoreActivityActivity(){
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(ScoreActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(ScoreActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+
+
+        Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
+        Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+
+
+        if(myPlayerNum==1){
+            textTitle.setText("You are the host. If you left the room, the whole room will be dissolved.\n\n You really want to quit ?");
+        }else {
+            textTitle.setText("You really want to quit ?");
+        }
+
+
+
+        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
+        anim.setAnimation(R.raw.exit_lobby);
+        anim.playAnimation();
+        anim.loop(true);
+
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Dialog dialog=null;
+                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,ScoreActivity.this);
+                supportAlertDialog.showLoadingDialog();
+
+
+                if(myPlayerNum==1){
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            supportAlertDialog.dismissLoadingDialog();
+
+                            try{
+                                alertDialog.dismiss();
+                            }catch (Exception e){
+
+                            }
+
+
+                            table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
+                            table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).removeValue();
+                            table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeValue();
+                            table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
+
+
+
+                            intentMain();
+
+                        }
+                    });
+                }else{
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            supportAlertDialog.dismissLoadingDialog();
+
+                            try{
+                                alertDialog.dismiss();
+                            }catch (Exception e){
+
+                            }
+
+                            intentMain();
+
+
+
+                        }
+                    });
+                }
+
+
+
+
+
+
+
+            }
+        });
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
 
     }
+
+    private void intentMain(){
+        try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);} catch (Exception e) {}
+        try {table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);} catch (Exception e) {}
+        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);}catch (Exception e){}
+
+
+
+
+
+        Intent intent=new Intent(ScoreActivity.this,MainActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
+    public void onBackPressed() {
+        quitScoreActivityActivity();
+    }
+
 
 }
