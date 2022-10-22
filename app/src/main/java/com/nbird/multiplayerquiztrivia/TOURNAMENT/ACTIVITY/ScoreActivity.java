@@ -53,7 +53,7 @@ public class ScoreActivity extends AppCompatActivity {
 
     String roomCode;
     int maxQuestions;
-    ValueEventListener resultEventListener, numberOfActivePlayerEventListener,hostActiveEventListener;
+    ValueEventListener resultEventListener, numberOfActivePlayerEventListener, hostActiveEventListener;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference table_user = database.getReference("NEW_APP");
@@ -67,10 +67,9 @@ public class ScoreActivity extends AppCompatActivity {
 
     LottieAnimationView party_popper;
 
-    Button reMatch,joinOrCreateOtherRoom,quitButton;
+    Button reMatch, joinOrCreateOtherRoom, quitButton;
 
-    Boolean winnerDeclared=false, isHostActive;
-
+    Boolean winnerDeclared = false, isHostActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +86,7 @@ public class ScoreActivity extends AppCompatActivity {
         party_popper = (LottieAnimationView) findViewById(R.id.party_popper);
         reMatch = (Button) findViewById(R.id.reMatch);
         joinOrCreateOtherRoom = (Button) findViewById(R.id.joinOrCreateOtherRoom);
-        quitButton=(Button) findViewById(R.id.quitButton);
+        quitButton = (Button) findViewById(R.id.quitButton);
 
         playerDataArrayList = new ArrayList<>();
 
@@ -104,42 +103,43 @@ public class ScoreActivity extends AppCompatActivity {
         joinOrCreateOtherRoom.setVisibility(View.GONE);
 
 
-
-
-        if(myPlayerNum==1){
+        if (myPlayerNum == 1) {
             table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").setValue(3).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
 
                 }
             });
-        }else{
-            hostActiveEventListener=new ValueEventListener() {
+        } else {
+            hostActiveEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try{
-                         isHostActive=snapshot.getValue(Boolean.class);
+                    try {
+                        isHostActive = snapshot.getValue(Boolean.class);
 
 
-                         if(winnerDeclared){
-                             if(isHostActive){
-                                 reMatch.setEnabled(true);
-                             }else{
+                        if (winnerDeclared) {
+                            if (isHostActive) {
+                                reMatch.setEnabled(true);
+                            } else {
                                 reMatch.setEnabled(true);
                                 joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
-                             }
-                         }
+                            }
+                        }
 
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
-                        isHostActive=false;
+                        isHostActive = false;
 
 
-                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").addValueEventListener(hostActiveEventListener);}catch (Exception e1){}
+                        try {
+                            table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").addValueEventListener(hostActiveEventListener);
+                        } catch (Exception e1) {
+                        }
 
-                                reMatch.setEnabled(true);
-                                joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
+                        reMatch.setEnabled(true);
+                        joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
 
 
                     }
@@ -155,12 +155,9 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
 
-
-
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
 
                 quitScoreActivityActivity();
@@ -174,7 +171,7 @@ public class ScoreActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                if(myPlayerNum==1){
+                if (myPlayerNum == 1) {
                     table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
                     table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).removeValue();
                     table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeValue();
@@ -182,12 +179,12 @@ public class ScoreActivity extends AppCompatActivity {
 
                     roomEnter();
 
-                }else{
-                    if(isHostActive){
+                } else {
+                    if (isHostActive) {
                         roomEnter();
-                    }else{
+                    } else {
 
-                        BasicDialog basicDialog=new BasicDialog(ScoreActivity.this,reMatch,"Room Dissolved","Your host left the room because of which the room is dissolved. Please join or create some other room.","OKAY",R.raw.host_removed);
+                        BasicDialog basicDialog = new BasicDialog(ScoreActivity.this, reMatch, "Room Dissolved", "Your host left the room because of which the room is dissolved. Please join or create some other room.", "OKAY", R.raw.host_removed);
                         basicDialog.start();
 
                     }
@@ -202,32 +199,37 @@ public class ScoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);} catch (Exception e) {}
-                try {table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);} catch (Exception e) {}
-                try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);}catch (Exception e){}
+                try {
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
+                } catch (Exception e) {
+                }
+                try {
+                    table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
+                } catch (Exception e) {
+                }
+                try {
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
+                } catch (Exception e) {
+                }
 
 
-
-                JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
-                joinCreateTournamentDialoge.start(ScoreActivity.this,joinOrCreateOtherRoom);
+                JoinCreateTournamentDialoge joinCreateTournamentDialoge = new JoinCreateTournamentDialoge();
+                joinCreateTournamentDialoge.start(ScoreActivity.this, joinOrCreateOtherRoom);
             }
         });
 
 
-
-
-
     }
 
-    private void roomEnter(){
+    private void roomEnter() {
         table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
+                try {
 
-                    int data=snapshot.getValue(Integer.class);
+                    int data = snapshot.getValue(Integer.class);
 
-                    if(data==3){
+                    if (data == 3) {
                         table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").setValue(1).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -236,19 +238,16 @@ public class ScoreActivity extends AppCompatActivity {
 
                             }
                         });
-                    }else if(data==1){
+                    } else if (data == 1) {
                         intentFunction();
-                    }else{
+                    } else {
 
-                        BasicDialog basicDialog=new BasicDialog(ScoreActivity.this,reMatch,"Game Started","Host started the game. Cannot enter in the middle of the game. Please join or create some other room.","OKAY",R.raw.host_started_game);
+                        BasicDialog basicDialog = new BasicDialog(ScoreActivity.this, reMatch, "Game Started", "Host started the game. Cannot enter in the middle of the game. Please join or create some other room.", "OKAY", R.raw.host_started_game);
                         basicDialog.start();
 
                     }
 
-                }catch (Exception e){
-
-
-
+                } catch (Exception e) {
 
 
                 }
@@ -262,9 +261,9 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
 
-    private void intentFunction(){
-        Dialog dialog=null;
-        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,ScoreActivity.this);
+    private void intentFunction() {
+        Dialog dialog = null;
+        SupportAlertDialog supportAlertDialog = new SupportAlertDialog(dialog, ScoreActivity.this);
         supportAlertDialog.showLoadingDialog();
 
         try {
@@ -277,10 +276,9 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
 
-
-        try{
+        try {
             table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -307,9 +305,9 @@ public class ScoreActivity extends AppCompatActivity {
                         numberOfActivePlayer++;
                     } else {
 
-                        try{
+                        try {
                             table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(String.valueOf(dataSnapshot.getKey())).removeValue();
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
@@ -319,9 +317,7 @@ public class ScoreActivity extends AppCompatActivity {
                 }
 
 
-
-
-                try{
+                try {
 
                     if (numberOfActivePlayer == playerDataArrayList.size()) {
 
@@ -347,10 +343,9 @@ public class ScoreActivity extends AppCompatActivity {
                         resultAdapter.notifyDataSetChanged();
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
 
                 }
-
 
 
             }
@@ -433,16 +428,21 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
 
-
     private void winnerDialog(String imageURL, String nameStr) {
 
-        winnerDeclared=true;
+        winnerDeclared = true;
 
         reMatch.setEnabled(true);
 
 
-        try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);} catch (Exception e) {}
-        try {table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);} catch (Exception e) {}
+        try {
+            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
+        } catch (Exception e) {
+        }
+        try {
+            table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
+        } catch (Exception e) {
+        }
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ScoreActivity.this, R.style.AlertDialogTheme);
@@ -493,44 +493,39 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
 
-
-    public void quitScoreActivityActivity(){
-        AlertDialog.Builder builderRemove=new AlertDialog.Builder(ScoreActivity.this, R.style.AlertDialogTheme);
-        View viewRemove1= LayoutInflater.from(ScoreActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+    public void quitScoreActivityActivity() {
+        AlertDialog.Builder builderRemove = new AlertDialog.Builder(ScoreActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1 = LayoutInflater.from(ScoreActivity.this).inflate(R.layout.dialog_model_2, (ConstraintLayout) findViewById(R.id.layoutDialogContainer), false);
         builderRemove.setView(viewRemove1);
         builderRemove.setCancelable(false);
 
 
-        Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
-        Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+        Button yesButton = (Button) viewRemove1.findViewById(R.id.buttonYes);
+        Button noButton = (Button) viewRemove1.findViewById(R.id.buttonNo);
 
-        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+        TextView textTitle = (TextView) viewRemove1.findViewById(R.id.textTitle);
 
 
-        if(myPlayerNum==1){
+        if (myPlayerNum == 1) {
             textTitle.setText("You are the host. If you left the room, the whole room will be dissolved.\n\n You really want to quit ?");
-        }else {
+        } else {
             textTitle.setText("You really want to quit ?");
         }
 
 
-
-        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
+        LottieAnimationView anim = (LottieAnimationView) viewRemove1.findViewById(R.id.imageIcon);
         anim.setAnimation(R.raw.exit_lobby);
         anim.playAnimation();
         anim.loop(true);
 
 
-
-
-
-        final AlertDialog alertDialog=builderRemove.create();
-        if(alertDialog.getWindow()!=null){
+        final AlertDialog alertDialog = builderRemove.create();
+        if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
-        try{
+        try {
             alertDialog.show();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -539,59 +534,49 @@ public class ScoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Dialog dialog=null;
-                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,ScoreActivity.this);
+                Dialog dialog = null;
+                SupportAlertDialog supportAlertDialog = new SupportAlertDialog(dialog, ScoreActivity.this);
                 supportAlertDialog.showLoadingDialog();
 
 
-                if(myPlayerNum==1){
+                if (myPlayerNum == 1) {
                     table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             supportAlertDialog.dismissLoadingDialog();
 
-                            try{
+                            try {
                                 alertDialog.dismiss();
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                             }
-
 
                             table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
                             table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).removeValue();
                             table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeValue();
                             table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
 
-
-
                             intentMain();
 
                         }
                     });
-                }else{
+                } else {
                     table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             supportAlertDialog.dismissLoadingDialog();
 
-                            try{
+                            try {
                                 alertDialog.dismiss();
-                            }catch (Exception e){
+                            } catch (Exception e) {
 
                             }
 
                             intentMain();
 
-
-
                         }
                     });
                 }
-
-
-
-
-
 
 
             }
@@ -606,16 +591,22 @@ public class ScoreActivity extends AppCompatActivity {
 
     }
 
-    private void intentMain(){
-        try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);} catch (Exception e) {}
-        try {table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);} catch (Exception e) {}
-        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);}catch (Exception e){}
+    private void intentMain() {
+        try {
+            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
+        } catch (Exception e) {
+        }
+        try {
+            table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
+        } catch (Exception e) {
+        }
+        try {
+            table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
+        } catch (Exception e) {
+        }
 
 
-
-
-
-        Intent intent=new Intent(ScoreActivity.this,MainActivity.class);
+        Intent intent = new Intent(ScoreActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
 

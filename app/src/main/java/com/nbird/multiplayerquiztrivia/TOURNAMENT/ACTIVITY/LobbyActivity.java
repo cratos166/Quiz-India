@@ -214,7 +214,6 @@ public class LobbyActivity extends AppCompatActivity {
             table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
 
 
-
         }
 
 

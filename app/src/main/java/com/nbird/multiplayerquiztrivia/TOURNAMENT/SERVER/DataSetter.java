@@ -42,10 +42,7 @@ public class DataSetter {
 
                     try{
 
-
-
                         PlayerInfo playerInfo=dataSnapshot.getValue(PlayerInfo.class);
-
 
                         if(playerInfo.isActive()){
                             float acc=((playerInfo.getCorrect()*100)/playerInfo.getWrong());
@@ -62,9 +59,13 @@ public class DataSetter {
                             table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(dataSnapshot.getKey()).removeValue();
                         }
 
-
-
                     }catch (Exception e){
+
+                        try{
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(dataSnapshot.getKey()).removeValue();
+                        }catch (Exception e1){
+
+                        }
 
                     }
 

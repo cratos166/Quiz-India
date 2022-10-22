@@ -184,7 +184,11 @@ public class JoinCreateTournamentDialoge {
                         }
 
                     }catch (Exception e){
+                        try{
+                            table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(dataSnapshot.getKey())).removeValue();
+                        }catch (Exception e1){
 
+                        }
                     }
 
 

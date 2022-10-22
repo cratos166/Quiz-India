@@ -28,6 +28,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/cancel"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="end"
+                android:layout_margin="10dp"
+                android:background="@drawable/cancel_icon"
+                app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/imageIcon"
                 android:layout_width="130dp"

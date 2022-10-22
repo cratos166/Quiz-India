@@ -97,12 +97,13 @@ public class DialogJoinVS {
 
         View view1= LayoutInflater.from(context).inflate(R.layout.dialog_join_layout,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
-        builder.setCancelable(true);
+        builder.setCancelable(false);
 
 
         LottieAnimationView imageIcon=(LottieAnimationView) view1.findViewById(R.id.imageIcon);
         TextView textTitle=(TextView) view1.findViewById(R.id.textTitle);
         Button joinButton=(Button) view1 .findViewById(R.id.joinButton1);
+        ImageView cancel=(ImageView) view1.findViewById(R.id.cancel);
 
 
         TextInputEditText passWordET=(TextInputEditText) view1.findViewById(R.id.username);
@@ -126,13 +127,21 @@ public class DialogJoinVS {
 
         }
 
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{alertDialog.dismiss();}catch (Exception e){}
+            }
+        });
+
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(passWordET.getText().toString().equals("")){
                     passWordET.setError("Fields Cannot Be Empty");
-                }else if(passWordET.getText().toString().length()>=6){
-                    passWordET.setError("Field Length Should Be Less Than 6 Characters");
+                }else if(passWordET.getText().toString().length()>=10){
+                    passWordET.setError("Field Length Should Be Less Than 10 Characters");
                 }else{
                     joiner(context,passWordET.getText().toString(),passWordET,view);
                 }

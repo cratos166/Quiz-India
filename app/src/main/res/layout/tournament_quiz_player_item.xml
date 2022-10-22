@@ -74,8 +74,8 @@
 
             <ImageView
                 android:id="@+id/anim1"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:elevation="-5dp"
                 android:layout_margin="2dp"
@@ -88,8 +88,8 @@
 
             <ImageView
                 android:id="@+id/anim2"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:elevation="-5dp"
                 android:layout_margin="2dp"
@@ -102,8 +102,8 @@
 
             <ImageView
                 android:id="@+id/anim3"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:elevation="-5dp"
                 android:layout_margin="2dp"
@@ -116,8 +116,8 @@
 
             <ImageView
                 android:id="@+id/anim4"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:elevation="-5dp"
@@ -130,8 +130,8 @@
 
             <ImageView
                 android:id="@+id/anim5"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:elevation="-5dp"
                 android:layout_margin="2dp"
@@ -152,8 +152,8 @@
 
             <ImageView
                 android:id="@+id/anim6"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:elevation="-5dp"
@@ -166,8 +166,8 @@
 
             <ImageView
                 android:id="@+id/anim7"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:elevation="-5dp"
@@ -180,8 +180,8 @@
 
             <ImageView
                 android:id="@+id/anim8"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:layout_margin="2dp"
                 android:elevation="-5dp"
@@ -194,8 +194,8 @@
 
             <ImageView
                 android:id="@+id/anim9"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:elevation="-5dp"
                 android:layout_margin="2dp"
@@ -208,8 +208,8 @@
 
             <ImageView
                 android:id="@+id/anim10"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
                 android:layout_weight="1"
                 android:elevation="-5dp"
                 android:layout_margin="2dp"
@@ -233,8 +233,8 @@
 
                 <ImageView
                     android:id="@+id/anim11"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:layout_margin="2dp"
                     android:elevation="-5dp"
@@ -247,8 +247,8 @@
 
                 <ImageView
                     android:id="@+id/anim12"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:layout_margin="2dp"
                     android:elevation="-5dp"
@@ -261,8 +261,8 @@
 
                 <ImageView
                     android:id="@+id/anim13"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:layout_margin="2dp"
                     android:elevation="-5dp"
@@ -275,8 +275,8 @@
 
                 <ImageView
                     android:id="@+id/anim14"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:layout_margin="2dp"
                     android:elevation="-5dp"
@@ -289,8 +289,8 @@
 
                 <ImageView
                     android:id="@+id/anim15"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:elevation="-5dp"
                     android:layout_margin="2dp"
@@ -312,8 +312,8 @@
 
                 <ImageView
                     android:id="@+id/anim16"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:elevation="-5dp"
                     android:scaleType="centerCrop"
@@ -326,8 +326,8 @@
 
                 <ImageView
                     android:id="@+id/anim17"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:elevation="-5dp"
                     android:layout_margin="2dp"
@@ -340,8 +340,8 @@
 
                 <ImageView
                     android:id="@+id/anim18"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:elevation="-5dp"
                     android:layout_margin="2dp"
@@ -354,8 +354,8 @@
 
                 <ImageView
                     android:id="@+id/anim19"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:elevation="-5dp"
                     android:layout_margin="2dp"
@@ -368,8 +368,8 @@
 
                 <ImageView
                     android:id="@+id/anim20"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
                     android:layout_weight="1"
                     android:elevation="-5dp"
                     android:layout_margin="2dp"

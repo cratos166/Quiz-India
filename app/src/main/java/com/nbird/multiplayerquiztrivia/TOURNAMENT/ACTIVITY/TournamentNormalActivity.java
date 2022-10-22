@@ -9,6 +9,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -91,7 +94,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    NormalTournamentTimer timer;
+
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
@@ -108,7 +111,10 @@ public class TournamentNormalActivity extends AppCompatActivity {
     ValueEventListener playerInfoGetterListener;
     RecyclerView recyclerView;
 
-
+    int minutes=2;
+    int second=59;
+    String minutestext;
+    String secondtext;
 
 
 
@@ -157,6 +163,8 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
 
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
+
+       // timer=new NormalTournamentTimer(countDownTimer,time*1000,1000,TournamentNormalActivity.this,timerText,clockCardView);
 
 
 
@@ -240,8 +248,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
         num++;
         if (num == listAns.size()) {
-            timer=new NormalTournamentTimer(countDownTimer,time*1000,1000,TournamentNormalActivity.this,timerText,clockCardView);
-            timer.start();
+            setCountDownTimer();
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
                     linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -412,13 +419,13 @@ public class TournamentNormalActivity extends AppCompatActivity {
     public void quizFinishDialog(){
 
         try{
-            timer.getCountDownTimer().cancel();
+            countDownTimer.cancel();
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        int minutesLeft=timer.getMinutes();
-        int secondsLeft=timer.getSecond();
+        int minutesLeft=minutes;
+        int secondsLeft=second;
 
         String timeTakenString;
         if((60-secondsLeft)>10){
@@ -429,7 +436,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
         int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
 
-        ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
+        ScoreGenerator scoreGenerator=new ScoreGenerator(minutes,second,lifelineSum,score);
 
         totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
         totalScore.setSingleModeScore();
@@ -629,6 +636,77 @@ public class TournamentNormalActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
 
+    }
+
+
+    private void setCountDownTimer(){
+        countDownTimer=new CountDownTimer(time*1000, 1000) {
+
+
+            @SuppressLint("ResourceAsColor")
+            public void onTick(long millisUntilFinished) {
+
+
+                if(second==0){
+                    minutes--;
+                    minutestext="0"+String.valueOf(minutes);
+                    second=59;
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+
+                }else{
+                    minutestext="0"+String.valueOf(minutes);
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+                    second--;
+                }
+
+                //Last 15 seconds end animation
+                if(minutes==0 && second<=15){
+
+                    timerText.setTextColor(R.color.red);
+
+                    //Continuous zoomIn - zoomOut
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
+
+                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    AnimatorSet scaleAnim = new AnimatorSet();
+                    scaleAnim.setDuration(500);
+                    scaleAnim.play(scaleX).with(scaleY);
+
+                    scaleAnim.start();
+                }
+
+            }
+            public void onFinish() {
+
+
+
+
+                minutes=0;
+                second=0;
+
+                Toast.makeText(TournamentNormalActivity.this, "Time Over", Toast.LENGTH_SHORT).show();
+                quizFinishDialog();
+
+
+            }
+
+        }.start();
     }
 
 
