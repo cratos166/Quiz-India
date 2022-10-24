@@ -50,7 +50,6 @@ import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.Timers.NormalVidQuizTimer;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

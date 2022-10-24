@@ -60,8 +60,7 @@ import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.AnswerUploader;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.PlayerDisplayInQuiz;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.TIMERS.NormalTournamentTimer;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +113,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
     int minutes=2;
     int second=59;
     String minutestext;
-    String secondtext;
+    String secondtext,hostName;
 
 
 
@@ -127,6 +126,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
         roomCode=getIntent().getStringExtra("roomCode");
         time=getIntent().getIntExtra("time",180);
         myPlayerNum=getIntent().getIntExtra("playerNum",1);
+        hostName= getIntent().getStringExtra("hostName");
 
         list=new ArrayList<>();
         appData=new AppData();
@@ -464,6 +464,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
                 intent.putExtra("roomCode",roomCode);
                 intent.putExtra("maxQuestions",list.size()-1);
                 intent.putExtra("playerNum",myPlayerNum);
+                intent.putExtra("hostName",hostName);
                 startActivity(intent);
                 finish();
 
@@ -576,19 +577,27 @@ public class TournamentNormalActivity extends AppCompatActivity {
                     table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            supportAlertDialog.dismissLoadingDialog();
-
-                            try{
-                                alertDialog.dismiss();
-                            }catch (Exception e){
 
 
+                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
 
+                                    try{
+                                        supportAlertDialog.dismissLoadingDialog();
+                                    }catch (Exception e1){
 
+                                    }
 
-                            }
+                                    try{
+                                        alertDialog.dismiss();
+                                    }catch (Exception e){
 
-                            intentMain();
+                                    }
+
+                                    intentMain();
+                                }
+                            });
 
                         }
                     });

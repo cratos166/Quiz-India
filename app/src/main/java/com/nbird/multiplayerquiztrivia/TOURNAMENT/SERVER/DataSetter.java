@@ -30,7 +30,6 @@ public class DataSetter {
 
     public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter, ValueEventListener valueEventListener){
 
-
         valueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -38,7 +37,6 @@ public class DataSetter {
                 playerDataArrayList.clear();
 
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-
 
                     try{
 
@@ -71,14 +69,12 @@ public class DataSetter {
 
                 }
 
-
                 table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfPlayers").setValue(playerDataArrayList.size()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
                     }
                 });
-
 
                 myAdapter.notifyDataSetChanged();
 

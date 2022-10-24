@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scaleY="0.75"
     android:scaleX="0.75"
-    android:layout_margin="20dp"
+    android:layout_margin="10dp"
     android:padding="15dp"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/border_theme"

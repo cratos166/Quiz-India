@@ -284,16 +284,16 @@ public class LobbyActivity extends AppCompatActivity {
         removePlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<Details> playerToBeRemoved=playerDataArrayList;
-                int ind=0;
-                for(int i=0;i<playerToBeRemoved.size();i++){
-                    if(mAuth.getCurrentUser().getUid().equals(playerToBeRemoved.get(i).getUid())){
-                        ind=i;
-                        break;
+                ArrayList<Details> playerToBeRemoved=new ArrayList<>();
+
+
+                for(int i=0;i<playerDataArrayList.size();i++){
+                    if(!mAuth.getCurrentUser().getUid().equals(playerDataArrayList.get(i).getUid())){
+                        playerToBeRemoved.add(playerDataArrayList.get(i));
                     }
                 }
 
-                playerToBeRemoved.remove(ind);
+
                 RemovePlayerDialog removePlayerDialog=new RemovePlayerDialog(LobbyActivity.this,roomCode);
                 removePlayerDialog.start(removePlayerButton,playerToBeRemoved);
 
@@ -438,6 +438,7 @@ public class LobbyActivity extends AppCompatActivity {
         intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
         intent.putExtra("roomCode",roomCode);
         intent.putExtra("playerNum",myPlayerNum);
+        intent.putExtra("hostName",hostNameStr);
         if(timeInt==1){
             intent.putExtra("time",180);
         }else if(timeInt==2){

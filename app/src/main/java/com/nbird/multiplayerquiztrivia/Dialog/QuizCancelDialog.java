@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 
 public class QuizCancelDialog {
@@ -36,7 +37,7 @@ public class QuizCancelDialog {
     DatabaseReference table_user = database.getReference("NEW_APP");
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
     DatabaseReference myRef = database.getReference();
-    ValueEventListener lisnerForConnectionStatus,vsRematchListener,isCompletedListener;
+    ValueEventListener lisnerForConnectionStatus,vsRematchListener,isCompletedListener,myConnectionLisner;
 
     public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, ValueEventListener lisnerForConnectionStatus,String oppoUID,ValueEventListener vsRematchListener,ValueEventListener isCompletedListener) {
         this.context = context;
@@ -49,10 +50,22 @@ public class QuizCancelDialog {
         this.isCompletedListener=isCompletedListener;
     }
 
-    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity) {
+    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, ValueEventListener lisnerForConnectionStatus, String oppoUID, ValueEventListener vsRematchListener, ValueEventListener isCompletedListener, ValueEventListener myConnectionLisner) {
         this.context = context;
         this.countDownTimer = countDownTimer;
         this.v = v;
+        this.songActivity = songActivity;
+        this.lisnerForConnectionStatus=lisnerForConnectionStatus;
+        this.oppoUID=oppoUID;
+        this.vsRematchListener=vsRematchListener;
+        this.isCompletedListener=isCompletedListener;
+        this.myConnectionLisner=myConnectionLisner;
+    }
+
+    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button option1, SongActivity songActivity) {
+        this.context = context;
+        this.countDownTimer = countDownTimer;
+        this.v = option1;
         this.songActivity = songActivity;
     }
 
@@ -92,26 +105,22 @@ public class QuizCancelDialog {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
-                        try{table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){e.printStackTrace();}
-
-                        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
-
-                        try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+//                        try{table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){e.printStackTrace();}
+//
+//                        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
+//
+//                        try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+//
+//
+//                        try{table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){}
 
                         supportAlertDialog.dismissLoadingDialog();
-
-                        if(countDownTimer!=null){
-                            countDownTimer.cancel();
-                        }
+//
+//                        if(countDownTimer!=null){
+//                            countDownTimer.cancel();
+//                        }
                         alertDialog.cancel();
-                        Intent i=new Intent(context, MainActivity.class);
-                        v.getContext().startActivity(i);
-                        try{
-                            songActivity.songStop();
-                        }catch (Exception e){
 
-                        }
-                        ((Activity)context).finish();
                     }
                 });
 

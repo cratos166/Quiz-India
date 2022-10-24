@@ -70,7 +70,6 @@ public class PlayerRemoveAdapter extends RecyclerView.Adapter<PlayerRemoveAdapte
                  if(arr[position]==0){
                      arr[position]=1;
                      holder.linear1.setBackgroundResource(R.drawable.double_color_2);
-
                  }else{
                      arr[position]=0;
                      holder.linear1.setBackgroundResource(R.drawable.border_theme);

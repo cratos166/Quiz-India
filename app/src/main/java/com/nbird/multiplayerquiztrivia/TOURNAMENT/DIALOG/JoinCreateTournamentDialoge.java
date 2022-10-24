@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,6 +57,7 @@ public class JoinCreateTournamentDialoge {
     RecyclerView recyclerView;
     ArrayList<Room> list;
     RoomListAdapter categoryAdapter;
+    TextView recyclerText;
 
     public void start(Context context, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
@@ -69,6 +71,7 @@ public class JoinCreateTournamentDialoge {
         Button joinButton = (Button) view1.findViewById(R.id.joinPrivateRoom);
         Button cancelButton=(Button) view1.findViewById(R.id.cancelButton);
         CardView refresh=(CardView) view1.findViewById(R.id.refresh);
+        recyclerText=(TextView) view1.findViewById(R.id.recyclerText);
 
         shimmer=view1.findViewById(R.id.shimmer);
         recyclerView=view1.findViewById(R.id.recyclerView);
@@ -153,6 +156,7 @@ public class JoinCreateTournamentDialoge {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 list.clear();
+                recyclerText.setVisibility(View.GONE);
 
                 supportAlertDialog.dismissLoadingDialog();
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
@@ -201,6 +205,7 @@ public class JoinCreateTournamentDialoge {
                 shimmer.setVisibility(View.GONE);
 
                 if(list.size()==0){
+                    recyclerText.setVisibility(View.VISIBLE);
                     Toast.makeText(context, "No Rooms Available! Please Create one.", Toast.LENGTH_SHORT).show();
                 }
             }

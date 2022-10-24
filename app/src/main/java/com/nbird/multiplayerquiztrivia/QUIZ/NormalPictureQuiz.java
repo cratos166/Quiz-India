@@ -6,9 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;

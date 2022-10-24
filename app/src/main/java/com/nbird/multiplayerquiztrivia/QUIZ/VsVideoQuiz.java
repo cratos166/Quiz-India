@@ -11,6 +11,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -55,6 +56,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.VS.DataExchange;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LL_Video_Quiz;
+import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
@@ -100,7 +102,7 @@ public class VsVideoQuiz extends AppCompatActivity {
 
     int playerNum,mode;
     String oppoUID,oppoName,oppoImgStr;
-    ValueEventListener isCompletedListener,vsRematchListener,lisnerForConnectionStatus;
+    ValueEventListener isCompletedListener,vsRematchListener,lisnerForConnectionStatus,myConnectionLisner;
     DialogModel_1 dialogModel_1;
     int starter=1;
 
@@ -253,6 +255,35 @@ public class VsVideoQuiz extends AppCompatActivity {
         seekerManupulator();
         seekerTracker();
 
+        myConnectionLisner=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    int value=snapshot.getValue(Integer.class);
+
+                    if(value==0){
+
+                        intentFunDeleter();
+
+                        Intent i=new Intent(VsVideoQuiz.this, MainActivity.class);
+                        startActivity(i);
+
+                        finish();
+
+                        //  myConnectionOff();
+
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").addValueEventListener(myConnectionLisner);
 
 
         lisnerForConnectionStatus=new ValueEventListener() {
@@ -283,6 +314,21 @@ public class VsVideoQuiz extends AppCompatActivity {
 
 
 
+    }
+
+    private void intentFunDeleter(){
+        try{table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeEventListener(myConnectionLisner);}catch (Exception e){e.printStackTrace();}
+        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
+
+        try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+
+        try{table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){e.printStackTrace();}
+
+        try{ answerUploaderAndReceiver.removeAnimListener(oppoUID);}catch (Exception e){}
+
+
+        try{ songActivity.songStop(); }catch (Exception e){ }
+        if(countDownTimer!=null){ countDownTimer.cancel();}
     }
 
 
@@ -736,11 +782,6 @@ public class VsVideoQuiz extends AppCompatActivity {
         SupportAlertDialog supportAlertDialog =new SupportAlertDialog(loadingDialog,VsVideoQuiz.this);
         supportAlertDialog.showLoadingDialog();
 
-        try {
-            table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
 
 
@@ -855,6 +896,12 @@ public class VsVideoQuiz extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
+                                try{
+                                    table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeEventListener(myConnectionLisner);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
                                 dataExchange=new DataExchange(VsVideoQuiz.this,map,animList,score, finalTimeTakenString,
                                         lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
                                         category,1, finalTimeTakenInt,oppoUID,oppoName,oppoImgStr,animationList,mode,lisnerForConnectionStatus,answerUploaderAndReceiver,vsRematchListener,isCompletedListener,countDownTimer,party_popper,rematchButtonEnable);
@@ -879,6 +926,12 @@ public class VsVideoQuiz extends AppCompatActivity {
 
                                                 try{
                                                     table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+
+                                                try{
+                                                    table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeEventListener(myConnectionLisner);
                                                 }catch (Exception e){
                                                     e.printStackTrace();
                                                 }

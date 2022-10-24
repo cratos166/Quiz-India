@@ -111,7 +111,7 @@
                         android:layout_marginBottom="5dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="2dp"
-                        android:textColor="#000000"
+                        android:textColor="@color/level_0"
                         android:fontFamily="@font/ubuntu"/>
 
                     <ImageView
@@ -165,6 +165,34 @@
                     </LinearLayout>
 
                 </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+                <TextView
+                    android:id="@+id/recyclerText"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:fontFamily="@font/ubuntu"
+                    android:gravity="center"
+                    android:elevation="30dp"
+                    android:text="No room in the server.\n Please create a room."
+                    android:textColor="@color/dark_border_stroke"
+                    android:textSize="10dp"
+                    android:padding="10dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/head"
+                    shimmer:layout_constraintBottom_toBottomOf="parent"
+                    shimmer:layout_constraintEnd_toEndOf="parent"
+                    shimmer:layout_constraintStart_toStartOf="parent"
+                    shimmer:layout_constraintTop_toTopOf="parent" />
 
 
                 <androidx.recyclerview.widget.RecyclerView

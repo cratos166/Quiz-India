@@ -116,33 +116,6 @@ public class RemovePlayerDialog {
 
                 }
 
-//                int finalTracker = tracker;
-//                table_user.child("TOURNAMENT").child("ROOMS").child(roomCode).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        try{
-//                            int players=snapshot.getValue(Integer.class);
-//                            players=players- finalTracker;
-//
-//
-//                            table_user.child("TOURNAMENT").child("ROOMS").child(roomCode).child("numberOfPlayers").setValue(players).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-//
-//                                }
-//                            });
-//
-//
-//                        }catch (Exception e){
-//
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
 
             }
         });

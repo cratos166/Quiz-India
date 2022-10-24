@@ -50,7 +50,7 @@ public class OneVSOneOpponentDataSetter {
         highestScore.setText("Highest Score : "+leaderBoardHolder.getSumationScore());
 
         String timeStr=leaderBoardHolder.getTotalTime()/60+" Min "+leaderBoardHolder.getTotalTime()%60+" Sec ";
-        totalTime.setText("Total Text : "+timeStr);
+        totalTime.setText("Total Time : "+timeStr);
 
         oppoRatio.setText("Correct/Wrong : "+leaderBoardHolder.getCorrect()+"/"+leaderBoardHolder.getWrong());
 

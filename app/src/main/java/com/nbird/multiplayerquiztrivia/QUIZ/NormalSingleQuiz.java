@@ -47,7 +47,6 @@ import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

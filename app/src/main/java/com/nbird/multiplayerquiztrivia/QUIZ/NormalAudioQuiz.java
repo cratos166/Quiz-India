@@ -50,7 +50,6 @@ import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.Timers.NormalAudQuizTimer;
 import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.io.IOException;
 import java.util.ArrayList;

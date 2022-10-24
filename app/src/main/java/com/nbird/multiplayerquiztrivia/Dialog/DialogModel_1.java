@@ -119,7 +119,8 @@ public class DialogModel_1 {
 
                 try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
 
-                answerUploaderAndReceiver.removeAnimListener(oppoUID);
+                try{ answerUploaderAndReceiver.removeAnimListener(oppoUID);}catch (Exception e){}
+
 
 
                 alertDialog.dismiss();

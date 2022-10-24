@@ -51,7 +51,7 @@ import java.util.Comparator;
 
 public class ScoreActivity extends AppCompatActivity {
 
-    String roomCode;
+    String roomCode,hostName;
     int maxQuestions;
     ValueEventListener resultEventListener, numberOfActivePlayerEventListener, hostActiveEventListener;
 
@@ -80,6 +80,8 @@ public class ScoreActivity extends AppCompatActivity {
         roomCode = getIntent().getStringExtra("roomCode");
         maxQuestions = getIntent().getIntExtra("maxQuestions", 10);
         myPlayerNum = getIntent().getIntExtra("playerNum", 1);
+        hostName= getIntent().getStringExtra("hostName");
+
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -287,6 +289,7 @@ public class ScoreActivity extends AppCompatActivity {
         Intent intent = new Intent(ScoreActivity.this, LobbyActivity.class);
         intent.putExtra("playerNum", myPlayerNum);
         intent.putExtra("roomCode", roomCode);
+        intent.putExtra("hostName",hostName);
         startActivity(intent);
         finish();
     }

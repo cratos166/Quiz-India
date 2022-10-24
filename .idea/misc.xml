@@ -61,7 +61,7 @@
         <entry key="app/src/main/res/layout/dialog_select_mode.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/dialog_setting.xml" value="0.5434782608695652" />
         <entry key="app/src/main/res/layout/dialog_sign_up.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/dialog_tournament_join_create.xml" value="0.12664640324214793" />
+        <entry key="app/src/main/res/layout/dialog_tournament_join_create.xml" value="0.5" />
         <entry key="app/src/main/res/layout/dialog_tournament_winner.xml" value="0.4003623188405797" />
         <entry key="app/src/main/res/layout/dialog_trouble_shoot.xml" value="0.31849365234375004" />
         <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
