@@ -56,6 +56,11 @@ public class DialogOnlineLocal {
             @Override
             public void onClick(View view) {
 
+                DialogBotWaiterVS dialogBotWaiterVS=new DialogBotWaiterVS();
+                dialogBotWaiterVS.start(context,view,quizMode);
+                alertDialog.dismiss();
+
+
             }
         });
 

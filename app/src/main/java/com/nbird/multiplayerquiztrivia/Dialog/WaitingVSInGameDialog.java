@@ -135,9 +135,9 @@ public class WaitingVSInGameDialog {
 
     public void dismiss(){
         try{
-            alertDialog.dismiss();
+            alertDialog.cancel();
         }catch (Exception e){
-
+           e.printStackTrace();
         }
     }
 

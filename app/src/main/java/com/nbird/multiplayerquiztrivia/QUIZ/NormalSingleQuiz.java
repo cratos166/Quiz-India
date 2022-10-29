@@ -483,7 +483,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
                int secondsLeft=second;
 
                 String timeTakenString;
-               if((60-secondsLeft)>10){
+               if((60-secondsLeft)>=10){
                    timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
                }else{
                    timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);

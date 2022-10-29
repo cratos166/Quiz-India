@@ -1,4 +1,4 @@
-package com.nbird.multiplayerquiztrivia.QUIZ;
+package com.nbird.multiplayerquiztrivia.BOT;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -14,6 +17,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
@@ -33,9 +37,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.Dialog.DialogBotResult;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.Dialog.WaitingVSInGameDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
 import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
@@ -43,25 +48,24 @@ import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class NormalPictureQuiz extends AppCompatActivity {
-
-
-    TextView questionTextView,scoreBoard,timerText;
+public class VsBOTPictureQuiz extends AppCompatActivity {
+    TextView questionTextView,scoreBoard,timerText,oppoNameTextView,myNameTextView;
     Button option1,option2,option3,option4,nextButton;
     LinearLayout linearLayout,linearLayoutexpert,linearLayoutAudience,linearLayoutFiftyFifty,linearLayoutSwap;
     CardView audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL,clockCardView;
     LottieAnimationView anim11,anim12,anim13,anim14,anim15,anim16,anim17,anim18,anim19,anim20;
-    ImageView myPic, questionImage;
+    LottieAnimationView anim21,anim22,anim23,anim24,anim25,anim26,anim27,anim28,anim29,anim30;
+    ImageView myPic,picOppo,questionImage;
     Dialog loadingDialog;
     CountDownTimer countDownTimer;
 
@@ -71,38 +75,67 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
     private List<questionHolder> list;
     ArrayList<LottieAnimationView> animationList;
-    ArrayList<Boolean> animList;
 
-    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category;
+    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category,oppoLifelineSum=0,myScore;
     String myName,myPicURL;
 
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    QuizTimer timer;
+    //    QuizTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
     HighestScore highestScore;
-    PicLoader picLoader;
 
 
-    int minutes=2;
-    int second=59;
-    String minutestext;
-    String secondtext;
+    int oppoScoreCounter=0;
+    int oppoWrongAnsCounter=0;
+
+    int minutes=2,oppoMinute=2;
+    int second=59,oppoSecond=59;
+    String minutestext,oppominutestext;
+    String secondtext,opposecondtext;
+
+    CountDownTimer countDownTimerForBot,c;
+    int botTime,botCorrectAns, timeTakenInt;
+    ArrayList<LottieAnimationView> oppoAnimationViewList;
+
+
+
+    ArrayList<Boolean> animList,oppoAnimList;
+
+    int binaryPosition=0;
+    WaitingVSInGameDialog waitingVSInGameDialog;
+
+    boolean completedFirst=false;
+
+    String oppoNameString,oppoImageURL;
+    String timeTakenString;
+    HashMap<String,Integer> map;
+
+    String oppoTimeTakenString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_normal_picture_quiz);
+        setContentView(R.layout.activity_vs_botpicture_quiz);
+
+        category=getIntent().getIntExtra("category",1);
+
+        oppoNameString=getIntent().getStringExtra("oppoName");
+        oppoImageURL=getIntent().getStringExtra("oppoImageURL");
+
+        Log.i("OPPO IMAGE",String.valueOf(oppoImageURL));
 
 
         list=new ArrayList<>();
         appData=new AppData();
         animationList=new ArrayList<>();
-        animList=new ArrayList<>();
-
+        animList=new ArrayList<>(12);
+        oppoAnimList = new ArrayList<>(12);
+        map=new HashMap<>();
+        songStopperAndResumer();
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -113,6 +146,8 @@ public class NormalPictureQuiz extends AppCompatActivity {
         nextButton=(Button) findViewById(R.id.nextbutton);
         linearLayout=(LinearLayout) findViewById(R.id.linearButtonlayout);
         timerText=(TextView) findViewById(R.id.timer);
+        myNameTextView=(TextView) findViewById(R.id.myNameTextView);
+        oppoNameTextView=(TextView) findViewById(R.id.oppoNameTextView);
         audienceLL=(CardView) findViewById(R.id.audience);
         expertAdviceLL=(CardView) findViewById(R.id.expert);
         fiftyfiftyLL=(CardView) findViewById(R.id.fiftyfifty);
@@ -131,46 +166,85 @@ public class NormalPictureQuiz extends AppCompatActivity {
         anim18=(LottieAnimationView) findViewById(R.id.anim18);
         anim19=(LottieAnimationView) findViewById(R.id.anim19);
         anim20=(LottieAnimationView) findViewById(R.id.anim20);
+        anim21=(LottieAnimationView) findViewById(R.id.anim21);anim22=(LottieAnimationView) findViewById(R.id.anim22);
+        anim23=(LottieAnimationView) findViewById(R.id.anim23);anim24=(LottieAnimationView) findViewById(R.id.anim24);anim25=(LottieAnimationView) findViewById(R.id.anim25);
+        anim26=(LottieAnimationView) findViewById(R.id.anim26);anim27=(LottieAnimationView) findViewById(R.id.anim27);anim28=(LottieAnimationView) findViewById(R.id.anim28);
+        anim29=(LottieAnimationView) findViewById(R.id.anim29);anim30=(LottieAnimationView) findViewById(R.id.anim30);
         myPic=(ImageView) findViewById(R.id.myPic);
+        picOppo=(ImageView) findViewById(R.id.picOppo);
         questionImage=(ImageView) findViewById(R.id.questionImage);
+
         clockCardView = (CardView) findViewById(R.id.cardView3);
 
-        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, NormalPictureQuiz.this);
-        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, NormalPictureQuiz.this);
+        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, VsBOTPictureQuiz.this);
+        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, VsBOTPictureQuiz.this);
         Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
-                .bitmapTransform(new RoundedCorners(18)))
+                        .bitmapTransform(new RoundedCorners(18)))
                 .into(myPic);
+
+        myNameTextView.setText(myName);
+        oppoNameTextView.setText(oppoNameString);
+        Glide.with(getBaseContext()).load(oppoImageURL).apply(RequestOptions
+                        .bitmapTransform(new RoundedCorners(18)))
+                .into(picOppo);
 
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
 
         animationList.add(anim11);animationList.add(anim12);animationList.add(anim13);animationList.add(anim14);animationList.add(anim15);
         animationList.add(anim16);animationList.add(anim17);animationList.add(anim18);animationList.add(anim19);animationList.add(anim20);
 
-        supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalPictureQuiz.this);
+        supportAlertDialog=new SupportAlertDialog(loadingDialog,VsBOTPictureQuiz.this);
         supportAlertDialog.showLoadingDialog();
-
-        timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
-
-        songStopperAndResumer();
 
         lifeLine();
         questionSelector();
 
-        picLoader=new PicLoader(timer,questionImage,supportAlertDialog);
-        picLoader.start();
+        c=new CountDownTimer(1000*15,1000) {
+            @Override
+            public void onTick(long l) {
+                if(questionImage.getDrawable() != null){
+                    try {
+                        if(c!=null){
+                            c.cancel();
+                        }
+                        setCountDownTimer(60000*3,1000,timerText,clockCardView);
+                        botFunction();
+                        supportAlertDialog.dismissLoadingDialog();
+                    }catch (Exception e){
 
+                    }
 
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                setCountDownTimer(60000*3,1000,timerText,clockCardView);
+                botFunction();
+                supportAlertDialog.dismissLoadingDialog();
+            }
+        }.start();
 
         totalScore=new TotalScore();
         totalScore.getSingleModeScore();
 
         highestScore=new HighestScore();
         highestScore.start();
+
+        oppoAnimationViewList=new ArrayList<>();
+        oppoAnimationViewList.add(anim21); oppoAnimationViewList.add(anim22); oppoAnimationViewList.add(anim23); oppoAnimationViewList.add(anim24); oppoAnimationViewList.add(anim25);
+        oppoAnimationViewList.add(anim26); oppoAnimationViewList.add(anim27); oppoAnimationViewList.add(anim28); oppoAnimationViewList.add(anim29); oppoAnimationViewList.add(anim30);
+
+
+
+
+
+
     }
 
     public void lifeLine(){
 
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalPictureQuiz.this);
+        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,VsBOTPictureQuiz.this);
 
         fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
         audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
@@ -201,11 +275,13 @@ public class NormalPictureQuiz extends AppCompatActivity {
             if(setNumber>1210&&setNumber<2000){
                 setNumber=setNumber-1000;
             }
-            fireBaseData(setNumber);
+            fireBaseData2(setNumber);
         }
     }
 
-    public void fireBaseData ( int setNumber){
+
+
+    public void fireBaseData2 ( int setNumber){
         myRef.child("PictureQuizMain").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -222,7 +298,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(NormalPictureQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VsBOTPictureQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 supportAlertDialog.dismissLoadingDialog();
                 finish();
             }
@@ -230,16 +306,78 @@ public class NormalPictureQuiz extends AppCompatActivity {
     }
 
 
+    public void setCountDownTimer(int totalTime, int interval, TextView clockTextView, CardView clockCardView){
+
+        countDownTimer=new CountDownTimer(totalTime, interval) {
 
 
+            @SuppressLint("ResourceAsColor")
+            public void onTick(long millisUntilFinished) {
+
+
+                if(second==0){
+                    minutes--;
+                    minutestext="0"+String.valueOf(minutes);
+                    second=59;
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    clockTextView.setText(minutestext+":"+secondtext+" ");
+
+                }else{
+                    minutestext="0"+String.valueOf(minutes);
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    clockTextView.setText(minutestext+":"+secondtext+" ");
+                    second--;
+                }
+
+                //Last 15 seconds end animation
+                if(minutes==0 && second<=15){
+
+                    clockTextView.setTextColor(R.color.red);
+
+                    //Continuous zoomIn - zoomOut
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
+
+                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    AnimatorSet scaleAnim = new AnimatorSet();
+                    scaleAnim.setDuration(500);
+                    scaleAnim.play(scaleX).with(scaleY);
+
+                    scaleAnim.start();
+                }
+
+            }
+            public void onFinish() {
+
+                Toast.makeText(VsBOTPictureQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
+                quizFinishDialog();
+
+            }
+
+        }.start();
+
+    }
 
     public void mainManupulations(){
 
         num++;
         if (num == 10) {
-//            setCountDownTimer(60000*3,1000,timerText,clockCardView);
-//            timer=new QuizTimer(countDownTimer,60000*3,1000,NormalPictureQuiz.this,timerText,clockCardView);
-//            timer.start();
+
+//                    timer=new QuizTimer(countDownTimer,60000*3,1000,VsBOTPictureQuiz.this,timerText,clockCardView);
+//                    timer.start();
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
                     linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -275,9 +413,9 @@ public class NormalPictureQuiz extends AppCompatActivity {
                 });
             } else {
                 finish();
-                Toast.makeText(NormalPictureQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VsBOTPictureQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
             }
-//            supportAlertDialog.dismissLoadingDialog();
+           // supportAlertDialog.dismissLoadingDialog();
         }
     }
 
@@ -290,7 +428,6 @@ public class NormalPictureQuiz extends AppCompatActivity {
                 if(value==0 && count<4){
                     String option="";
                     if(count==0){
-
                         String linkHolder=list.get(position).getQuestionPicture();
                         try{
                             Glide.with(getBaseContext())
@@ -300,6 +437,8 @@ public class NormalPictureQuiz extends AppCompatActivity {
                         }catch (Exception e){
 
                         }
+
+
 
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
@@ -353,7 +492,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
     public void playMusic(int id){
         MediaPlayer musicNav;
-        musicNav = MediaPlayer.create(NormalPictureQuiz.this,id);
+        musicNav = MediaPlayer.create(VsBOTPictureQuiz.this,id);
         musicNav.start();
         musicNav.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -421,53 +560,169 @@ public class NormalPictureQuiz extends AppCompatActivity {
     public void quizFinishDialog(){
 
         try{
-            timer.getCountDownTimer().cancel();
+            countDownTimer.cancel();
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        int minutesLeft=timer.getMinutes();
-        int secondsLeft=timer.getSecond();
+        int minutesLeft=minutes;
+        int secondsLeft=second;
 
-        String timeTakenString;
+
         if((60-secondsLeft)>=10){
             timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
         }else{
             timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
         }
 
-        int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
+        timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
 
-        ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
-
-        totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
+        ScoreGenerator scoreGenerator=new ScoreGenerator(minutes,second,lifelineSum,score);
+        myScore=scoreGenerator.start();
+        totalScore.setTotalScore(myScore+totalScore.getTotalScore());
         totalScore.setSingleModeScore();
 
-        if(highestScore.getHighestScore()<scoreGenerator.start()){
-            highestScore.setHighestScore(scoreGenerator.start());
-            highestScore.upLoadHighestScore(scoreGenerator.start());
+        if(highestScore.getHighestScore()<myScore){
+            highestScore.setHighestScore(myScore);
+            highestScore.upLoadHighestScore(myScore);
         }
 
-        HashMap<String,Integer> map=new HashMap<>();
+
+
+
         map.put("Expert",expertnum);
         map.put("Flip",swapnum);
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultHandling resultHandling =new ResultHandling(NormalPictureQuiz.this,map,animList,score,timeTakenString,
-                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,2,timeTakenInt);
 
-        resultHandling.start();
+
+
+
+
+
+        if(binaryPosition<10){
+            completedFirst=true;
+            waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), timeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum), VsBOTPictureQuiz.this,questionTextView);
+            waitingVSInGameDialog.start();
+        }else{
+
+            botData();
+        }
+
+
+
+
     }
 
+
+
+
+    private void botData(){
+        Random random=new Random();
+        oppoLifelineSum=random.nextInt(5);
+
+        Log.i("oppoLifelineSum" , String.valueOf(oppoLifelineSum));
+
+
+        HashMap<String,Integer> oppoMap=new HashMap<>();
+        oppoMap.put("Expert",0);
+        oppoMap.put("Audience",0);
+        oppoMap.put("Fifty-Fifty",0);
+        oppoMap.put("Flip",0);
+        for(int i=0;i<oppoLifelineSum;){
+
+            if(oppoMap.get("Expert")==0){
+                boolean isUse=random.nextBoolean();
+                if(isUse){
+                    oppoMap.put("Expert",1);
+                    i++;
+                    Log.i("Expert","true");
+                }
+            }
+
+            if(oppoMap.get("Audience")==0){
+                boolean isUse=random.nextBoolean();
+                if(isUse){
+                    oppoMap.put("Audience",1);
+                    i++;
+                    Log.i("Audience","true");
+                }
+            }
+
+            if(oppoMap.get("Fifty-Fifty")==0){
+                boolean isUse=random.nextBoolean();
+                if(isUse){
+                    oppoMap.put("Fifty-Fifty",1);
+                    i++;
+                    Log.i("Fifty-Fifty","true");
+                }
+            }
+
+            if(oppoMap.get("Flip")==0){
+                boolean isUse=random.nextBoolean();
+                if(isUse){
+                    oppoMap.put("Flip",1);
+                    i++;
+                    Log.i("Flip","true");
+                }
+            }
+
+        }
+
+
+
+
+
+        Log.i("yo" , "1");
+        ScoreGenerator oppoScoreGenerator=new ScoreGenerator(oppoMinute,oppoSecond,oppoLifelineSum,oppoScoreCounter);
+
+        int oppoTotalScore=oppoScoreGenerator.start();
+        int oppoTimeTakenInt=((2-oppoMinute)*60)+(60-oppoSecond);
+
+        Log.i("oppoTimeTakenInt" , String.valueOf(oppoTimeTakenInt));
+
+
+        if((60-oppoSecond)>=10){
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
+        }else{
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
+        }
+
+        Log.i("oppoTimeTakenString" , String.valueOf(oppoTimeTakenString));
+
+
+        for(int i=0;i<animList.size();i++){
+            try{
+                Log.i("ANIMATION LIST",String.valueOf(animList.get(i)));
+            }catch (Exception e){
+
+            }
+        }
+
+        DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTPictureQuiz.this,
+                myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,1);
+        dialogBotResult.start();
+
+        Log.i("DONE" , "DONE");
+
+//        for(int i=0;i<animList.size();i++){
+//            try{
+//                Log.i("ANIMATION LIST",String.valueOf(animList.get(i)));
+//            }catch (Exception e){
+//
+//            }
+//
+//        }
+
+    }
 
 
     public void songStopperAndResumer(){
         CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
         final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
         final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
-        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this)){
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTPictureQuiz.this)){
             songActivity=new SongActivity(this);
             songActivity.startMusic();
         }else{
@@ -477,27 +732,24 @@ public class NormalPictureQuiz extends AppCompatActivity {
         cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this)){
+                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTPictureQuiz.this)){
                     songActivity.songStop();
                     Speaker.setBackgroundResource(R.drawable.usedicon);
                     speakerImage.setBackgroundResource(R.drawable.music_off);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this,false);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTPictureQuiz.this,false);
                 }else{
-                    songActivity=new SongActivity(NormalPictureQuiz.this);
+                    songActivity=new SongActivity(VsBOTPictureQuiz.this);
                     songActivity.startMusic();
                     Speaker.setBackgroundResource(R.drawable.single_color_2);
                     speakerImage.setBackgroundResource(R.drawable.music_on);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,NormalPictureQuiz.this,true);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTPictureQuiz.this,true);
                 }
             }
         });
     }
 
-
-
-
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalPictureQuiz.this,timer.getCountDownTimer(),option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTPictureQuiz.this,countDownTimer,option1,songActivity);
         quizCancelDialog.start();
     }
 
@@ -505,12 +757,141 @@ public class NormalPictureQuiz extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
 
-        try{ songActivity.songStop(); }catch (Exception e){ }
-        if(countDownTimer!=null){ countDownTimer.cancel();}
+        try{
+            c.cancel();
+        }catch (Exception e){
+
+        }
+
+        try{ songActivity.songStop(); }catch (Exception e){ e.printStackTrace(); }
+
+        try{
+            if(countDownTimer!=null){ countDownTimer.cancel();}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        try{
+            countDownTimerForBot.cancel();
+        }catch (Exception e){
+
+        }
+
 
         Runtime.getRuntime().gc();
     }
-    
-    
-    
+
+
+
+    public void botFunction(){
+        countBot();
+    }
+
+    public void countBot(){
+        Random r=new Random();
+        final boolean[] marker = {false};
+        final int[] jk = {r.nextInt(13) + 5};
+        countDownTimerForBot=new CountDownTimer(1000*180,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(oppoSecond==0){
+                    oppoMinute--;
+                    oppoSecond=59;
+                }else{
+                    oppoSecond--;
+                }
+
+                if(marker[0]){
+                    Boolean b=r.nextBoolean();
+                    int ans;
+                    if(b){
+                        botCorrectAns++;
+                        ans=1;
+                    }else{
+                        ans=2;
+                    }
+                    binaryPosition++;
+                    animManupulation(ans,binaryPosition);
+                    marker[0] =false;
+
+                    jk[0] =r.nextInt(13)+5;
+
+                    if(binaryPosition<10){
+
+                    }else{
+                        if(completedFirst){
+
+                            try{waitingVSInGameDialog.dismiss();}catch (Exception e){e.printStackTrace();}
+                            botData();
+                            try{
+                                countDownTimerForBot.cancel();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }else{
+                            try{
+                                countDownTimerForBot.cancel();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+
+                }else{
+                    jk[0]--;
+                    if(jk[0]==0){
+                        marker[0] =true;
+                    }
+
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onFinish() {
+
+                try{
+                    countDownTimerForBot.cancel();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+
+
+            }
+        }.start();
+    }
+
+    public void animManupulation(int opponentAnswer, int binaryPosition){
+
+        try{
+            LottieAnimationView lottieAnimationView=oppoAnimationViewList.get(binaryPosition-1);
+
+            if(opponentAnswer ==1){
+                oppoAnimList.add(true);
+                oppoScoreCounter++;
+                lottieAnimationView.setAnimation(R.raw.tickanim);
+                lottieAnimationView.playAnimation();
+                lottieAnimationView.loop(false);
+            }else{
+                oppoAnimList.add(false);
+                oppoWrongAnsCounter++;
+                lottieAnimationView.setAnimation(R.raw.wronganim);
+                lottieAnimationView.playAnimation();
+                lottieAnimationView.loop(false);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
 }
