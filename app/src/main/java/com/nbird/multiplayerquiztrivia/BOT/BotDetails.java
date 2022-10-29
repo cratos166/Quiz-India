@@ -77,6 +77,13 @@ public class BotDetails {
         int c1 =r.nextInt(8)+1;
         int correct=c1*y;
         int wrongfire=y*(10-c1);
+        int total=correct+wrongfire;
+
+        int cc=r.nextInt(80)+15;
+
+        correct=(total*cc)/100;
+        wrongfire=total-correct;
+
         highestScore.setText(" Higest Score : " + score123 + " ");
         if (timeHolder < 60) {
             totalTime.setText("Total Time : " + totalTime + " sec ");

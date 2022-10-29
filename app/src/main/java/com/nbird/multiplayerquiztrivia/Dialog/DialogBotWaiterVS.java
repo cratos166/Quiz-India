@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.BOT.AvatarLink;
 import com.nbird.multiplayerquiztrivia.BOT.BotDetails;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTNormalQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTPictureQuiz;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
@@ -248,7 +249,16 @@ public class DialogBotWaiterVS {
                             context.startActivity(intent);
                             ((Activity) context).finish();
                         }else if(quizMode==3){
+                            try{
+                                alertDialog.dismiss();
+                            }catch (Exception e){
 
+                            }
+                            Intent intent=new Intent(context, VsBOTAudioQuiz.class);
+                            intent.putExtra("oppoName",oppoName.getText().toString());
+                            intent.putExtra("oppoImageURL",oppoURL);
+                            context.startActivity(intent);
+                            ((Activity) context).finish();
                         }else{
 
                         }

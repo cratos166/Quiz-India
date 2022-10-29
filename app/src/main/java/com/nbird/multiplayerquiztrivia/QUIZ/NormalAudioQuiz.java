@@ -502,6 +502,8 @@ public class NormalAudioQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
+        clearMediaPlayer();
+
         ResultHandling resultHandling =new ResultHandling(NormalAudioQuiz.this,map,animList,score,timeTakenString,
                 lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
                 category,3,timeTakenInt);
@@ -611,11 +613,22 @@ public class NormalAudioQuiz extends AppCompatActivity {
     }
 
     public void pauseMusic(){
-        music.pause();
+        try{
+            music.pause();
+        }catch (Exception e){
+
+        }
+
     }
 
     public void startMusic(){
-        music.start();
+
+        try{
+            music.start();
+        }catch (Exception e){
+
+        }
+
     }
 
 
@@ -645,7 +658,12 @@ public class NormalAudioQuiz extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        music.pause();
+        try{
+            music.pause();
+        }catch (Exception e){
+
+        }
+
     }
 
     @Override
@@ -655,7 +673,12 @@ public class NormalAudioQuiz extends AppCompatActivity {
         ActivityManager.getMyMemoryState(myProcess);
         Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
         if (isInBackground) {
-            music.pause();
+
+            try{
+                music.pause();
+            }catch (Exception e){
+
+            }
         } else {
             try{
                 if (!music.isPlaying()) {

@@ -851,7 +851,12 @@ public class VsAudioQuiz extends AppCompatActivity {
         ActivityManager.getMyMemoryState(myProcess);
         Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
         if (isInBackground) {
-            music.pause();
+            try{
+                music.pause();
+            }catch (Exception e){
+
+            }
+
         } else {
             try{
                 if (!music.isPlaying()) {
@@ -1003,6 +1008,7 @@ public class VsAudioQuiz extends AppCompatActivity {
 
 
 
+        clearMediaPlayer();
 
 
         vsRematchListener=new ValueEventListener() {

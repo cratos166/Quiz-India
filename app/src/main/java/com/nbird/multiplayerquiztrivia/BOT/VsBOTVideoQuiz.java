@@ -9,13 +9,10 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -25,7 +22,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,17 +47,15 @@ import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
-import com.nbird.multiplayerquiztrivia.QUIZ.VsAudioQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class VsBOTAudioQuiz extends AppCompatActivity {
+public class VsBOTVideoQuiz extends AppCompatActivity {
     TextView questionTextView,scoreBoard,timerText,oppoNameTextView,myNameTextView;
     Button option1,option2,option3,option4,nextButton;
     LinearLayout linearLayout,linearLayoutexpert,linearLayoutAudience,linearLayoutFiftyFifty,linearLayoutSwap;
@@ -79,7 +73,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     private List<questionHolder> list;
     ArrayList<LottieAnimationView> animationList;
 
-    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category,oppoLifelineSum=0,myScore,statusFinder=1;
+    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category,oppoLifelineSum=0,myScore;
     String myName,myPicURL;
 
     AppData appData;
@@ -100,7 +94,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     String minutestext,oppominutestext;
     String secondtext,opposecondtext;
 
-    CountDownTimer countDownTimerForBot,c,c1;
+    CountDownTimer countDownTimerForBot;
     int botTime,botCorrectAns, timeTakenInt;
     ArrayList<LottieAnimationView> oppoAnimationViewList;
 
@@ -118,19 +112,10 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     HashMap<String,Integer> map;
 
     String oppoTimeTakenString;
-
-    CardView playOrPauseButton;
-    LottieAnimationView backwardanim,forwardanim;
-    SeekBar seekBar;
-    LinearLayout linearFun1;
-    MediaPlayer music;
-    
-    ImageView questionImage;
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vs_botaudio_quiz);
+        setContentView(R.layout.activity_vs_botvideo_quiz);
 
         category=getIntent().getIntExtra("category",1);
 
@@ -146,7 +131,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         animList=new ArrayList<>(12);
         oppoAnimList = new ArrayList<>(12);
         map=new HashMap<>();
-        //songStopperAndResumer();
+        songStopperAndResumer();
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -183,28 +168,11 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         anim29=(LottieAnimationView) findViewById(R.id.anim29);anim30=(LottieAnimationView) findViewById(R.id.anim30);
         myPic=(ImageView) findViewById(R.id.myPic);
         picOppo=(ImageView) findViewById(R.id.picOppo);
-        questionImage=(ImageView) findViewById(R.id.questionImage);
+
         clockCardView = (CardView) findViewById(R.id.cardView3);
 
-
-
-        linearFun1=(LinearLayout) findViewById(R.id.linearFun1);
-        playOrPauseButton=(CardView) findViewById(R.id.mainButton);
-        seekBar=(SeekBar) findViewById(R.id.determinateBar);
-        backwardanim=(LottieAnimationView) findViewById(R.id.backwardanim);
-        forwardanim=(LottieAnimationView) findViewById(R.id.forwardanim);
-
-        supportAlertDialog=new SupportAlertDialog(loadingDialog,VsBOTAudioQuiz.this);
-        supportAlertDialog.showLoadingDialog();
-
-
-        setCountDownTimer(60000*3,1000,timerText,clockCardView);
-        botFunction();
-
-
-
-        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, VsBOTAudioQuiz.this);
-        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, VsBOTAudioQuiz.this);
+        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, VsBOTVideoQuiz.this);
+        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, VsBOTVideoQuiz.this);
         Glide.with(getBaseContext()).load(myPicURL).apply(RequestOptions
                         .bitmapTransform(new RoundedCorners(18)))
                 .into(myPic);
@@ -220,7 +188,9 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         animationList.add(anim11);animationList.add(anim12);animationList.add(anim13);animationList.add(anim14);animationList.add(anim15);
         animationList.add(anim16);animationList.add(anim17);animationList.add(anim18);animationList.add(anim19);animationList.add(anim20);
 
-       
+        supportAlertDialog=new SupportAlertDialog(loadingDialog,VsBOTVideoQuiz.this);
+        supportAlertDialog.showLoadingDialog();
+
         lifeLine();
         questionSelector();
 
@@ -235,208 +205,14 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         oppoAnimationViewList.add(anim26); oppoAnimationViewList.add(anim27); oppoAnimationViewList.add(anim28); oppoAnimationViewList.add(anim29); oppoAnimationViewList.add(anim30);
 
 
-        //botFunction();
-
-
-
-        c1=new CountDownTimer(3*60*1000,1000){
-            @Override
-            public void onTick(long millisUntilFinished) {
-                try {
-                    seekBar.setProgress(music.getCurrentPosition());
-                }catch (Exception e){
-
-                }
-            }
-            @Override
-            public void onFinish() {
-
-            }
-        }.start();
-
-
-        animationListner();
-        seekerManupulator();
-
-
+        botFunction();
+        
     }
-
-
-
-    public void animationListner(){
-        playOrPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(statusFinder==1){
-                    statusFinder=0;
-                    linearFun1.setBackgroundResource(R.drawable.play_button);
-                    pauseMusic();
-                }else{
-                    statusFinder=1;
-                    linearFun1.setBackgroundResource(R.drawable.pause_button);
-                    startMusic();
-                }
-            }
-        });
-
-        backwardanim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int i=music.getCurrentPosition();
-                if(i<=5000){
-                    music.seekTo(0);
-                    seekBar.setProgress(0);
-
-                }else{
-                    int p=i-5000;
-                    music.seekTo(p);
-                    seekBar.setProgress(p);
-                }
-                backwardanim.setAnimation(R.raw.rewind_anim);
-                backwardanim.playAnimation();
-                backwardanim.loop(false);
-
-            }
-        });
-
-        forwardanim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int i=music.getCurrentPosition();
-                try{
-                    int p=i+5000;
-                    music.seekTo(p);
-                    seekBar.setProgress(p);
-                }catch (Exception e){
-                    music.seekTo(music.getDuration());
-                    seekBar.setProgress(music.getDuration());
-                    music.pause();
-                }
-                forwardanim.setAnimation(R.raw.forward_anim);
-                forwardanim.playAnimation();
-                forwardanim.loop(false);
-            }
-        });
-    }
-
-
-    public void seekerManupulator(){
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-                // seekBarHint.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                // seekBarHint.setVisibility(View.VISIBLE);
-
-
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-
-                if (music != null && music.isPlaying()) {
-                    music.seekTo(seekBar.getProgress());
-                    music.start();
-                }
-            }
-        });
-    }
-    private void clearMediaPlayer() {
-        try {
-            music.stop();
-            music.release();
-            music = null;
-        }catch (Exception e){
-
-        }
-
-    }
-
-    public void pauseMusic(){
-        try{
-            music.pause();
-        }catch (Exception e){
-
-        }
-
-    }
-
-    public void startMusic(){
-        try{
-            music.start();
-        }catch (Exception e){
-
-        }
-
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(myProcess);
-        Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-        if (isInBackground) {
-            music.pause();
-        } else {
-            try{
-                if (!music.isPlaying()) {
-                    music.start();
-                    music.setVolume(0.4f,0.4f);
-                }
-            }catch (Exception e){
-
-            }
-
-        }
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try{
-            music.pause();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(myProcess);
-        Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-        if (isInBackground) {
-            music.pause();
-        } else {
-            try{
-                if (!music.isPlaying()) {
-                    music.start();
-                    music.setVolume(0.4f,0.4f);
-                }
-            }catch (Exception e){
-
-            }
-
-        }
-    }
-
 
 
     public void lifeLine(){
 
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,VsBOTAudioQuiz.this);
+        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,VsBOTVideoQuiz.this);
 
         fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
         audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
@@ -461,52 +237,26 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
     public void questionSelector() {
-
-        myRef.child("QUIZNUMBERS").child("AudioQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int num;
-                try{
-                    num=snapshot.getValue(Integer.class);
-                }catch (Exception e){
-                    num=156;
-                }
-                for(int i=0;i<11;i++){
-                    final Random rand = new Random();
-                    final int setNumber = rand.nextInt(num)+1;
-                    fireBaseData(setNumber);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+        for (int i = 0; i < 11; i++) {
+            Random rand = new Random();
+            int setNumber;
+            setNumber = rand.nextInt(6326) + 1;fireBaseData2(setNumber);
+        }
     }
 
 
 
-    public void fireBaseData ( int setNumber){
-        myRef.child("SongQuizJson").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void fireBaseData2 ( int setNumber){
+        myRef.child("NormalQuizBIGJSON").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.add(snapshot.getValue(questionHolder.class));
-
-                try{
-                    Glide.with(getBaseContext())
-                            .load(list.get(num).getImageURL()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getImageURL()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getImageURL()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getImageURL()).preload(20,10)).preload(20,10)).preload(20,10))
-                            .preload(20, 10);
-                }catch (Exception e){
-
-                }
-
                 mainManupulations();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(VsBOTAudioQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(VsBOTVideoQuiz.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 supportAlertDialog.dismissLoadingDialog();
                 finish();
             }
@@ -570,7 +320,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
             }
             public void onFinish() {
 
-                Toast.makeText(VsBOTAudioQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VsBOTVideoQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
                 quizFinishDialog();
 
             }
@@ -583,8 +333,8 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
         num++;
         if (num == 10) {
-          //  setCountDownTimer(60000*3,1000,timerText,clockCardView);
-//                    timer=new QuizTimer(countDownTimer,60000*3,1000,VsBOTAudioQuiz.this,timerText,clockCardView);
+            setCountDownTimer(60000*3,1000,timerText,clockCardView);
+//                    timer=new QuizTimer(countDownTimer,60000*3,1000,VsBOTVideoQuiz.this,timerText,clockCardView);
 //                    timer.start();
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
@@ -621,9 +371,9 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                 });
             } else {
                 finish();
-                Toast.makeText(VsBOTAudioQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VsBOTVideoQuiz.this, "No Questions", Toast.LENGTH_SHORT).show();
             }
-        
+            supportAlertDialog.dismissLoadingDialog();
         }
     }
 
@@ -636,20 +386,6 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                 if(value==0 && count<4){
                     String option="";
                     if(count==0){
-
-
-                        String linkHolder=list.get(position).getImageURL();
-
-
-                        clearMediaPlayer();
-                        songURLDownload(list.get(position).getSongURL());
-
-
-                        Glide.with(getBaseContext()).load(linkHolder).apply(RequestOptions
-                                        .bitmapTransform(new RoundedCorners(14)))
-                                .into(questionImage);
-
-
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
                         linearLayout.getChildAt(0).setBackgroundResource(R.drawable.border_theme_2);
@@ -702,7 +438,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
     public void playMusic(int id){
         MediaPlayer musicNav;
-        musicNav = MediaPlayer.create(VsBOTAudioQuiz.this,id);
+        musicNav = MediaPlayer.create(VsBOTVideoQuiz.this,id);
         musicNav.start();
         musicNav.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -812,9 +548,8 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
         if(binaryPosition<10){
-            clearMediaPlayer();
             completedFirst=true;
-            waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), timeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum), VsBOTAudioQuiz.this,questionTextView);
+            waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), timeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum), VsBOTVideoQuiz.this,questionTextView);
             waitingVSInGameDialog.start();
         }else{
 
@@ -830,16 +565,6 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
     private void botData(){
-
-        clearMediaPlayer();
-
-        try{
-            countDownTimerForBot.cancel();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-
         Random random=new Random();
         oppoLifelineSum=random.nextInt(5);
 
@@ -899,7 +624,6 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         ScoreGenerator oppoScoreGenerator=new ScoreGenerator(oppoMinute,oppoSecond,oppoLifelineSum,oppoScoreCounter);
 
         int oppoTotalScore=oppoScoreGenerator.start();
-
         int oppoTimeTakenInt=((2-oppoMinute)*60)+(60-oppoSecond);
 
         Log.i("oppoTimeTakenInt" , String.valueOf(oppoTimeTakenInt));
@@ -922,20 +646,56 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
             }
         }
 
-        DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTAudioQuiz.this,
-                myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,3);
+        DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTVideoQuiz.this,
+                myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,2);
         dialogBotResult.start();
 
         Log.i("DONE" , "DONE");
 
-
+//        for(int i=0;i<animList.size();i++){
+//            try{
+//                Log.i("ANIMATION LIST",String.valueOf(animList.get(i)));
+//            }catch (Exception e){
+//
+//            }
+//
+//        }
 
     }
 
 
+    public void songStopperAndResumer(){
+        CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
+        final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
+        final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this)){
+            songActivity=new SongActivity(this);
+            songActivity.startMusic();
+        }else{
+            Speaker.setBackgroundResource(R.drawable.usedicon);
+            speakerImage.setBackgroundResource(R.drawable.music_off);
+        }
+        cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this)){
+                    songActivity.songStop();
+                    Speaker.setBackgroundResource(R.drawable.usedicon);
+                    speakerImage.setBackgroundResource(R.drawable.music_off);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this,false);
+                }else{
+                    songActivity=new SongActivity(VsBOTVideoQuiz.this);
+                    songActivity.startMusic();
+                    Speaker.setBackgroundResource(R.drawable.single_color_2);
+                    speakerImage.setBackgroundResource(R.drawable.music_on);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this,true);
+                }
+            }
+        });
+    }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTAudioQuiz.this,countDownTimer,option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTVideoQuiz.this,countDownTimer,option1,songActivity);
         quizCancelDialog.start();
     }
 
@@ -953,18 +713,6 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
         try{
             countDownTimerForBot.cancel();
-        }catch (Exception e){
-
-        }
-
-        try{
-            c.cancel();
-        }catch (Exception e){
-
-        }
-
-        try{
-            c1.cancel();
         }catch (Exception e){
 
         }
@@ -989,12 +737,8 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                 if(oppoSecond==0){
                     oppoMinute--;
                     oppoSecond=59;
-                    String st="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
-                    Log.i("TIME",st);
                 }else{
                     oppoSecond--;
-                    String st="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
-                    Log.i("TIME",st);
                 }
 
                 if(marker[0]){
@@ -1091,59 +835,6 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
 
-    private  class DownloadData extends AsyncTask<String,Void,String> {
-        private static final String TAG = "DownloadData";
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            supportAlertDialog.dismissLoadingDialog();
-
-            try{
-                DownloadData.this.cancel(true);
-            }catch (Exception e){
-
-            }
-
-
-            return;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            try {
-                music.setDataSource(strings[0]);
-            } catch (IOException e) {
-
-            }
-            music.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    music.start();
-                    seekBar.setMax(music.getDuration());
-                    music.setLooping(true);
-
-                }
-            });
-            music.prepareAsync();
-            return null;
-        }
-    }
-
-    public void songURLDownload(String musicUrl){
-
-        music = new MediaPlayer();
-
-        try{
-            DownloadData downloadData=new DownloadData();
-            downloadData.execute(musicUrl);
-        }catch (Exception e) {
-
-        }
-
-    }
 
 
 }

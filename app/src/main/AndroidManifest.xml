@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".VsBOTAudioQuiz"
+            android:name=".BOT.VsBOTVideoQuiz"
+            android:exported="false" />
+        <activity
+            android:name=".BOT.VsBOTAudioQuiz"
             android:exported="false" />
         <activity
             android:name=".BOT.VsBOTPictureQuiz"

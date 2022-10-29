@@ -201,14 +201,14 @@ public class DialogBotResult {
 
 
         if(scoreInt>oppoScoreInt){
-            result.setText(myNameString);
+            result.setText(myNameString+" Won");
             partyPopper.setAnimation(R.raw.party_popper);
             partyPopper.playAnimation();
             partyPopper.loop(false);
         }else if(scoreInt<oppoScoreInt){
             result.setText(oppoNameString);
         }else{
-            result.setText(myNameString);
+            result.setText(myNameString+" Won");
             partyPopper.setAnimation(R.raw.party_popper);
             partyPopper.playAnimation();
             partyPopper.loop(false);
@@ -424,23 +424,11 @@ public class DialogBotResult {
 
                 if(bb<8){
                     if(!isRequestSend){
-                        if(mode==1){
+
                             String title=oppoNameString+" has send you request for a rematch.";
-                            BotRequestDialog botRequestDialog=new BotRequestDialog(context,vv,R.raw.rematch_request,title,1,oppoNameString,oppoPicURL);
+                            BotRequestDialog botRequestDialog=new BotRequestDialog(context,vv,R.raw.rematch_request,title,mode,oppoNameString,oppoPicURL);
                             botRequestDialog.start();
-                        }else if(mode==2){
-                            String title=oppoNameString+" has send you request for a rematch.";
-                            BotRequestDialog botRequestDialog=new BotRequestDialog(context,vv,R.raw.rematch_request,title,2,oppoNameString,oppoPicURL);
-                            botRequestDialog.start();
-                        }else if(mode==3){
-                            String title=oppoNameString+" has send you request for a rematch.";
-                            BotRequestDialog botRequestDialog=new BotRequestDialog(context,vv,R.raw.rematch_request,title,3,oppoNameString,oppoPicURL);
-                            botRequestDialog.start();
-                        }else{
-                            String title=oppoNameString+" has send you request for a rematch.";
-                            BotRequestDialog botRequestDialog=new BotRequestDialog(context,vv,R.raw.rematch_request,title,4,oppoNameString,oppoPicURL);
-                            botRequestDialog.start();
-                        }
+
 
                     }
                 }
