@@ -40,6 +40,7 @@ import com.nbird.multiplayerquiztrivia.BOT.BotDetails;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTNormalQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTPictureQuiz;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTVideoQuiz;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
@@ -260,7 +261,16 @@ public class DialogBotWaiterVS {
                             context.startActivity(intent);
                             ((Activity) context).finish();
                         }else{
+                            try{
+                                alertDialog.dismiss();
+                            }catch (Exception e){
 
+                            }
+                            Intent intent=new Intent(context, VsBOTVideoQuiz.class);
+                            intent.putExtra("oppoName",oppoName.getText().toString());
+                            intent.putExtra("oppoImageURL",oppoURL);
+                            context.startActivity(intent);
+                            ((Activity) context).finish();
                         }
 
 

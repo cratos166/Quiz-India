@@ -96,7 +96,12 @@ public class BotRequestDialog {
                     context.startActivity(i);
                     ((Activity)context).finish();
                 }else{
-
+                    Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
+                    Intent i=new Intent(context, VsBOTVideoQuiz.class);
+                    i.putExtra("oppoName",oppoNameString);
+                    i.putExtra("oppoImageURL",oppoPicURL);
+                    context.startActivity(i);
+                    ((Activity)context).finish();
                 }
 
 

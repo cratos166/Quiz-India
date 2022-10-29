@@ -9,10 +9,12 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -22,8 +24,10 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
@@ -45,8 +49,13 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
 import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
+import com.nbird.multiplayerquiztrivia.LL.LL_Video_Quiz;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
+import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
+
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
@@ -70,7 +79,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     DatabaseReference myRef=database.getReference();
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
-    private List<questionHolder> list;
+    private List<VideoQuestionHolder> list;
     ArrayList<LottieAnimationView> animationList;
 
     int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count,category,oppoLifelineSum=0,myScore;
@@ -80,7 +89,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     SongActivity songActivity;
     LLManupulator llManupulator;
     //    QuizTimer timer;
-    LifeLine lifeLine;
+    LL_Video_Quiz lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
     HighestScore highestScore;
@@ -94,7 +103,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     String minutestext,oppominutestext;
     String secondtext,opposecondtext;
 
-    CountDownTimer countDownTimerForBot;
+    CountDownTimer countDownTimerForBot,counterDownTimerSeeker;
     int botTime,botCorrectAns, timeTakenInt;
     ArrayList<LottieAnimationView> oppoAnimationViewList;
 
@@ -112,6 +121,15 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     HashMap<String,Integer> map;
 
     String oppoTimeTakenString;
+
+
+    VideoView videoView;
+    CardView playOrPauseButton;
+    SeekBar seekBar;
+    LinearLayout linearFun1;
+    LottieAnimationView loadingvideo;
+    int statusFinder=1;
+    Boolean isInBackground;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +142,15 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
 
         Log.i("OPPO IMAGE",String.valueOf(oppoImageURL));
 
+        playOrPauseButton=(CardView) findViewById(R.id.mainButton);
+        seekBar=(SeekBar) findViewById(R.id.determinateBar);
+        linearFun1=(LinearLayout) findViewById(R.id.linearFun1);
+        loadingvideo=(LottieAnimationView) findViewById(R.id.loadingvideo);
+
+
+
+        videoView = findViewById(R.id.videoquiz);
+
 
         list=new ArrayList<>();
         appData=new AppData();
@@ -131,7 +158,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
         animList=new ArrayList<>(12);
         oppoAnimList = new ArrayList<>(12);
         map=new HashMap<>();
-        songStopperAndResumer();
+
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -170,6 +197,11 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
         picOppo=(ImageView) findViewById(R.id.picOppo);
 
         clockCardView = (CardView) findViewById(R.id.cardView3);
+
+
+        animationListner();
+        seekerManupulator();
+        seekerTracker();
 
         myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, VsBOTVideoQuiz.this);
         myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, VsBOTVideoQuiz.this);
@@ -212,8 +244,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
 
     public void lifeLine(){
 
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,VsBOTVideoQuiz.this);
-
+        lifeLine=new LL_Video_Quiz(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,VsBOTVideoQuiz.this);
         fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
         audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
 
@@ -236,21 +267,38 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     }
 
 
+
     public void questionSelector() {
-        for (int i = 0; i < 11; i++) {
-            Random rand = new Random();
-            int setNumber;
-            setNumber = rand.nextInt(6326) + 1;fireBaseData2(setNumber);
-        }
+        myRef.child("QUIZNUMBERS").child("VideoQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=118;
+                }
+                for(int i=0;i<11;i++){
+                    // create instance of Random class
+                    final Random rand = new Random();
+                    final int setNumber = rand.nextInt(num)+1;
+                    fireBaseData(setNumber);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 
-
-    public void fireBaseData2 ( int setNumber){
-        myRef.child("NormalQuizBIGJSON").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void fireBaseData ( int setNumber){
+        myRef.child("VideoQuizJson").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.add(snapshot.getValue(questionHolder.class));
+                list.add(snapshot.getValue(VideoQuestionHolder.class));
+                Log.d("VsBOTVideoQuiz",list.get(0).getVideoURL());
                 mainManupulations();
             }
 
@@ -377,6 +425,15 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
         }
     }
 
+    public void songURLDownload(String musicUrl){
+
+        try{
+            DownloadData1 downloadData=new DownloadData1();
+            downloadData.execute(musicUrl);
+        }catch (Exception e) {
+
+        }
+    }
 
     private void playAnim(final View view, final int value, final String data){
         view.animate().alpha(value).scaleX(value).scaleY(value).setDuration(500).setStartDelay(100).setInterpolator(new DecelerateInterpolator()).setListener(new Animator.AnimatorListener() {
@@ -386,6 +443,13 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
                 if(value==0 && count<4){
                     String option="";
                     if(count==0){
+
+                        linearFun1.setBackgroundResource(R.drawable.pause_button);
+                        loadingvideo.setVisibility(View.VISIBLE);
+
+                        songURLDownload(list.get(position).getVideoURL());
+
+
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
                         linearLayout.getChildAt(0).setBackgroundResource(R.drawable.border_theme_2);
@@ -647,7 +711,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
         }
 
         DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTVideoQuiz.this,
-                myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,2);
+                myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,4);
         dialogBotResult.start();
 
         Log.i("DONE" , "DONE");
@@ -664,35 +728,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     }
 
 
-    public void songStopperAndResumer(){
-        CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
-        final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
-        final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
-        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this)){
-            songActivity=new SongActivity(this);
-            songActivity.startMusic();
-        }else{
-            Speaker.setBackgroundResource(R.drawable.usedicon);
-            speakerImage.setBackgroundResource(R.drawable.music_off);
-        }
-        cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this)){
-                    songActivity.songStop();
-                    Speaker.setBackgroundResource(R.drawable.usedicon);
-                    speakerImage.setBackgroundResource(R.drawable.music_off);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this,false);
-                }else{
-                    songActivity=new SongActivity(VsBOTVideoQuiz.this);
-                    songActivity.startMusic();
-                    Speaker.setBackgroundResource(R.drawable.single_color_2);
-                    speakerImage.setBackgroundResource(R.drawable.music_on);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,VsBOTVideoQuiz.this,true);
-                }
-            }
-        });
-    }
+
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTVideoQuiz.this,countDownTimer,option1,songActivity);
@@ -702,6 +738,12 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+
+        if(counterDownTimerSeeker!=null){
+            counterDownTimerSeeker.cancel();
+        }
+
 
         try{ songActivity.songStop(); }catch (Exception e){ e.printStackTrace(); }
 
@@ -833,6 +875,163 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     }
 
 
+    private class DownloadData1 extends AsyncTask<String,Void,String> {
+        private static final String TAG = "DownloadData";
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try{
+                DownloadData1.this.cancel(true);
+            }catch (Exception e){
+
+            }
+            return;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+
+            try{
+                videoView.setVideoPath(strings[0]);
+            }catch (Exception e){
+
+            }
+
+
+
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    seekBar.setMax(videoView.getDuration());
+                    float videoRatio = mp.getVideoWidth() / (float) mp.getVideoHeight();
+                    float screenRatio = videoView.getWidth() / (float) videoView.getHeight();
+                    float scaleX = videoRatio / screenRatio;
+                    if (scaleX >= 1f) {
+                        videoView.setScaleX(scaleX);
+                    } else {
+                        videoView.setScaleY(1f / scaleX);
+                    }
+                    mp.setLooping(true);
+                    loadingvideo.setVisibility(View.GONE);
+                }
+            });
+
+
+            videoView.start();
+
+            return null;
+        }
+    }
+
+
+    public void seekerTracker(){
+        counterDownTimerSeeker=new CountDownTimer(180*1000,1000){
+            @Override
+            public void onTick(long millisUntilFinished) {
+                try {
+                    //  int i=music.getCurrentPosition();
+                    seekBar.setProgress(videoView.getCurrentPosition());
+                }catch (Exception e){
+
+                }
+            }
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(myProcess);
+        isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+        if (isInBackground) {
+            videoView.pause();
+        } else {
+            if (!videoView.isPlaying()) {
+                if(statusFinder==1){
+                    videoView.start();
+                }
+
+            }
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(myProcess);
+        isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+        if (isInBackground) {
+            videoView.pause();
+        } else {
+            if (!videoView.isPlaying()) {
+                if(statusFinder==1){
+                    videoView.start();
+                }
+
+            }
+        }
+    }
+
+
+
+
+    public void animationListner(){
+        playOrPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(statusFinder==1){
+                    statusFinder=0;
+                    linearFun1.setBackgroundResource(R.drawable.play_button);
+                    pauseVideo();
+                }else{
+                    statusFinder=1;
+                    linearFun1.setBackgroundResource(R.drawable.pause_button);
+                    resumeVideo();
+                }
+            }
+        });
+    }
+
+    public void seekerManupulator(){
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+
+                if (videoView != null && videoView.isPlaying()) {
+                    videoView.seekTo(seekBar.getProgress());
+                    videoView.start();
+                }
+            }
+        });
+    }
+
+    public void pauseVideo(){
+        videoView.pause();
+    }
+
+    public void resumeVideo(){
+        videoView.start();
+    }
 
 
 
