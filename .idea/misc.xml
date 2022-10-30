@@ -34,7 +34,9 @@
         <entry key="app/src/main/res/layout/activity_normal_video_quiz.xml" value="0.12664640324214793" />
         <entry key="app/src/main/res/layout/activity_score.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_slide.xml" value="0.35096774193548386" />
-        <entry key="app/src/main/res/layout/activity_tournament_normal.xml" value="0.5630208333333333" />
+        <entry key="app/src/main/res/layout/activity_tournament_audio.xml" value="0.5666666666666667" />
+        <entry key="app/src/main/res/layout/activity_tournament_normal.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_tournament_picture.xml" value="0.5666666666666667" />
         <entry key="app/src/main/res/layout/activity_vs_audio_quiz.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/activity_vs_botaudio_quiz.xml" value="0.5911458333333334" />
         <entry key="app/src/main/res/layout/activity_vs_botnormal_quiz.xml" value="0.26358695652173914" />

@@ -457,7 +457,7 @@
                             android:layout_gravity="center"
                             android:fontFamily="@font/ubuntu"
                             android:gravity="center"
-                            android:text="Buzzer Normal"
+                            android:text="Audio"
                             android:textColor="@color/dark_back_4"
                             android:textSize="20dp"
                            />
@@ -492,7 +492,7 @@
                             android:layout_gravity="center"
                             android:fontFamily="@font/ubuntu"
                             android:gravity="center"
-                            android:text="Buzzer Picture"
+                            android:text="Video"
                             android:textColor="@color/dark_back_4"
                             android:textSize="20dp"
                              />

@@ -107,9 +107,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
         }else if(manu==2){
             holder.modequestion.setText(" |  M : Picture");
         }else if(manu==3){
-            holder.modequestion.setText(" |  M : Buzzer Normal");
+            holder.modequestion.setText(" |  M : Audio");
         }else{
-            holder.modequestion.setText(" |  M : Buzzer Picture");
+            holder.modequestion.setText(" |  M : Video");
         }
 
 

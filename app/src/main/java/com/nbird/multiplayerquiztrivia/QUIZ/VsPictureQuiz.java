@@ -750,7 +750,11 @@ public class VsPictureQuiz extends AppCompatActivity {
 
 
             if((60-second)>=10){
-                timeTakenString="0"+String.valueOf(2-minutes)+":"+String.valueOf(60-second);
+                if(second==0){
+                    timeTakenString="0"+String.valueOf(2-minutes+1)+":00";
+                }else{
+                    timeTakenString="0"+String.valueOf(2-minutes)+":"+String.valueOf(60-second);
+                }
             }else{
                 timeTakenString="0"+String.valueOf(2-minutes)+":0"+String.valueOf(60-second);
             }

@@ -52,7 +52,7 @@ public class LobbyActivity extends AppCompatActivity {
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference table_user = database.getReference("NEW_APP");
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
-
+    DatabaseReference myRef=database.getReference();
     ValueEventListener privacyListener,numberOfQuestionListener,totalTimeListener,modeListener;
 
 
@@ -433,8 +433,15 @@ public class LobbyActivity extends AppCompatActivity {
 
         try{countDownTimer.cancel();}catch (Exception e){}
 
-
-        Intent intent=new Intent(LobbyActivity.this,TournamentNormalActivity.class);
+        Intent intent = null;
+        if(gameMode==1){
+            intent=new Intent(LobbyActivity.this,TournamentNormalActivity.class);
+        }else if(gameMode==2){
+            intent=new Intent(LobbyActivity.this,TournamentPictureActivity.class);
+        }else if(gameMode==3){
+            intent=new Intent(LobbyActivity.this,TournamentAudioActivity.class);
+        }
+       
         intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
         intent.putExtra("roomCode",roomCode);
         intent.putExtra("playerNum",myPlayerNum);
@@ -468,10 +475,12 @@ public class LobbyActivity extends AppCompatActivity {
         }
 
 
-        if(gameMode==1||gameMode==3){
+        if(gameMode==1){
             normalQuizNumberUploader(listAns,number);
-        }else if(gameMode==2||gameMode==4){
+        }else if(gameMode==2){
             pictureQuizNumberUploader(listAns,number);
+        }else if(gameMode==3){
+            audioQuizNumberUploader(listAns,number);
         }
 
 
@@ -536,6 +545,38 @@ public class LobbyActivity extends AppCompatActivity {
                 roomActivator();
             }
         });
+    }
+
+    public void audioQuizNumberUploader(ArrayList<Integer> listAns, int number){
+
+        myRef.child("QUIZNUMBERS").child("AudioQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=156;
+                }
+                Random rand = new Random();
+                for(int i=0;i<=number;i++){
+                    final int setNumber = rand.nextInt(num)+1;
+                    listAns.add(setNumber);
+                }
+                table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        roomActivator();
+                    }
+                });
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
 
@@ -636,9 +677,9 @@ public class LobbyActivity extends AppCompatActivity {
                     }else if(gameMode==2){
                         modeTextView.setText("Picture");
                     }else if(gameMode==3){
-                        modeTextView.setText("Buzzer Normal");
+                        modeTextView.setText("Audio");
                     }else{
-                        modeTextView.setText("Buzzer Picture");
+                        modeTextView.setText("Video");
                     }
                 }catch (Exception e){
 
