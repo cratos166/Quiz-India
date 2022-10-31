@@ -440,6 +440,8 @@ public class LobbyActivity extends AppCompatActivity {
             intent=new Intent(LobbyActivity.this,TournamentPictureActivity.class);
         }else if(gameMode==3){
             intent=new Intent(LobbyActivity.this,TournamentAudioActivity.class);
+        }else if(gameMode==4){
+            intent=new Intent(LobbyActivity.this,TournamentVideoActivity.class);
         }
        
         intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
@@ -481,6 +483,8 @@ public class LobbyActivity extends AppCompatActivity {
             pictureQuizNumberUploader(listAns,number);
         }else if(gameMode==3){
             audioQuizNumberUploader(listAns,number);
+        }else if(gameMode==4){
+            videoQuizNumberUploader(listAns,number);
         }
 
 
@@ -579,6 +583,36 @@ public class LobbyActivity extends AppCompatActivity {
 
     }
 
+    public void videoQuizNumberUploader(ArrayList<Integer> listAns, int number){
+
+        myRef.child("QUIZNUMBERS").child("VideoQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int num;
+                try{
+                    num=snapshot.getValue(Integer.class);
+                }catch (Exception e){
+                    num=118;
+                }
+                Random rand = new Random();
+                for(int i=0;i<=number;i++){
+                    final int setNumber = rand.nextInt(num)+1;
+                    listAns.add(setNumber);
+                }
+                table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        roomActivator();
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
 
 
 

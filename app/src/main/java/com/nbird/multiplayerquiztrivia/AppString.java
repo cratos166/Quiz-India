@@ -10,7 +10,7 @@ public class AppString {
     public static final String SP_MY_NAME="MyName";
     public static final String SP_SONG="SongStatus";
 
-    public static final int TOURNAMENT_MAX_PLAYERS=4;
+    public static final int TOURNAMENT_MAX_PLAYERS=10;
 
     public static final String ROOM_CODE_TOURNAMENT="RoomCode";
 
