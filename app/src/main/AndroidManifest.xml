@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nbird.multiplayerquiztrivia" >
+    package="com.nbird.multiplayerquiztrivia">
 
     <application
         android:allowBackup="true"
@@ -8,12 +8,16 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".TournamentBuzzerActivity"
-            android:exported="false" />
+        android:theme="@style/AppTheme">
+
         <activity
             android:name=".TOURNAMENT.ACTIVITY.TournamentVideoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BUZZER.ACTIVTY.BuzzerNormalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BUZZER.ACTIVTY.LobbyBuzzerActivity"
             android:exported="false" />
         <activity
             android:name=".TOURNAMENT.ACTIVITY.TournamentAudioActivity"
@@ -50,7 +54,7 @@
         <activity android:name=".QUIZ.NormalSingleQuiz" />
         <activity
             android:name=".StartingPackage.SlideActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

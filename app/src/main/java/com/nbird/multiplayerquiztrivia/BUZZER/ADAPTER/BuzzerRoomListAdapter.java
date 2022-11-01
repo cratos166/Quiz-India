@@ -1,11 +1,10 @@
-package com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter;
+package com.nbird.multiplayerquiztrivia.BUZZER.ADAPTER;
 
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,19 +28,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.LobbyBuzzerActivity;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.FIREBASE.ConnectionStatus;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.LobbyActivity;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Room;
 
 import java.util.List;
 
-public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyViewHolder> {
+public class BuzzerRoomListAdapter extends RecyclerView.Adapter<BuzzerRoomListAdapter.MyViewHolder> {
     private Context mContext;
     private List<Room> mData;
 
@@ -49,7 +47,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
     DatabaseReference table_user = database.getReference("NEW_APP");
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
-    public RoomListAdapter(Context mContext, List<Room> mData){
+    public BuzzerRoomListAdapter(Context mContext, List<Room> mData){
         this.mContext=mContext;
         this.mData=mData;
     }
@@ -77,7 +75,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                         .bitmapTransform(new RoundedCorners(18)))
                 .into(holder.proImage);
 
-        holder.numberOfPlayer.setText(mData.get(position).getNumberOfPlayers()+"/"+AppString.TOURNAMENT_MAX_PLAYERS);
+        holder.numberOfPlayer.setText(mData.get(position).getNumberOfPlayers()+"/"+AppString.BUZZER_MAX_PLAYERS);
 
 
 
@@ -103,13 +101,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
         int manu;
         manu=mData.get(position).getGameMode();
         if(manu==1){
-            holder.modequestion.setText(" |  M : Normal");
+            holder.modequestion.setText(" |  M : Normal Buzzer");
         }else if(manu==2){
-            holder.modequestion.setText(" |  M : Picture");
-        }else if(manu==3){
-            holder.modequestion.setText(" |  M : Audio");
-        }else{
-            holder.modequestion.setText(" |  M : Video");
+            holder.modequestion.setText(" |  M : Picture Buzzer");
         }
 
 
@@ -128,7 +122,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
 
 
 
-                table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("active").addListenerForSingleValueEvent(new ValueEventListener() {
+                table_user.child("BUZZER").child("ROOM").child(roomCode1).child("active").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         try {
@@ -136,7 +130,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
 
 
 
-                                table_user.child("TOURNAMENT").child("ROOM").child(roomCode1).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {
+                                table_user.child("BUZZER").child("ROOM").child(roomCode1).child("numberOfPlayers").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         try{
@@ -204,7 +198,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                     PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true);
 
 
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    table_user.child("BUZZER").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             try{
@@ -214,10 +208,10 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                             }
 
 
-                            connectionStatus.tournamentStatusSetter(mData.get(position).getRoomCode());
+                            connectionStatus.buzzerStatusSetter(mData.get(position).getRoomCode());
 
 
-                            Intent intent=new Intent(mContext, LobbyActivity.class);
+                            Intent intent=new Intent(mContext, LobbyBuzzerActivity.class);
                             intent.putExtra("playerNum",2);
                             intent.putExtra("roomCode",mData.get(position).getRoomCode());
                             intent.putExtra("hostName",mData.get(position).getHostName());
@@ -238,7 +232,7 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                     PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true);
 
 
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    table_user.child("BUZZER").child("PLAYERS").child(mData.get(position).getRoomCode()).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             try{
@@ -248,9 +242,9 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
                             }
 
 
-                            connectionStatus.tournamentStatusSetter(mData.get(position).getRoomCode());
+                            connectionStatus.buzzerStatusSetter(mData.get(position).getRoomCode());
 
-                            Intent intent=new Intent(mContext, LobbyActivity.class);
+                            Intent intent=new Intent(mContext, LobbyBuzzerActivity.class);
                             intent.putExtra("playerNum",2);
                             intent.putExtra("roomCode",mData.get(position).getRoomCode());
                             intent.putExtra("hostName",mData.get(position).getHostName());

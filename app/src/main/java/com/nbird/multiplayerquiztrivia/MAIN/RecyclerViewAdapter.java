@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nbird.multiplayerquiztrivia.BUZZER.DIALOG.BuzzerJoinCreateTournamentDialoge;
 import com.nbird.multiplayerquiztrivia.Dialog.DialogQuizMode;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.JoinCreateTournamentDialoge;
@@ -66,6 +67,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     case 2:
                         JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
                         joinCreateTournamentDialoge.start(mContext,holder.cardView);
+                        break;
+                    case 4:
+                        BuzzerJoinCreateTournamentDialoge buzzerJoinCreateTournamentDialoge=new BuzzerJoinCreateTournamentDialoge();
+                        buzzerJoinCreateTournamentDialoge.start(mContext,holder.cardView);
                         break;
 
 

@@ -36,6 +36,7 @@
         <entry key="app/src/main/res/layout/activity_slide.xml" value="0.35096774193548386" />
         <entry key="app/src/main/res/layout/activity_tournament_audio.xml" value="0.5666666666666667" />
         <entry key="app/src/main/res/layout/activity_tournament_buzzer.xml" value="0.5526041666666667" />
+        <entry key="app/src/main/res/layout/activity_tournament_buzzer_normal.xml" value="0.32708333333333334" />
         <entry key="app/src/main/res/layout/activity_tournament_normal.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_tournament_picture.xml" value="0.5666666666666667" />
         <entry key="app/src/main/res/layout/activity_tournament_video_quiz.xml" value="0.5666666666666667" />
@@ -54,6 +55,7 @@
         <entry key="app/src/main/res/layout/data_placeholder_layout.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/dialog_anim_text_button.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/layout/dialog_audience_ll.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/dialog_buzzer_setting.xml" value="0.5666666666666667" />
         <entry key="app/src/main/res/layout/dialog_category.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_chat.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_expert_advice_ll.xml" value="0.21822916666666667" />
@@ -85,8 +87,9 @@
         <entry key="app/src/main/res/layout/shimmer_green.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/shimmer_red.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/slidelayout.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/tournament_buzzer_player_item.xml" value="0.565625" />
         <entry key="app/src/main/res/layout/tournament_join_create_dialog.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/tournament_joining_listview.xml" value="0.2604166666666667" />
+        <entry key="app/src/main/res/layout/tournament_joining_listview.xml" value="0.5" />
         <entry key="app/src/main/res/layout/tournament_quiz_player_item.xml" value="0.565625" />
         <entry key="app/src/main/res/layout/tournament_remove_player_item.xml" value="0.27447916666666666" />
         <entry key="app/src/main/res/layout/tournament_remove_player_layout.xml" value="0.2755208333333333" />
