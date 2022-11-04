@@ -43,6 +43,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.BUZZER.ADAPTER.PlayerDataDisplayBuzzer;
 
 import com.nbird.multiplayerquiztrivia.BUZZER.EXTRA.BuzzerAnswerUploader;
+import com.nbird.multiplayerquiztrivia.BUZZER.MODEL.BuzzerDataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.BUZZER.MODEL.BuzzerManupulationHolder;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
@@ -71,6 +72,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
     DatabaseReference table_user = database.getReference("NEW_APP");
 
     private List<questionHolder> list;
+    private ArrayList<Integer> ansList;
 
 
     int position=0,num=0,score=0,myPosition=-1,count;
@@ -124,6 +126,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
         list=new ArrayList<>();
         appData=new AppData();
+        ansList=new ArrayList<>();
 
         songStopperAndResumer();
 
@@ -140,6 +143,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
         linearLayoutFiftyFifty=(LinearLayout) findViewById(R.id.linearLayoutfiftyfifty) ;
         linearLayoutSwap=(LinearLayout) findViewById(R.id.linearLayoutSwap) ;
         recyclerView=(RecyclerView) findViewById(R.id.recyclerView) ;
+
 
 
         clockCardView = (CardView) findViewById(R.id.cardView3);
@@ -329,6 +333,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             isAnswered=true;
 
 
+            ansList.add(1);
 
             if(currentQuestionStatus==0){
                 myScore=myScore+3;
@@ -369,6 +374,8 @@ public class BuzzerNormalActivity extends AppCompatActivity {
         }else {
 
             isAnswered=true;
+
+            ansList.add(2);
 
             if(currentQuestionStatus==0){
                 myScore=myScore-1;
@@ -443,24 +450,25 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
 
 
-//        DataExchangeHolder dataExchangeHolder=new DataExchangeHolder(map,animList,score,timeTakenString,lifelineSum,0,scoreGenerator.start(),myName,myPicURL,timeTakenInt);
-//
-//        table_user.child("BUZZER").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//
-//                try{table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
-//
-//                Intent intent=new Intent(BuzzerNormalActivity.this,ScoreActivity.class);
-//                intent.putExtra("roomCode",roomCode);
-//                intent.putExtra("maxQuestions",list.size()-1);
-//                intent.putExtra("playerNum",myPlayerNum);
-//                intent.putExtra("hostName",hostName);
-//                startActivity(intent);
-//                finish();
-//
-//            }
-//        });
+        BuzzerDataExchangeHolder dataExchangeHolder=new BuzzerDataExchangeHolder(ansList,myScore,score,0,myName,myPicURL);
+
+        table_user.child("BUZZER").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                try{ table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+                try{ myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
+
+                Intent intent=new Intent(BuzzerNormalActivity.this,BuzzerScoreActivity.class);
+                intent.putExtra("roomCode",roomCode);
+                intent.putExtra("maxQuestions",list.size()-1);
+                intent.putExtra("playerNum",myPlayerNum);
+                intent.putExtra("hostName",hostName);
+                startActivity(intent);
+                finish();
+
+            }
+        });
 
 
     }
@@ -649,9 +657,11 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
 
                 if(kk==0){
+                    currentQuestionStatus=0;
                     timerText.setText(String.valueOf(kk));
                     if(!isAnswered){
                         answerUploader.upload(3);
+                        ansList.add(3);
                     }
 
                     isAnswered=false;
@@ -663,7 +673,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
                     listenerRemover();
                     position++;
                     listnereSetter();
-                    if (position == listAns.size()-1) { quizFinishDialog();return; }
+                    if (position == listAns.size()-1) { }
                     count = 0;
                     playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
 
@@ -675,7 +685,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             }
             public void onFinish() {
 
-
+                quizFinishDialog();
 
 
             }

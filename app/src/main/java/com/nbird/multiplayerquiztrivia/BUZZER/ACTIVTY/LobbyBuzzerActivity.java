@@ -644,13 +644,9 @@ public class LobbyBuzzerActivity extends AppCompatActivity {
                 try{
                     gameMode=snapshot.getValue(Integer.class);
                     if(gameMode==1){
-                        modeTextView.setText("Normal");
+                        modeTextView.setText("Normal Buzzer");
                     }else if(gameMode==2){
-                        modeTextView.setText("Picture");
-                    }else if(gameMode==3){
-                        modeTextView.setText("Audio");
-                    }else{
-                        modeTextView.setText("Video");
+                        modeTextView.setText("Picture Buzzer");
                     }
                 }catch (Exception e){
 

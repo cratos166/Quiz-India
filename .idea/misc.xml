@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/drawable/single_color_3.xml" value="0.2535" />
         <entry key="app/src/main/res/drawable/single_color_4.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/usedicon.xml" value="0.284" />
+        <entry key="app/src/main/res/layout/activity_buzzer_score.xml" value="0.34791666666666665" />
         <entry key="app/src/main/res/layout/activity_lobby.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2755208333333333" />
         <entry key="app/src/main/res/layout/activity_normal_audio_quiz.xml" value="0.1721014492753623" />
@@ -50,6 +51,7 @@
         <entry key="app/src/main/res/layout/activity_vs_video_quiz.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/asset_ava.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/asset_mainmenuhorizontalslide.xml" value="0.4036458333333333" />
+        <entry key="app/src/main/res/layout/buzzer_result_item.xml" value="0.5911458333333334" />
         <entry key="app/src/main/res/layout/cardviewmainmenu.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/chat_item.xml" value="0.5661458333333333" />
         <entry key="app/src/main/res/layout/data_placeholder_layout.xml" value="0.4036458333333333" />
