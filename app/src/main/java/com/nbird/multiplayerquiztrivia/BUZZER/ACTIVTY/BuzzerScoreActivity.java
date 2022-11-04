@@ -258,34 +258,51 @@ public class BuzzerScoreActivity extends AppCompatActivity {
 
 
     private void intentFunction() {
+
+
+
+
+
         Dialog dialog = null;
         SupportAlertDialog supportAlertDialog = new SupportAlertDialog(dialog, BuzzerScoreActivity.this);
         supportAlertDialog.showLoadingDialog();
 
-        try {
-            table_user.child("BUZZER").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
-        } catch (Exception e) {
-        }
-        try {
-            table_user.child("BUZZER").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
-        } catch (Exception e) {
-        }
 
 
-        try {
-            table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
-        } catch (Exception e) {
+        table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(1).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
 
-        }
+                supportAlertDialog.dismissLoadingDialog();
 
-        supportAlertDialog.dismissLoadingDialog();
+                try {
+                    table_user.child("BUZZER").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
+                } catch (Exception e) {
+                }
+                try {
+                    table_user.child("BUZZER").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
+                } catch (Exception e) {
+                }
 
-        Intent intent = new Intent(BuzzerScoreActivity.this, LobbyBuzzerActivity.class);
-        intent.putExtra("playerNum", myPlayerNum);
-        intent.putExtra("roomCode", roomCode);
-        intent.putExtra("hostName",hostName);
-        startActivity(intent);
-        finish();
+
+                try {
+                    table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
+                } catch (Exception e) {
+
+                }
+
+                supportAlertDialog.dismissLoadingDialog();
+
+                Intent intent = new Intent(BuzzerScoreActivity.this, LobbyBuzzerActivity.class);
+                intent.putExtra("playerNum", myPlayerNum);
+                intent.putExtra("roomCode", roomCode);
+                intent.putExtra("hostName",hostName);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
     }
 
     private void numberOfActivPlayers() {

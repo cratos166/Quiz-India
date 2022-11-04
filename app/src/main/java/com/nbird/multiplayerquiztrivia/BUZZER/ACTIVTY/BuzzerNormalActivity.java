@@ -447,6 +447,9 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Dialog dialog=null;
+        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog, BuzzerNormalActivity.this);
+        supportAlertDialog.showLoadingDialog();
 
 
 
@@ -456,16 +459,27 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                try{ table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
-                try{ myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
+                table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(3).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                Intent intent=new Intent(BuzzerNormalActivity.this,BuzzerScoreActivity.class);
-                intent.putExtra("roomCode",roomCode);
-                intent.putExtra("maxQuestions",list.size()-1);
-                intent.putExtra("playerNum",myPlayerNum);
-                intent.putExtra("hostName",hostName);
-                startActivity(intent);
-                finish();
+                        supportAlertDialog.dismissLoadingDialog();
+
+                        try{ table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+                        try{ myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
+
+                        Intent intent=new Intent(BuzzerNormalActivity.this,BuzzerScoreActivity.class);
+                        intent.putExtra("roomCode",roomCode);
+                        intent.putExtra("maxQuestions",list.size()-1);
+                        intent.putExtra("playerNum",myPlayerNum);
+                        intent.putExtra("hostName",hostName);
+                        startActivity(intent);
+                        finish();
+
+                    }
+                });
+
+
 
             }
         });

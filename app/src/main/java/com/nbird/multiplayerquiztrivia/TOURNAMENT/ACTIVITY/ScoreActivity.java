@@ -268,30 +268,39 @@ public class ScoreActivity extends AppCompatActivity {
         SupportAlertDialog supportAlertDialog = new SupportAlertDialog(dialog, ScoreActivity.this);
         supportAlertDialog.showLoadingDialog();
 
-        try {
-            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
-        } catch (Exception e) {
-        }
-        try {
-            table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
-        } catch (Exception e) {
-        }
+
+        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(1).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                try {
+                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
+                } catch (Exception e) {
+                }
+                try {
+                    table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeEventListener(resultEventListener);
+                } catch (Exception e) {
+                }
 
 
-        try {
-            table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
-        } catch (Exception e) {
+                try {
+                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostActiveEventListener);
+                } catch (Exception e) {
 
-        }
+                }
 
-        supportAlertDialog.dismissLoadingDialog();
 
-        Intent intent = new Intent(ScoreActivity.this, LobbyActivity.class);
-        intent.putExtra("playerNum", myPlayerNum);
-        intent.putExtra("roomCode", roomCode);
-        intent.putExtra("hostName",hostName);
-        startActivity(intent);
-        finish();
+                supportAlertDialog.dismissLoadingDialog();
+
+                Intent intent = new Intent(ScoreActivity.this, LobbyActivity.class);
+                intent.putExtra("playerNum", myPlayerNum);
+                intent.putExtra("roomCode", roomCode);
+                intent.putExtra("hostName",hostName);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
     }
 
     private void numberOfActivPlayers() {

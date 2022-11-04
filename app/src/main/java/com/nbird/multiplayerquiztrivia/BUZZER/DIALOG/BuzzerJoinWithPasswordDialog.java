@@ -130,7 +130,7 @@ public class BuzzerJoinWithPasswordDialog {
                                     LeaderBoardHolder leaderBoardHolder = snapshot.getValue(LeaderBoardHolder.class);
 
 
-                                    PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(), leaderBoardHolder.getScore(), leaderBoardHolder.getTotalTime(), leaderBoardHolder.getCorrect(), leaderBoardHolder.getWrong(), leaderBoardHolder.getImageUrl(), leaderBoardHolder.getSumationScore(), true);
+                                    PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(), leaderBoardHolder.getScore(), leaderBoardHolder.getTotalTime(), leaderBoardHolder.getCorrect(), leaderBoardHolder.getWrong(), leaderBoardHolder.getImageUrl(), leaderBoardHolder.getSumationScore(), true,1);
 
                                     table_user.child("BUZZER").child("PLAYERS").child(String.valueOf(room.getRoomCode())).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

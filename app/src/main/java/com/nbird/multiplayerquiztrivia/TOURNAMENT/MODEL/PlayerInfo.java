@@ -10,13 +10,14 @@ public class PlayerInfo {
     String imageUrl;
     int sumationScore;
     boolean active;
+    int activityNumber;
 
 
     public PlayerInfo() {
     }
 
 
-    public PlayerInfo(String username, int score, int totalTime, int correct, int wrong, String imageUrl, int sumationScore, boolean active) {
+    public PlayerInfo(String username, int score, int totalTime, int correct, int wrong, String imageUrl, int sumationScore, boolean active,int activityNumber) {
         this.username = username;
         this.score = score;
         this.totalTime = totalTime;
@@ -25,6 +26,15 @@ public class PlayerInfo {
         this.imageUrl = imageUrl;
         this.sumationScore = sumationScore;
         this.active = active;
+        this.activityNumber=activityNumber;
+    }
+
+    public int getActivityNumber() {
+        return activityNumber;
+    }
+
+    public void setActivityNumber(int activityNumber) {
+        this.activityNumber = activityNumber;
     }
 
     public String getUsername() {

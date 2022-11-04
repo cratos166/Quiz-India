@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
@@ -419,46 +421,61 @@ public class LobbyActivity extends AppCompatActivity {
 
 
     private void intentFunction(){
-        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
-        try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
-        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
-        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
-
-        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
-        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
-        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
-        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
-        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
+        Dialog dialog=null;
+        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,LobbyActivity.this);
+        supportAlertDialog.showLoadingDialog();
 
 
-        try{countDownTimer.cancel();}catch (Exception e){}
+        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(2).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
 
-        Intent intent = null;
-        if(gameMode==1){
-            intent=new Intent(LobbyActivity.this,TournamentNormalActivity.class);
-        }else if(gameMode==2){
-            intent=new Intent(LobbyActivity.this,TournamentPictureActivity.class);
-        }else if(gameMode==3){
-            intent=new Intent(LobbyActivity.this,TournamentAudioActivity.class);
-        }else if(gameMode==4){
-            intent=new Intent(LobbyActivity.this,TournamentVideoActivity.class);
-        }
-       
-        intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
-        intent.putExtra("roomCode",roomCode);
-        intent.putExtra("playerNum",myPlayerNum);
-        intent.putExtra("hostName",hostNameStr);
-        if(timeInt==1){
-            intent.putExtra("time",180);
-        }else if(timeInt==2){
-            intent.putExtra("time",270);
-        }else{
-            intent.putExtra("time",360);
-        }
+                supportAlertDialog.dismissLoadingDialog();
+
+                try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
+                try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
+                try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
+                try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
+
+                try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
+                try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
+                try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
+                try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
+                try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
 
 
-        startActivity(intent);
-        finish();
+                try{countDownTimer.cancel();}catch (Exception e){}
+
+                Intent intent = null;
+                if(gameMode==1){
+                    intent=new Intent(LobbyActivity.this,TournamentNormalActivity.class);
+                }else if(gameMode==2){
+                    intent=new Intent(LobbyActivity.this,TournamentPictureActivity.class);
+                }else if(gameMode==3){
+                    intent=new Intent(LobbyActivity.this,TournamentAudioActivity.class);
+                }else if(gameMode==4){
+                    intent=new Intent(LobbyActivity.this,TournamentVideoActivity.class);
+                }
+
+                intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);
+                intent.putExtra("roomCode",roomCode);
+                intent.putExtra("playerNum",myPlayerNum);
+                intent.putExtra("hostName",hostNameStr);
+                if(timeInt==1){
+                    intent.putExtra("time",180);
+                }else if(timeInt==2){
+                    intent.putExtra("time",270);
+                }else{
+                    intent.putExtra("time",360);
+                }
+
+
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
 
     }
 

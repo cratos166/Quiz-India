@@ -40,15 +40,20 @@ public class BuzzerDataSetter {
                         PlayerInfo playerInfo=dataSnapshot.getValue(PlayerInfo.class);
 
                         if(playerInfo.isActive()){
-                            float acc=((playerInfo.getCorrect()*100)/playerInfo.getWrong());
 
-                            int min=playerInfo.getTotalTime()/60;
-                            int sec=playerInfo.getTotalTime()%60;
+                            if(playerInfo.getActivityNumber()==1){
+                                float acc=((playerInfo.getCorrect()*100)/playerInfo.getWrong());
 
-                            String totalTime=min+" min "+sec+" sec";
-                            String accStr=acc+"%";
-                            String highestScore=String.valueOf(playerInfo.getScore());
-                            playerDataArrayList.add(new Details(playerInfo.getImageUrl(),playerInfo.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
+                                int min=playerInfo.getTotalTime()/60;
+                                int sec=playerInfo.getTotalTime()%60;
+
+                                String totalTime=min+" min "+sec+" sec";
+                                String accStr=acc+"%";
+                                String highestScore=String.valueOf(playerInfo.getScore());
+                                playerDataArrayList.add(new Details(playerInfo.getImageUrl(),playerInfo.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
+
+                            }
+
 
                         }else{
                             table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(dataSnapshot.getKey()).removeValue();

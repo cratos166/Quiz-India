@@ -549,19 +549,34 @@ public class TournamentAudioActivity extends AppCompatActivity {
 
         DataExchangeHolder dataExchangeHolder=new DataExchangeHolder(map,animList,score,timeTakenString,lifelineSum,0,scoreGenerator.start(),myName,myPicURL,timeTakenInt);
 
+        Dialog dialog=null;
+        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentAudioActivity.this);
+        supportAlertDialog.showLoadingDialog();
+
         table_user.child("TOURNAMENT").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+                table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(3).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                Intent intent=new Intent(TournamentAudioActivity.this,ScoreActivity.class);
-                intent.putExtra("roomCode",roomCode);
-                intent.putExtra("maxQuestions",list.size()-1);
-                intent.putExtra("playerNum",myPlayerNum);
-                intent.putExtra("hostName",hostName);
-                startActivity(intent);
-                finish();
+
+                        supportAlertDialog.dismissLoadingDialog();
+
+                        try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+
+                        Intent intent=new Intent(TournamentAudioActivity.this,ScoreActivity.class);
+                        intent.putExtra("roomCode",roomCode);
+                        intent.putExtra("maxQuestions",list.size()-1);
+                        intent.putExtra("playerNum",myPlayerNum);
+                        intent.putExtra("hostName",hostName);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
+
 
             }
         });
