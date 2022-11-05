@@ -28,9 +28,6 @@ public class PlayerDisplayInBuzzerAdapter extends RecyclerView.Adapter<PlayerDis
 
 
 
-
-
-
     public PlayerDisplayInBuzzerAdapter(Context mContext, ArrayList<PlayerDisplayBuzzerHolder> arrayList, int currentQuestionStatus){
         this.mContext=mContext;
         this.arrayList=arrayList;

@@ -940,7 +940,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTAudioQuiz.this,countDownTimer,option1,songActivity);
-        quizCancelDialog.start();
+        quizCancelDialog.startForSinglePlayer();
     }
 
     @Override

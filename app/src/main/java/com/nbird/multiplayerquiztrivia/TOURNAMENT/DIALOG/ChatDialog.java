@@ -137,14 +137,20 @@ public class ChatDialog {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                chatHolderArrayList.clear();
+                try{
+                    chatHolderArrayList.clear();
 
-                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    ChatHolder chatHolder=dataSnapshot.getValue(ChatHolder.class);
-                    chatHolderArrayList.add(chatHolder);
+                    for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                        ChatHolder chatHolder=dataSnapshot.getValue(ChatHolder.class);
+                        chatHolderArrayList.add(chatHolder);
+                    }
+                    recyclerview.smoothScrollToPosition(recyclerview.getAdapter().getItemCount());
+                    chatAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+
                 }
-                recyclerview.smoothScrollToPosition(recyclerview.getAdapter().getItemCount());
-                chatAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override

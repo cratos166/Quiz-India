@@ -132,6 +132,12 @@ public class LobbyBuzzerActivity extends AppCompatActivity {
         roomCode=getIntent().getStringExtra("roomCode");
         hostNameStr=getIntent().getStringExtra("hostName");
 
+
+        if(myPlayerNum==1){
+            table_user.child("BUZZER").child("QUESTIONS").child(roomCode).removeValue();
+            table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeValue();
+        }
+
         roomCodeTextView.setText("Room Code : "+roomCode);
 
         playerDataArrayList=new ArrayList<>();
@@ -452,7 +458,7 @@ public class LobbyBuzzerActivity extends AppCompatActivity {
                 if(gameMode==1){
                     intent=new Intent(LobbyBuzzerActivity.this, BuzzerNormalActivity.class);
                 }else if(gameMode==2){
-//            intent=new Intent(LobbyActivity.this, BUZZERPictureActivity.class);
+                    intent=new Intent(LobbyBuzzerActivity.this, BuzzerPictureActivity.class);
                 }
 
                 intent.putIntegerArrayListExtra("answerInt", (ArrayList<Integer>) listAns);

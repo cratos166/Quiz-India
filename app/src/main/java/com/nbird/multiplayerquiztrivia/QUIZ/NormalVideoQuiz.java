@@ -488,7 +488,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalVideoQuiz.this,timer.getCountDownTimer(),option1,songActivity);
-        quizCancelDialog.start();
+        quizCancelDialog.startForSinglePlayer();
     }
 
     @Override

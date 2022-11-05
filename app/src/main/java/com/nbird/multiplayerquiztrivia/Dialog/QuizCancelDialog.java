@@ -69,7 +69,8 @@ public class QuizCancelDialog {
         this.songActivity = songActivity;
     }
 
-    public void start(){
+
+    public void startVsMode(){
         AlertDialog.Builder builderRemove=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
         View viewRemove1= LayoutInflater.from(context).inflate(R.layout.dialog_model_2,(ConstraintLayout) v.findViewById(R.id.layoutDialogContainer),false);
         builderRemove.setView(viewRemove1);
@@ -96,6 +97,8 @@ public class QuizCancelDialog {
             @Override
             public void onClick(View view) {
 
+
+
                 Dialog loadingDialog = null;
                 SupportAlertDialog supportAlertDialog=new SupportAlertDialog(loadingDialog,context);
                 supportAlertDialog.showLoadingDialog();
@@ -105,21 +108,26 @@ public class QuizCancelDialog {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
-//                        try{table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){e.printStackTrace();}
-//
-//                        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
-//
-//                        try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
-//
-//
-//                        try{table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){}
+                        try{table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);}catch (Exception e){e.printStackTrace();}
+
+                        try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
+
+                        try{table_user.child("VS_REQUEST").child(oppoUID).removeEventListener(vsRematchListener);}catch (Exception e){}
+
+
+                        try{table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeEventListener(myConnectionLisner);}catch (Exception e){}
 
                         supportAlertDialog.dismissLoadingDialog();
 //
-//                        if(countDownTimer!=null){
-//                            countDownTimer.cancel();
-//                        }
+                        if(countDownTimer!=null){
+                            countDownTimer.cancel();
+                        }
+
                         alertDialog.cancel();
+
+                        Intent intent=new Intent(context,MainActivity.class);
+                        context.startActivity(intent);
+                        ((Activity) context).finish();
 
                     }
                 });
@@ -135,6 +143,50 @@ public class QuizCancelDialog {
             }
         });
 
+    }
+
+
+    public void startForSinglePlayer(){
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(context).inflate(R.layout.dialog_model_2,(ConstraintLayout) v.findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+        Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
+        Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+             Intent intent=new Intent(context,MainActivity.class);
+             context.startActivity(intent);
+             ((Activity) context).finish();
+
+            }
+        });
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
 
     }
+
 }

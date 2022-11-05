@@ -70,6 +70,7 @@ public class ScoreActivity extends AppCompatActivity {
     Button reMatch, joinOrCreateOtherRoom, quitButton;
 
     Boolean winnerDeclared = false, isHostActive;
+    TextView dis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,7 @@ public class ScoreActivity extends AppCompatActivity {
         reMatch = (Button) findViewById(R.id.reMatch);
         joinOrCreateOtherRoom = (Button) findViewById(R.id.joinOrCreateOtherRoom);
         quitButton = (Button) findViewById(R.id.quitButton);
+        dis=(TextView) findViewById(R.id.dis);
 
         playerDataArrayList = new ArrayList<>();
 
@@ -269,6 +271,7 @@ public class ScoreActivity extends AppCompatActivity {
         supportAlertDialog.showLoadingDialog();
 
 
+
         table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(1).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -317,17 +320,12 @@ public class ScoreActivity extends AppCompatActivity {
                         numberOfActivePlayer++;
                     } else {
 
-                        try {
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(String.valueOf(dataSnapshot.getKey())).removeValue();
-                        } catch (Exception e) {
-
-                        }
+                        try {table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(String.valueOf(dataSnapshot.getKey())).removeValue();} catch (Exception e) {}
 
                     }
-
-
                 }
 
+                dis.setText("Number of players completed the quiz : "+numberOfActivePlayer+"/"+playerDataArrayList.size());
 
                 try {
 
@@ -389,6 +387,9 @@ public class ScoreActivity extends AppCompatActivity {
 
 
                 }
+
+                dis.setText("Number of players completed the quiz : "+numberOfActivePlayer+"/"+playerDataArrayList.size());
+
 
                 if (numberOfActivePlayer == playerDataArrayList.size()) {
 

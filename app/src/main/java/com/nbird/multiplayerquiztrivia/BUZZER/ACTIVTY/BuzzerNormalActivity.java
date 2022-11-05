@@ -128,6 +128,11 @@ public class BuzzerNormalActivity extends AppCompatActivity {
         appData=new AppData();
         ansList=new ArrayList<>();
 
+
+        if(myPlayerNum==1){
+            table_user.child("BUZZER").child("RESULT").child(roomCode).removeValue();
+        }
+
         songStopperAndResumer();
 
         questionTextView=findViewById(R.id.question);

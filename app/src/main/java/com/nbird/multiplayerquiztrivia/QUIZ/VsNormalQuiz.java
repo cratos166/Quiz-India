@@ -996,7 +996,7 @@ public class VsNormalQuiz extends AppCompatActivity {
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsNormalQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener,myConnectionLisner);
-        quizCancelDialog.start();
+        quizCancelDialog.startVsMode();
     }
 
     @Override

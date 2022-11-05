@@ -42,7 +42,7 @@ public class BuzzerDataSetter {
                         if(playerInfo.isActive()){
 
                             if(playerInfo.getActivityNumber()==1){
-                                float acc=((playerInfo.getCorrect()*100)/playerInfo.getWrong());
+                                float acc=((playerInfo.getCorrect()*100)/(playerInfo.getWrong()+playerInfo.getCorrect()));
 
                                 int min=playerInfo.getTotalTime()/60;
                                 int sec=playerInfo.getTotalTime()%60;

@@ -261,6 +261,12 @@ public class BuzzerScoreActivity extends AppCompatActivity {
 
 
 
+        if(myPlayerNum==1){
+            table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeValue();
+            table_user.child("BUZZER").child("QUESTIONS").child(roomCode).removeValue();
+            table_user.child("BUZZER").child("RESULT").child(roomCode).removeValue();
+        }
+
 
 
         Dialog dialog = null;

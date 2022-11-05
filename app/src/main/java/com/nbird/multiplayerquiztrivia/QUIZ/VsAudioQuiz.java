@@ -1248,8 +1248,8 @@ public class VsAudioQuiz extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsAudioQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener);
-        quizCancelDialog.start();
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsAudioQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener,myConnectionLisner);
+        quizCancelDialog.startVsMode();
     }
 
     @Override

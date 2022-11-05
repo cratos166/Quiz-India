@@ -61,7 +61,7 @@ public class SupportAlertDialog {
         loadingDialog=new Dialog(context);
         loadingDialog.setContentView(R.layout.loading_screen);
         loadingDialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        loadingDialog.setCancelable(true);
+        loadingDialog.setCancelable(false);
         try{
             loadingDialog.show();
         }catch (Exception e){

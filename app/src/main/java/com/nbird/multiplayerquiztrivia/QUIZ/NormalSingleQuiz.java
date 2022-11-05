@@ -555,7 +555,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalSingleQuiz.this,countDownTimer,option1,songActivity);
-        quizCancelDialog.start();
+        quizCancelDialog.startForSinglePlayer();
     }
 
     @Override

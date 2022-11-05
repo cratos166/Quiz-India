@@ -177,10 +177,7 @@ public class JoinCreateTournamentDialoge {
 
                             table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(dataSnapshot.getKey())).removeValue();
 
-
-
-
-//                            table_user.child("TOURNAMENT").child("CHAT").child(dataSnapshot.getKey()).removeValue();
+                            table_user.child("TOURNAMENT").child("CHAT").child(String.valueOf(dataSnapshot.getKey())).removeValue();
 //                            table_user.child("TOURNAMENT").child("PLAYERS").child(dataSnapshot.getKey()).removeValue();
 //                            table_user.child("TOURNAMENT").child("RESULT").child(dataSnapshot.getKey()).removeValue();
 //                            table_user.child("TOURNAMENT").child("QUESTIONS").child(dataSnapshot.getKey()).removeValue();

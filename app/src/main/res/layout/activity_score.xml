@@ -51,8 +51,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/anim_official_name"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,10 +78,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu_bold"
-                android:text="Select Your Category"
+                android:text="Waiting for other players to complete the quiz."
                 android:textColor="@color/text_head"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/backlitemodeanim" />
 
@@ -90,10 +89,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
-                android:text="Choose among 20 categories and begin your quest!\nComplete The Quiz Under 10 Mins With Utmost Accuracy!"
+                android:text=""
                 android:textColor="@color/text_dis"
                 android:textSize="10dp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/backlitemodeanim" />
 

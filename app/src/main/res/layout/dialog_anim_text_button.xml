@@ -9,14 +9,31 @@
     android:scaleX="0.9"
     android:layout_margin="20dp"
     android:padding="20dp"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent"
     android:id="@+id/layoutDialogContainer">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="?selectableItemBackground"
+        cardview:cardCornerRadius="5dp"
+        cardview:layout_constraintBottom_toBottomOf="parent"
+        cardview:layout_constraintEnd_toEndOf="parent"
+        cardview:layout_constraintStart_toStartOf="parent"
+        cardview:layout_constraintTop_toTopOf="parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border_theme"
+        android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutDialog"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/border_theme"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="176dp">
 
@@ -77,7 +94,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+    </LinearLayout>
 
-
-
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

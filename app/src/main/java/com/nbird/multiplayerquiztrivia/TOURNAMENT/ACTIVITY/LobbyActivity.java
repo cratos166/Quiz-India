@@ -129,6 +129,11 @@ public class LobbyActivity extends AppCompatActivity {
         roomCode=getIntent().getStringExtra("roomCode");
         hostNameStr=getIntent().getStringExtra("hostName");
 
+        if(myPlayerNum==1){
+            table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).removeValue();
+            table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeValue();
+        }
+
         roomCodeTextView.setText("Room Code : "+roomCode);
 
         playerDataArrayList=new ArrayList<>();
@@ -483,6 +488,9 @@ public class LobbyActivity extends AppCompatActivity {
 
 
     private void questionUploader(){
+
+
+
 
         int number;
         if(numberofQuestion==1){

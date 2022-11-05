@@ -143,7 +143,9 @@ public class TournamentVideoActivity extends AppCompatActivity {
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
 
-
+        if(myPlayerNum==1){
+            table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
+        }
 
 
         questionTextView=findViewById(R.id.question);

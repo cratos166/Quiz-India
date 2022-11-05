@@ -7,78 +7,93 @@
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:scaleX="0.85"
     android:scaleY="0.85"
-
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/border_theme"
     android:id="@+id/layoutDialogContainer">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutDialog"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/border_theme_2"
+        android:layout_height="match_parent"
+        android:foreground="?selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="176dp">
+        cardview:cardCornerRadius="5dp">
 
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barChart"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:background="@drawable/border_theme"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_theme_2"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="176dp">
 
 
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/single_color_3"
-            android:fontFamily="@font/ubuntu"
-            android:padding="15dp"
-            android:text="Sorry Lucy! You Have Used The 50:50 Life Line."
-            android:textAlignment="center"
-            android:textColor="@color/text_head"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/buttonYes"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barChart" />
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-        <Button
-            android:id="@+id/buttonYes"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="60dp"
-            android:layout_marginEnd="60dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/next_button"
-            android:fontFamily="@font/ubuntu"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
-            app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
+                <TextView
+                    android:id="@+id/textTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/single_color_3"
+                    android:fontFamily="@font/ubuntu"
+                    android:padding="15dp"
+                    android:text="Sorry Lucy! You Have Used The 50:50 Life Line."
+                    android:textAlignment="center"
+                    android:textColor="@color/text_head"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonYes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/barChart" />
 
 
+                <Button
+                    android:id="@+id/buttonYes"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginEnd="60dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/next_button"
+                    android:fontFamily="@font/ubuntu"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
+                    app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

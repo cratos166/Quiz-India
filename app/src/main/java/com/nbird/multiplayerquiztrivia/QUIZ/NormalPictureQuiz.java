@@ -502,7 +502,7 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalPictureQuiz.this,timer.getCountDownTimer(),option1,songActivity);
-        quizCancelDialog.start();
+        quizCancelDialog.startForSinglePlayer();
     }
 
     @Override

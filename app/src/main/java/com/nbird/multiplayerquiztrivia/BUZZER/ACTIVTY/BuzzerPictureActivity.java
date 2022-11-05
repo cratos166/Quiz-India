@@ -1,4 +1,4 @@
-package com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY;
+package com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -9,14 +9,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,8 +31,6 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,37 +40,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
-import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
-import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
+import com.nbird.multiplayerquiztrivia.BUZZER.ADAPTER.PlayerDataDisplayBuzzer;
+import com.nbird.multiplayerquiztrivia.BUZZER.EXTRA.BuzzerAnswerUploader;
+import com.nbird.multiplayerquiztrivia.BUZZER.MODEL.BuzzerDataExchangeHolder;
+import com.nbird.multiplayerquiztrivia.BUZZER.MODEL.BuzzerManupulationHolder;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
-import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
-import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
-import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
-import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
-import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
-import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
-
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.AnswerUploader;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.PlayerDisplayInQuiz;
-
+import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
-public class TournamentNormalActivity extends AppCompatActivity {
+public class BuzzerPictureActivity extends AppCompatActivity {
 
 
     TextView questionTextView,scoreBoard,timerText;
-    Button option1,option2,option3,option4,nextButton;
+    Button option1,option2,option3,option4;
     LinearLayout linearLayout,linearLayoutexpert,linearLayoutAudience,linearLayoutFiftyFifty,linearLayoutSwap;
-    CardView audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL,clockCardView;
+    CardView clockCardView;
 
     Dialog loadingDialog;
     CountDownTimer countDownTimer;
@@ -84,57 +72,69 @@ public class TournamentNormalActivity extends AppCompatActivity {
     DatabaseReference table_user = database.getReference("NEW_APP");
 
     private List<questionHolder> list;
-    ArrayList<LottieAnimationView> animationList;
-    ArrayList<Boolean> animList;
+    private ArrayList<Integer> ansList;
 
-    int fiftyfiftynum=0,audiencenum=0,swapnum=0,expertnum=0,lifelineSum=0,position=0,num=0,score=0,myPosition=-1,count;
+
+    int position=0,num=0,score=0,myPosition=-1,count;
     String myName,myPicURL;
 
     AppData appData;
     SongActivity songActivity;
-    LLManupulator llManupulator;
 
-    LifeLine lifeLine;
+
     SupportAlertDialog supportAlertDialog;
-    TotalScore totalScore;
-    HighestScore highestScore;
 
     ArrayList<Integer> listAns;
     String roomCode;
     int time,myPlayerNum;
 
-    AnswerUploader answerUploader;
+    BuzzerAnswerUploader answerUploader;
 
-    PlayerDisplayInQuiz playerDisplayInQuiz;
+    PlayerDataDisplayBuzzer playerDataDisplayBuzzer;
 
-    ValueEventListener playerInfoGetterListener;
+    ValueEventListener playerInfoGetterListener,BUZZERTrackerListener;
     RecyclerView recyclerView;
 
     int minutes=2;
     int second=59;
     String minutestext;
     String secondtext,hostName;
+    int numberOfQuestions;
 
+    int myScore=0;
 
+    int currentQuestionStatus=0;
+    int kk=15;
+
+    //0->NO ONE HAS ANSWERED->3 or -1
+    //1->1 PERSON HAS ANSWERED WRONG->2 or -1
+    //2->2 PERSONS HAVE ANSWERED WRONG, CHANGE QUESTION->1 or -1
+    //-1->CORRECT
+    boolean isAnswered=false;
+
+    ImageView questionImage;
+
+    CountDownTimer cc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tournament_normal);
+        setContentView(R.layout.activity_buzzer_picture);
 
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
         roomCode=getIntent().getStringExtra("roomCode");
         time=getIntent().getIntExtra("time",180);
         myPlayerNum=getIntent().getIntExtra("playerNum",1);
         hostName= getIntent().getStringExtra("hostName");
+        numberOfQuestions = getIntent().getIntExtra("numberOfQuestions",10);
 
         list=new ArrayList<>();
         appData=new AppData();
-        animationList=new ArrayList<>();
-        animList=new ArrayList<>();
+        ansList=new ArrayList<>();
+
 
         if(myPlayerNum==1){
-            table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
+            table_user.child("BUZZER").child("RESULT").child(roomCode).removeValue();
         }
 
         songStopperAndResumer();
@@ -145,81 +145,53 @@ public class TournamentNormalActivity extends AppCompatActivity {
         option2=(Button) findViewById(R.id.button2);
         option3=(Button) findViewById(R.id.button3);
         option4=(Button) findViewById(R.id.button4);
-        nextButton=(Button) findViewById(R.id.nextbutton);
         linearLayout=(LinearLayout) findViewById(R.id.linearButtonlayout);
         timerText=(TextView) findViewById(R.id.timer);
-        audienceLL=(CardView) findViewById(R.id.audience);
-        expertAdviceLL=(CardView) findViewById(R.id.expert);
-        fiftyfiftyLL=(CardView) findViewById(R.id.fiftyfifty);
-        swapTheQuestionLL=(CardView) findViewById(R.id.swap);
         linearLayoutexpert=(LinearLayout) findViewById(R.id.linearLayoutexpert) ;
         linearLayoutAudience=(LinearLayout) findViewById(R.id.linearLayoutAudience) ;
         linearLayoutFiftyFifty=(LinearLayout) findViewById(R.id.linearLayoutfiftyfifty) ;
         linearLayoutSwap=(LinearLayout) findViewById(R.id.linearLayoutSwap) ;
         recyclerView=(RecyclerView) findViewById(R.id.recyclerView) ;
+        questionImage=(ImageView) findViewById(R.id.questionImage);
+
 
 
         clockCardView = (CardView) findViewById(R.id.cardView3);
 
-        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, TournamentNormalActivity.this);
-        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, TournamentNormalActivity.this);
+        myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, BuzzerPictureActivity.this);
+        myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, BuzzerPictureActivity.this);
 
+        // timer=new NormalBUZZERTimer(countDownTimer,time*1000,1000,BuzzerPictureActivity.this,timerText,clockCardView);
 
-        llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
-
-       // timer=new NormalTournamentTimer(countDownTimer,time*1000,1000,TournamentNormalActivity.this,timerText,clockCardView);
-
-
-
-        supportAlertDialog=new SupportAlertDialog(loadingDialog,TournamentNormalActivity.this);
+        supportAlertDialog=new SupportAlertDialog(loadingDialog,BuzzerPictureActivity.this);
         supportAlertDialog.showLoadingDialog();
 
-        lifeLine();
         questionSelector();
 
-        totalScore=new TotalScore();
-        totalScore.getSingleModeScore();
-
-        highestScore=new HighestScore();
-        highestScore.start();
-
-
-
-
-        answerUploader=new AnswerUploader(roomCode,myName,myPicURL);
+        answerUploader=new BuzzerAnswerUploader(roomCode,myName,myPicURL);
         answerUploader.start();
 
-        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentNormalActivity.this,playerInfoGetterListener,roomCode,recyclerView);
-        playerDisplayInQuiz.start();
+        playerDataDisplayBuzzer=new PlayerDataDisplayBuzzer(BuzzerPictureActivity.this,playerInfoGetterListener,roomCode,recyclerView,currentQuestionStatus);
+        playerDataDisplayBuzzer.start();
+
+
+        Toast.makeText(this, "Game starts in 15 seconds.Please wait!", Toast.LENGTH_SHORT).show();
+        cc=new CountDownTimer(1000*15,1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                supportAlertDialog.dismissLoadingDialog();
+                setCountDownTimer();
+            }
+        }.start();
+
+        
         
     }
-
-
-    public void lifeLine(){
-
-        lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,TournamentNormalActivity.this);
-
-        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
-        audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
-
-
-        swapTheQuestionLL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(swapnum==0) {
-                    lifelineSum++;swapnum=1;
-                    linearLayoutSwap.setBackgroundResource(R.drawable.usedicon);
-                    nextButton.setEnabled(false);nextButton.setAlpha(0.7f);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { enableOption(true); }
-                    position++;llManupulator.True();count = 0;
-                    playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
-                }else{ lifeLine.LLUsed("SWAP"); }
-            }
-        });
-
-        expertAdviceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(expertnum==0){ lifelineSum++;expertnum=1;lifeLine.setPosition(position);lifeLine.expertAdviceLL(); }else{ lifeLine.LLUsed("EXPERT ADVICE"); } }});
-    }
-
 
     public void questionSelector() {
         for (int i = 0; i < listAns.size(); i++) {
@@ -230,17 +202,27 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
 
 
+
     public void fireBaseData2 ( int setNumber){
-        myRef.child("NormalQuizBIGJSON").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("PictureQuizMain").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.add(snapshot.getValue(questionHolder.class));
+
+                try{
+                    Glide.with(getBaseContext())
+                            .load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).preload(20,10)).preload(20,10)).preload(20,10))
+                            .preload(20, 10);
+                }catch (Exception e){
+
+                }
+
                 mainManupulations();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(TournamentNormalActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(BuzzerPictureActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 supportAlertDialog.dismissLoadingDialog();
                 finish();
             }
@@ -251,15 +233,16 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
         num++;
         if (num == listAns.size()) {
-            setCountDownTimer();
+
             if (list.size() > 0) {
                 for (int i = 0; i < 4; i++) {
+                    int finalI = i;
                     linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void onClick(View view) {
                             try {
-                                checkAnswer((Button) view);
+                                checkAnswer((Button) view, finalI);
                             } catch (Exception e) {
                                 //        Toast.makeText(quizActivity.this, "Please Wait", Toast.LENGTH_SHORT).show();
                             }
@@ -268,28 +251,11 @@ public class TournamentNormalActivity extends AppCompatActivity {
                     });
                 }
                 playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
-                nextButton.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onClick(View view) {
-
-                        playMusic(R.raw.buttonmusic);
-                        nextButton.setEnabled(false);
-                        nextButton.setAlpha(0.7f);
-                        enableOption(true);
-                        position++;
-                        llManupulator.True();
-
-                        if (swapnum == 0) { if (position == listAns.size()-1) { quizFinishDialog();return; } } else { if (position == listAns.size()) { quizFinishDialog();return; } }
-                        count = 0;
-                        playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
-                    }
-                });
             } else {
                 finish();
-                Toast.makeText(TournamentNormalActivity.this, "No Questions", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BuzzerPictureActivity.this, "No Questions", Toast.LENGTH_SHORT).show();
             }
-            supportAlertDialog.dismissLoadingDialog();
+
         }
     }
 
@@ -302,6 +268,18 @@ public class TournamentNormalActivity extends AppCompatActivity {
                 if(value==0 && count<4){
                     String option="";
                     if(count==0){
+
+
+                        String linkHolder=list.get(position).getQuestionPicture();
+                        try{
+                            Glide.with(getBaseContext())
+                                    .load(linkHolder)
+                                    .error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder))))
+                                    .into(questionImage);
+                        }catch (Exception e){
+
+                        }
+
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
                         linearLayout.getChildAt(0).setBackgroundResource(R.drawable.border_theme_2);
@@ -331,11 +309,9 @@ public class TournamentNormalActivity extends AppCompatActivity {
                 if (value == 0) {
                     try {
                         ((TextView) view).setText(data);
-                        if(swapnum==0){
-                            scoreBoard.setText((position+1)+"/"+(listAns.size()-1));
-                        }else{
-                            scoreBoard.setText((position)+"/"+(listAns.size()-1));
-                        }
+
+                        scoreBoard.setText((position+1)+"/"+(listAns.size()-1));
+
                     } catch (ClassCastException ex) {
                         ((Button) view).setText(data);
                     }
@@ -354,7 +330,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
     public void playMusic(int id){
         MediaPlayer musicNav;
-        musicNav = MediaPlayer.create(TournamentNormalActivity.this,id);
+        musicNav = MediaPlayer.create(BuzzerPictureActivity.this,id);
         musicNav.start();
         musicNav.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -365,21 +341,70 @@ public class TournamentNormalActivity extends AppCompatActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void checkAnswer(Button selectedOption){
-        enableOption(false);
-        nextButton.setEnabled(true);
-        nextButton.setAlpha(1);
+    private void BUZZERStatusSetter(int value){
 
-        llManupulator.False();
+        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).child("currentQuestionStatus").setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
+
+
+
+    }
+
+
+    private void BUZZEROptionsSetter(String button,int value){
+        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).child(button).setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void checkAnswer(Button selectedOption,int i){
+
+
+
 
         if(selectedOption.getText().toString().equals(list.get(position).getCorrectAnswer())){
 
+            isAnswered=true;
+
+
+            ansList.add(1);
+
+            if(currentQuestionStatus==0){
+                myScore=myScore+3;
+                BUZZERStatusSetter(3);
+            }else if(currentQuestionStatus==1){
+                myScore=myScore+2;
+                BUZZERStatusSetter(3);
+            }else if (currentQuestionStatus==2){
+                myScore=myScore+1;
+                BUZZERStatusSetter(3);
+            }
+
+            if(i==0){
+                BUZZEROptionsSetter("option1",1);
+            }else if(i==1){
+                BUZZEROptionsSetter("option2",1);
+            }else if(i==2){
+                BUZZEROptionsSetter("option3",1);
+            }else if(i==3){
+                BUZZEROptionsSetter("option4",1);
+            }
+
+
+            scoreUploader();
             answerUploader.upload(1);
             //correct
             playMusic(R.raw.correctmusic);
 //            ANIM_MANU(R.raw.tickanim);
-            animList.add(true);
+
             selectedOption.setBackgroundResource(R.drawable.option_right);
             //green color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
@@ -387,13 +412,41 @@ public class TournamentNormalActivity extends AppCompatActivity {
             score++;
 
 
+            enableOption(false);
         }else {
 
+            isAnswered=true;
+
+            ansList.add(2);
+
+            if(currentQuestionStatus==0){
+                myScore=myScore-1;
+                BUZZERStatusSetter(1);
+            }else if(currentQuestionStatus==1){
+                myScore=myScore-1;
+                BUZZERStatusSetter(2);
+            }else if (currentQuestionStatus==2){
+                myScore=myScore-1;
+                BUZZERStatusSetter(3);
+            }
+
+
+            if(i==0){
+                BUZZEROptionsSetter("option1",2);
+            }else if(i==1){
+                BUZZEROptionsSetter("option2",2);
+            }else if(i==2){
+                BUZZEROptionsSetter("option3",2);
+            }else if(i==3){
+                BUZZEROptionsSetter("option4",2);
+            }
+
+            scoreUploader();
             answerUploader.upload(2);
             //incorrect
             playMusic(R.raw.wrongansfinal);
 //            ANIM_MANU(R.raw.wronganim);
-            animList.add(false);
+
             selectedOption.setBackgroundResource(R.drawable.option_wrong);     //red color
             selectedOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
             selectedOption.setShadowLayer(3,1,1,R.color.green);
@@ -401,10 +454,19 @@ public class TournamentNormalActivity extends AppCompatActivity {
             correctOption.setBackgroundResource(R.drawable.option_right);    //green color
             correctOption.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
             correctOption.setShadowLayer(3,1,1,R.color.red);
+            enableOption(false);
         }
     }
 
 
+    private void scoreUploader(){
+        table_user.child("BUZZER").child("ANSWERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("score").setValue(myScore).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
+    }
 
 
 
@@ -427,55 +489,28 @@ public class TournamentNormalActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        int minutesLeft=minutes;
-        int secondsLeft=second;
-
-        String timeTakenString;
-        if((60-secondsLeft)>=10){
-            timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
-        }else{
-            timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
-        }
-
-        int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
-
-        ScoreGenerator scoreGenerator=new ScoreGenerator(minutes,second,lifelineSum,score);
-
-        totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
-        totalScore.setSingleModeScore();
-
-        if(highestScore.getHighestScore()<scoreGenerator.start()){
-            highestScore.setHighestScore(scoreGenerator.start());
-            highestScore.upLoadHighestScore(scoreGenerator.start());
-        }
-
-        HashMap<String,Integer> map=new HashMap<>();
-        map.put("Expert",expertnum);
-        map.put("Flip",swapnum);
-        map.put("Audience",audiencenum);
-        map.put("Fifty-Fifty",fiftyfiftynum);
-
-        DataExchangeHolder dataExchangeHolder=new DataExchangeHolder(map,animList,score,timeTakenString,lifelineSum,0,scoreGenerator.start(),myName,myPicURL,timeTakenInt);
-
-
         Dialog dialog=null;
-        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentNormalActivity.this);
+        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog, BuzzerPictureActivity.this);
         supportAlertDialog.showLoadingDialog();
 
 
-        table_user.child("TOURNAMENT").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+        BuzzerDataExchangeHolder dataExchangeHolder=new BuzzerDataExchangeHolder(ansList,myScore,score,0,myName,myPicURL);
+
+        table_user.child("BUZZER").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
-                table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(3).addOnCompleteListener(new OnCompleteListener<Void>() {
+                table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("activityNumber").setValue(3).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
                         supportAlertDialog.dismissLoadingDialog();
 
-                        try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+                        try{ table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+                        try{ myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
 
-                        Intent intent=new Intent(TournamentNormalActivity.this,ScoreActivity.class);
+                        Intent intent=new Intent(BuzzerPictureActivity.this,BuzzerScoreActivity.class);
                         intent.putExtra("roomCode",roomCode);
                         intent.putExtra("maxQuestions",list.size()-1);
                         intent.putExtra("playerNum",myPlayerNum);
@@ -485,6 +520,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
                     }
                 });
+
 
 
             }
@@ -502,7 +538,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
         CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
         final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
         final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
-        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this)){
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,BuzzerPictureActivity.this)){
             songActivity=new SongActivity(this);
             songActivity.startMusic();
         }else{
@@ -512,17 +548,17 @@ public class TournamentNormalActivity extends AppCompatActivity {
         cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this)){
+                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,BuzzerPictureActivity.this)){
                     songActivity.songStop();
                     Speaker.setBackgroundResource(R.drawable.usedicon);
                     speakerImage.setBackgroundResource(R.drawable.music_off);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this,false);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,BuzzerPictureActivity.this,false);
                 }else{
-                    songActivity=new SongActivity(TournamentNormalActivity.this);
+                    songActivity=new SongActivity(BuzzerPictureActivity.this);
                     songActivity.startMusic();
                     Speaker.setBackgroundResource(R.drawable.single_color_2);
                     speakerImage.setBackgroundResource(R.drawable.music_on);
-                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentNormalActivity.this,true);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,BuzzerPictureActivity.this,true);
                 }
             }
         });
@@ -538,13 +574,15 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
+        try{ if(cc!=null){cc.cancel();}}catch (Exception e){}
+
 
         Runtime.getRuntime().gc();
     }
 
     public void quitScoreActivityActivity(){
-        AlertDialog.Builder builderRemove=new AlertDialog.Builder(TournamentNormalActivity.this, R.style.AlertDialogTheme);
-        View viewRemove1= LayoutInflater.from(TournamentNormalActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(BuzzerPictureActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(BuzzerPictureActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
         builderRemove.setView(viewRemove1);
         builderRemove.setCancelable(false);
 
@@ -588,17 +626,17 @@ public class TournamentNormalActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Dialog dialog=null;
-                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentNormalActivity.this);
+                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,BuzzerPictureActivity.this);
                 supportAlertDialog.showLoadingDialog();
 
 
                 if(myPlayerNum==1){
-                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
 
 
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 
@@ -621,7 +659,7 @@ public class TournamentNormalActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             supportAlertDialog.dismissLoadingDialog();
@@ -655,12 +693,12 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
 
     private void intentMain(){
-        try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+        try{table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
 
         try{countDownTimer.cancel();}catch (Exception e){}
 
 
-        Intent intent=new Intent(TournamentNormalActivity.this,MainActivity.class);
+        Intent intent=new Intent(BuzzerPictureActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
 
@@ -668,67 +706,43 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
 
     private void setCountDownTimer(){
-        countDownTimer=new CountDownTimer(time*1000, 1000) {
 
+
+        listnereSetter();
+        countDownTimer=new CountDownTimer(15*numberOfQuestions*1000, 1000) {
 
             @SuppressLint("ResourceAsColor")
             public void onTick(long millisUntilFinished) {
 
-
-                if(second==0){
-                    minutes--;
-                    minutestext="0"+String.valueOf(minutes);
-                    second=59;
-                    if(second<10){
-                        secondtext="0"+String.valueOf(second);
-                    }else{
-                        secondtext=String.valueOf(second);
+                if(kk==0){
+                    currentQuestionStatus=0;
+                    timerText.setText(String.valueOf(kk));
+                    if(!isAnswered){
+                        answerUploader.upload(3);
+                        ansList.add(3);
                     }
-                    timerText.setText(minutestext+":"+secondtext+" ");
+
+                    isAnswered=false;
+
+                    kk=15;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        enableOption(true);
+                    }
+                    listenerRemover();
+                    position++;
+                    listnereSetter();
+                    if (position == listAns.size()-1) { }
+                    count = 0;
+                    playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
 
                 }else{
-                    minutestext="0"+String.valueOf(minutes);
-                    if(second<10){
-                        secondtext="0"+String.valueOf(second);
-                    }else{
-                        secondtext=String.valueOf(second);
-                    }
-                    timerText.setText(minutestext+":"+secondtext+" ");
-                    second--;
-                }
-
-                //Last 15 seconds end animation
-                if(minutes==0 && second<=15){
-
-                    timerText.setTextColor(R.color.red);
-
-                    //Continuous zoomIn - zoomOut
-                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
-                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
-
-                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
-                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
-
-                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
-                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
-
-                    AnimatorSet scaleAnim = new AnimatorSet();
-                    scaleAnim.setDuration(500);
-                    scaleAnim.play(scaleX).with(scaleY);
-
-                    scaleAnim.start();
+                    timerText.setText(String.valueOf(kk));
+                    kk--;
                 }
 
             }
             public void onFinish() {
 
-
-
-
-                minutes=0;
-                second=0;
-
-                Toast.makeText(TournamentNormalActivity.this, "Time Over", Toast.LENGTH_SHORT).show();
                 quizFinishDialog();
 
 
@@ -736,6 +750,102 @@ public class TournamentNormalActivity extends AppCompatActivity {
 
         }.start();
     }
+
+
+    private void listenerRemover(){
+        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);
+    }
+
+
+    private void listnereSetter(){
+        BUZZERTrackerListener=new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                try{
+
+
+                    BuzzerManupulationHolder BUZZERManupulationHolder=snapshot.getValue(BuzzerManupulationHolder.class);
+                    int option1Ans=BUZZERManupulationHolder.getOption1();
+                    int option2Ans=BUZZERManupulationHolder.getOption2();
+                    int option3Ans=BUZZERManupulationHolder.getOption3();
+                    int option4Ans=BUZZERManupulationHolder.getOption4();
+                    currentQuestionStatus=BUZZERManupulationHolder.getCurrentQuestionStatus();
+                    if(option1Ans==1){
+                        option1.setBackgroundResource(R.drawable.option_right);
+                        //green color
+                        option1.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option1.setShadowLayer(3,1,1,R.color.green);
+                        enableOption(false);
+                    }else if(option2Ans==1){
+                        option2.setBackgroundResource(R.drawable.option_right);
+                        //green color
+                        option2.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option2.setShadowLayer(3,1,1,R.color.green);
+                        enableOption(false);
+                    }else if(option3Ans==1){
+                        option3.setBackgroundResource(R.drawable.option_right);
+                        //green color
+                        option3.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option3.setShadowLayer(3,1,1,R.color.green);
+                        enableOption(false);
+                    }else if(option4Ans==1){
+                        option4.setBackgroundResource(R.drawable.option_right);
+                        //green color
+                        option4.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option4.setShadowLayer(3,1,1,R.color.green);
+                        enableOption(false);
+                    }
+
+                    if(option1Ans==2){
+                        option1.setBackgroundResource(R.drawable.option_wrong);     //red color
+                        option1.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option1.setShadowLayer(3,1,1,R.color.green);
+                    }
+
+                    if(option2Ans==2){
+                        option2.setBackgroundResource(R.drawable.option_wrong);     //red color
+                        option2.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option2.setShadowLayer(3,1,1,R.color.green);
+                    }
+
+                    if(option3Ans==2){
+                        option3.setBackgroundResource(R.drawable.option_wrong);     //red color
+                        option3.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option3.setShadowLayer(3,1,1,R.color.green);
+                    }
+
+                    if(option4Ans==2){
+                        option4.setBackgroundResource(R.drawable.option_wrong);     //red color
+                        option4.setTextColor(ColorStateList.valueOf(Color.parseColor("#000000")));
+                        option4.setShadowLayer(3,1,1,R.color.green);
+                    }
+
+
+                    if(currentQuestionStatus==3){
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            enableOption(false);
+                        }
+
+                    }
+
+                }catch (Exception e){
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).addValueEventListener(BUZZERTrackerListener);
+    }
+
 
 
 }

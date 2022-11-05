@@ -10,50 +10,75 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".BUZZER.ACTIVTY.BuzzerPictureActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".BUZZER.ACTIVTY.BuzzerScoreActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TOURNAMENT.ACTIVITY.TournamentVideoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BUZZER.ACTIVTY.BuzzerNormalActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BUZZER.ACTIVTY.LobbyBuzzerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TOURNAMENT.ACTIVITY.TournamentAudioActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TOURNAMENT.ACTIVITY.TournamentPictureActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BOT.VsBOTVideoQuiz"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BOT.VsBOTAudioQuiz"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BOT.VsBOTPictureQuiz"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BOT.VsBOTNormalQuiz"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TOURNAMENT.ACTIVITY.ScoreActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TOURNAMENT.ACTIVITY.TournamentNormalActivity"
-            android:exported="false" />
-        <activity android:name=".TOURNAMENT.ACTIVITY.LobbyActivity" />
-        <activity android:name=".QUIZ.VsVideoQuiz" />
-        <activity android:name=".QUIZ.VsAudioQuiz" />
-        <activity android:name=".QUIZ.VsPictureQuiz" />
-        <activity android:name=".QUIZ.VsNormalQuiz" />
-        <activity android:name=".QUIZ.NormalVideoQuiz" />
-        <activity android:name=".QUIZ.NormalAudioQuiz" />
-        <activity android:name=".QUIZ.NormalPictureQuiz" />
-        <activity android:name=".QUIZ.NormalSingleQuiz" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TOURNAMENT.ACTIVITY.LobbyActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.VsVideoQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.VsAudioQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.VsPictureQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.VsNormalQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.NormalVideoQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.NormalAudioQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.NormalPictureQuiz"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".QUIZ.NormalSingleQuiz"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".StartingPackage.SlideActivity"
             android:exported="true">
@@ -63,8 +88,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MAIN.MainActivity" />
-        <activity android:name=".Timers.QuizTimer" />
+        <activity android:name=".MAIN.MainActivity"
+            android:screenOrientation="portrait"/>
+
 
         <meta-data
             android:name="preloaded_fonts"

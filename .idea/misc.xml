@@ -26,6 +26,7 @@
         <entry key="app/src/main/res/drawable/single_color_3.xml" value="0.2535" />
         <entry key="app/src/main/res/drawable/single_color_4.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/usedicon.xml" value="0.284" />
+        <entry key="app/src/main/res/layout/activity_buzzer_picture.xml" value="0.5666666666666667" />
         <entry key="app/src/main/res/layout/activity_buzzer_score.xml" value="0.34791666666666665" />
         <entry key="app/src/main/res/layout/activity_lobby.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2755208333333333" />
@@ -35,17 +36,17 @@
         <entry key="app/src/main/res/layout/activity_normal_video_quiz.xml" value="0.12664640324214793" />
         <entry key="app/src/main/res/layout/activity_score.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_slide.xml" value="0.35096774193548386" />
-        <entry key="app/src/main/res/layout/activity_tournament_audio.xml" value="0.5666666666666667" />
+        <entry key="app/src/main/res/layout/activity_tournament_audio.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_tournament_buzzer.xml" value="0.5526041666666667" />
         <entry key="app/src/main/res/layout/activity_tournament_buzzer_normal.xml" value="0.32708333333333334" />
         <entry key="app/src/main/res/layout/activity_tournament_normal.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/activity_tournament_picture.xml" value="0.5666666666666667" />
-        <entry key="app/src/main/res/layout/activity_tournament_video_quiz.xml" value="0.5666666666666667" />
+        <entry key="app/src/main/res/layout/activity_tournament_picture.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_tournament_video_quiz.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_vs_audio_quiz.xml" value="0.21875" />
-        <entry key="app/src/main/res/layout/activity_vs_botaudio_quiz.xml" value="0.5911458333333334" />
+        <entry key="app/src/main/res/layout/activity_vs_botaudio_quiz.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_vs_botnormal_quiz.xml" value="0.26358695652173914" />
         <entry key="app/src/main/res/layout/activity_vs_botpicture_quiz.xml" value="0.32708333333333334" />
-        <entry key="app/src/main/res/layout/activity_vs_botvideo_quiz.xml" value="0.5911458333333334" />
+        <entry key="app/src/main/res/layout/activity_vs_botvideo_quiz.xml" value="0.125" />
         <entry key="app/src/main/res/layout/activity_vs_normal_quiz.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_vs_picture_quiz.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/activity_vs_video_quiz.xml" value="0.21875" />
@@ -57,7 +58,7 @@
         <entry key="app/src/main/res/layout/data_placeholder_layout.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/dialog_anim_text_button.xml" value="0.2604166666666667" />
         <entry key="app/src/main/res/layout/dialog_audience_ll.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/dialog_buzzer_setting.xml" value="0.5666666666666667" />
+        <entry key="app/src/main/res/layout/dialog_buzzer_setting.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_category.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_chat.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_expert_advice_ll.xml" value="0.21822916666666667" />
@@ -71,9 +72,9 @@
         <entry key="app/src/main/res/layout/dialog_result_single_player.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/dialog_result_vs.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_select_mode.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/dialog_setting.xml" value="0.5434782608695652" />
+        <entry key="app/src/main/res/layout/dialog_setting.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_sign_up.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/dialog_tournament_join_create.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/dialog_tournament_join_create.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_tournament_winner.xml" value="0.4003623188405797" />
         <entry key="app/src/main/res/layout/dialog_trouble_shoot.xml" value="0.31849365234375004" />
         <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
@@ -93,7 +94,7 @@
         <entry key="app/src/main/res/layout/tournament_join_create_dialog.xml" value="0.25" />
         <entry key="app/src/main/res/layout/tournament_joining_listview.xml" value="0.5" />
         <entry key="app/src/main/res/layout/tournament_quiz_player_item.xml" value="0.565625" />
-        <entry key="app/src/main/res/layout/tournament_remove_player_item.xml" value="0.27447916666666666" />
+        <entry key="app/src/main/res/layout/tournament_remove_player_item.xml" value="0.165" />
         <entry key="app/src/main/res/layout/tournament_remove_player_layout.xml" value="0.2755208333333333" />
         <entry key="app/src/main/res/layout/tournament_result_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/troubleshootitem.xml" value="0.26197916666666665" />

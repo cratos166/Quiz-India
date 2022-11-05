@@ -526,7 +526,7 @@
                         android:id="@+id/linearLayoutexpert"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/double_color_2">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -556,7 +556,7 @@
                         android:id="@+id/linearLayoutSwap"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/double_color_2">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -587,7 +587,7 @@
                         android:id="@+id/linearLayoutAudience"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/double_color_2">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -618,7 +618,7 @@
                         android:id="@+id/linearLayoutfiftyfifty"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_theme">
+                        android:background="@drawable/double_color_2">
 
 
                         <TextView

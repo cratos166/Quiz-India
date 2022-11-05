@@ -1031,7 +1031,7 @@ public class VsPictureQuiz extends AppCompatActivity {
 
     public void onBackPressed() {
         QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsPictureQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener);
-        quizCancelDialog.start();
+        quizCancelDialog.startVsMode();
     }
 
     @Override

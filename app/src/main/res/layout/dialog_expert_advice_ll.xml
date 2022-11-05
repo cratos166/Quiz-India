@@ -8,13 +8,31 @@
     xmlns:shimmer="http://schemas.android.com/apk/res-auto"
     android:scaleX="0.85"
     android:scaleY="0.85"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/border_theme"
     android:id="@+id/layoutDialogContainer">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="?selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        cardview:cardCornerRadius="5dp">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border_theme"
+        android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutDialog"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/main_card_boarder"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="176dp">
@@ -41,7 +59,7 @@
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/ubuntu"
             android:padding="10dp"
-            android:text="dfnd fdifndi fd i"
+            android:text=""
             android:textAlignment="center"
             android:textColor="@color/text_dis"
             android:textSize="15sp"
@@ -93,6 +111,6 @@
 
 
 
-
-
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
