@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -67,6 +68,8 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
 import com.nbird.multiplayerquiztrivia.Model.FirstTime;
+import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.AboutUsActivity;
+import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.MyProfileActivity;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
@@ -531,6 +534,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                             appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, MainActivity.this,firstTime.getUserName());
                                             appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, MainActivity.this,firstTime.getImageURL());
+                                            try{
+                                                nav_mail.setText(firstTime.getUserName());
+                                                Glide.with(MainActivity.this).load(firstTime.getImageURL()).apply(RequestOptions
+                                                                .bitmapTransform(new RoundedCorners(18)))
+                                                        .into(nav_image123);
+                                            }catch (Exception e){
+
+                                            }
 
                                             // NOT FOR FIRST TIME
                                         }
@@ -978,10 +989,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
 
 
     @Override
@@ -998,6 +1005,90 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
         // music.pause();
     }
+
+
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+        switch (menuItem.getItemId()){
+            case R.id.nav_profile:
+                Intent intent=new Intent(MainActivity.this, MyProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_about:
+                Intent intent12=new Intent(MainActivity.this, AboutUsActivity.class);
+                startActivity(intent12);
+                break;
+//            case R.id.nav_rate:
+//                Intent browserIntent=new Intent(Intent.ACTION_VIEW, Uri.parse(linkdata));
+//                startActivity(browserIntent);
+//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+//                break;
+//            case R.id.share_us:
+//                Toast.makeText(this, "Share Me!", Toast.LENGTH_SHORT).show();
+//                Intent shareIntent=new Intent(Intent.ACTION_SEND);
+//                shareIntent.setType("text/plane");
+//                String shareBody="MindScape: The ultimate Quiz Station!\n\n" +
+//                        "Experience the fun of quizzing with your friends and family in the most innovative way. \n\n" +
+//                        "Download Now! \n" + linkdata;
+//                String sharesub="Paper Wind";
+//
+//                shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
+//                shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+//                startActivity(Intent.createChooser(shareIntent,"Share Using"));
+//                break;
+//            case R.id.nav_tos:
+//                Intent browserIntenttos = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FTERMS%20OF%20SERVICE-converted.pdf?alt=media&token=d07a0294-a15f-4c30-802b-d1ddc0a3eb31"));
+//                startActivity(browserIntenttos);
+//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+//                break;
+//            case R.id.nav_ref:
+//                Intent browserIntenttos1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FRefund%20Policy-converted.pdf?alt=media&token=2679a62d-0b1a-4b57-8eb0-903295225076"));
+//                startActivity(browserIntenttos1);
+//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+//                break;
+//            case R.id.nav_ps:
+//                Intent browserIntenttos2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FMindscape-PrivacyPoilcy-converted.pdf?alt=media&token=593f0977-c7da-4530-a9a2-12d29168eeca"));
+//                startActivity(browserIntenttos2);
+//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+//                break;
+//            case R.id.nav_help:
+//                Intent helpguide = new Intent(mainMenuActivity.this,HelpGuide1.class);
+//                startActivity(helpguide);
+//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+//                finish();
+//                break;
+//            case R.id.nav_contact:
+//
+//                Intent intent2=new Intent(Intent.ACTION_SEND);
+//                String[] recipients={"niftynile@gmail.com"};
+//                intent2.putExtra(Intent.EXTRA_EMAIL, recipients);
+//                // intent2.putExtra(Intent.EXTRA_SUBJECT,"Subject text here...");
+//                // intent2.putExtra(Intent.EXTRA_TEXT,"Body of the content here...");
+//                // intent2.putExtra(Intent.EXTRA_CC,"mailcc@gmail.com");
+//                intent2.setType("text/html");
+//                intent2.setPackage("com.google.android.gm");
+//                startActivity(Intent.createChooser(intent2, "Send mail"));
+//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+//
+//
+//                //String[] TO = {"niftynile@gmail.com"};
+//
+//                // Intent email = new Intent(Intent.ACTION_SEND);
+//                // email.setType("*/*");
+//                // email.putExtra(Intent.EXTRA_EMAIL, TO);
+//                // if(email.resolveActivity(getPackageManager()) != null)
+//                //     startActivity(email);
+//                break;
+            default :
+                return true;
+
+
+        }
+        return true;
+    }
+
 
 }
 

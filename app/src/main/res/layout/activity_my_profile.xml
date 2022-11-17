@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    tools:context=".NAVIGATION.ACTIVITY.MyProfileActivity">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/backlitemodeanim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:scaleType="fitXY"
+        android:elevation="-20dp"
+        app:lottie_rawRes="@raw/background"
+        app:lottie_speed="1" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout33"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/changeNameCardView"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/single_color_3"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/ubuntu"
+                        android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                        android:textColor="@color/text_head"
+                        android:textSize="8dp" />
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout33"
+                app:layout_constraintStart_toStartOf="@+id/linearLayout33"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout33"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/single_color_3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profileImage">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/ubuntu"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_head"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/changeNameCardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:foreground="?selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout33"
+                app:layout_constraintStart_toEndOf="@+id/linearLayout33"
+                app:layout_constraintTop_toTopOf="@+id/linearLayout33"
+                cardview:cardCornerRadius="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/text_head"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:background="@drawable/pencil" />
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@drawable/border6"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"/>
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+
+                                <LinearLayout
+                                    android:id="@+id/linearLayout36"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+
+                                    android:layout_margin="5dp"
+                                    android:orientation="vertical"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:gravity="left"
+                                        android:text="Correct/Wrong"
+                                        android:textColor="@color/text_dis"
+                                        android:textSize="10dp" />
+
+
+                                    <TextView
+                                        android:id="@+id/correctVsWrong"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="2dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:gravity="left"
+                                        android:text="29/31"
+                                        android:textColor="@color/text_head"
+                                        android:textSize="12dp" />
+
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="8dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="Total Time"
+                                        android:textColor="@color/text_dis"
+                                        android:textSize="10dp" />
+
+
+                                    <TextView
+                                        android:id="@+id/totalTimeTaken"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="2dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="233 Mins 45 Secs"
+                                        android:textColor="@color/text_head"
+                                        android:textSize="12dp" />
+
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="8dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="Total Quiz Played"
+                                        android:textColor="@color/text_dis"
+                                        android:textSize="10dp" />
+
+
+                                    <TextView
+                                        android:id="@+id/totalQuizPlayed"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="2dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="13"
+                                        android:textColor="@color/text_head"
+                                        android:textSize="12dp" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="8dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="Accuracy"
+                                        android:textColor="@color/text_dis"
+                                        android:textSize="10dp" />
+
+
+                                    <TextView
+                                        android:id="@+id/accuracy"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginTop="2dp"
+                                        android:layout_marginBottom="5dp"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="45%"
+                                        android:textColor="@color/text_head"
+                                        android:textSize="12dp" />
+
+
+                                </LinearLayout>
+
+
+                                <View
+                                    android:id="@+id/view2"
+                                    android:layout_width="2dp"
+                                    android:layout_height="0dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:background="@color/dark_back_4"
+                                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
+                                    app:layout_constraintStart_toEndOf="@+id/linearLayout36"
+                                    app:layout_constraintTop_toTopOf="@+id/linearLayout36" />
+
+
+                                <com.github.mikephil.charting.charts.PieChart
+                                    android:id="@+id/pieChart"
+                                    android:layout_width="0dp"
+                                    android:layout_height="150dp"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/view2"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:background="@drawable/single_color_3"
+                                    android:orientation="vertical"
+                                    android:padding="5dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/pieChart"
+                                    app:layout_constraintStart_toStartOf="@+id/pieChart"
+                                    app:layout_constraintTop_toBottomOf="@+id/pieChart">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/ubuntu"
+                                        android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                        android:textColor="@color/text_head"
+                                        android:textSize="8dp" />
+                                </LinearLayout>
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+                        </LinearLayout>
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/dark_back_4"
+                            app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
+                            app:layout_constraintStart_toEndOf="@+id/linearLayout36"
+                            app:layout_constraintTop_toTopOf="@+id/linearLayout36" />
+
+                        <com.github.mikephil.charting.charts.LineChart
+                            android:id="@+id/lineChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="10dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/single_color_3"
+                            android:orientation="vertical"
+                            android:padding="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/pieChart"
+                            app:layout_constraintStart_toStartOf="@+id/pieChart"
+                            app:layout_constraintTop_toBottomOf="@+id/pieChart">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
+                                android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                android:textColor="@color/text_head"
+                                android:textSize="8dp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/dark_back_4"
+                            app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
+                            app:layout_constraintStart_toEndOf="@+id/linearLayout36"
+                            app:layout_constraintTop_toTopOf="@+id/linearLayout36" />
+
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/idBarChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp" />
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/single_color_3"
+                            android:orientation="vertical"
+                            android:padding="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/pieChart"
+                            app:layout_constraintStart_toStartOf="@+id/pieChart"
+                            app:layout_constraintTop_toBottomOf="@+id/pieChart">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
+                                android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                android:textColor="@color/text_head"
+                                android:textSize="8dp" />
+                        </LinearLayout>
+
+
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/dark_back_4"
+                            app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
+                            app:layout_constraintStart_toEndOf="@+id/linearLayout36"
+                            app:layout_constraintTop_toTopOf="@+id/linearLayout36" />
+
+
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/barChart"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+                            app:layout_constraintHorizontal_bias="0.333"
+                            app:layout_constraintStart_toStartOf="@+id/imageView3"
+                            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/single_color_3"
+                            android:orientation="vertical"
+                            android:padding="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/pieChart"
+                            app:layout_constraintStart_toStartOf="@+id/pieChart"
+                            app:layout_constraintTop_toBottomOf="@+id/pieChart">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/ubuntu"
+                                android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                android:textColor="@color/text_head"
+                                android:textSize="8dp" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
