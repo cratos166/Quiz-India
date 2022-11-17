@@ -18,6 +18,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.R;
 
+import java.util.Random;
+
 public class BotRequestDialog {
 
     Context context;
@@ -25,6 +27,8 @@ public class BotRequestDialog {
     int animInt;
     String title,oppoNameString,oppoPicURL;
     int mode;
+    boolean inTime=true;
+    CountDownTimer countDownTimer;
 
     public BotRequestDialog(Context context, View v, int animInt, String title, int mode, String oppoNameString,String oppoPicURL) {
         this.context = context;
@@ -68,41 +72,72 @@ public class BotRequestDialog {
         }catch (Exception e){
 
         }
+        Random random=new Random();
+        int rr=random.nextInt(8)+15;
+        countDownTimer=new CountDownTimer(1000*rr,1000){
+
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                inTime=false;
+            }
+        }.start();
 
 
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(mode==1){
-                    Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(context, VsBOTPictureQuiz.class);
-                    i.putExtra("oppoName",oppoNameString);
-                    i.putExtra("oppoImageURL",oppoPicURL);
-                    context.startActivity(i);
-                    ((Activity)context).finish();
-                }else if(mode==2){
-                    Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(context, VsBOTNormalQuiz.class);
-                    i.putExtra("oppoName",oppoNameString);
-                    i.putExtra("oppoImageURL",oppoPicURL);
-                    context.startActivity(i);
-                    ((Activity)context).finish();
-                }else if(mode==3){
-                    Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(context, VsBOTAudioQuiz.class);
-                    i.putExtra("oppoName",oppoNameString);
-                    i.putExtra("oppoImageURL",oppoPicURL);
-                    context.startActivity(i);
-                    ((Activity)context).finish();
-                }else{
-                    Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(context, VsBOTVideoQuiz.class);
-                    i.putExtra("oppoName",oppoNameString);
-                    i.putExtra("oppoImageURL",oppoPicURL);
-                    context.startActivity(i);
-                    ((Activity)context).finish();
+                try{
+                    countDownTimer.cancel();
+                }catch (Exception e){
+
                 }
+
+                if(inTime){
+                    if(mode==1){
+                        Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(context, VsBOTPictureQuiz.class);
+                        i.putExtra("oppoName",oppoNameString);
+                        i.putExtra("oppoImageURL",oppoPicURL);
+                        context.startActivity(i);
+                        ((Activity)context).finish();
+                    }else if(mode==2){
+                        Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(context, VsBOTNormalQuiz.class);
+                        i.putExtra("oppoName",oppoNameString);
+                        i.putExtra("oppoImageURL",oppoPicURL);
+                        context.startActivity(i);
+                        ((Activity)context).finish();
+                    }else if(mode==3){
+                        Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(context, VsBOTAudioQuiz.class);
+                        i.putExtra("oppoName",oppoNameString);
+                        i.putExtra("oppoImageURL",oppoPicURL);
+                        context.startActivity(i);
+                        ((Activity)context).finish();
+                    }else{
+                        Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(context, VsBOTVideoQuiz.class);
+                        i.putExtra("oppoName",oppoNameString);
+                        i.putExtra("oppoImageURL",oppoPicURL);
+                        context.startActivity(i);
+                        ((Activity)context).finish();
+                    }
+                }else{
+                    Toast.makeText(context, "Opponent left the game.", Toast.LENGTH_SHORT).show();
+                    try{
+                        alertDialog.dismiss();
+                    }catch (Exception e){
+
+                    }
+                    inTime=true;
+                }
+
 
 
 
@@ -112,6 +147,11 @@ public class BotRequestDialog {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{
+                    countDownTimer.cancel();
+                }catch (Exception e){
+
+                }
                 Toast.makeText(context, "Response send", Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
             }

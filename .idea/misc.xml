@@ -78,7 +78,7 @@
         <entry key="app/src/main/res/layout/dialog_tournament_winner.xml" value="0.4003623188405797" />
         <entry key="app/src/main/res/layout/dialog_trouble_shoot.xml" value="0.31849365234375004" />
         <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
-        <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.5" />
         <entry key="app/src/main/res/layout/header.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/layout.xml" value="0.38958333333333334" />
         <entry key="app/src/main/res/layout/leader_board_listview.xml" value="0.4036458333333333" />

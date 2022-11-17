@@ -68,7 +68,7 @@ public class DialogOnlineLocal {
             @Override
             public void onClick(View view) {
               DialogJoinOrCreate dialogJoinOrCreate=new DialogJoinOrCreate();
-                dialogJoinOrCreate.start(context,view,quizMode);
+              dialogJoinOrCreate.start(context,view,quizMode);
                 alertDialog.dismiss();
             }
         });

@@ -45,6 +45,7 @@ public class DataSetter {
                         if(playerInfo.isActive()){
 
                             if(playerInfo.getActivityNumber()==1){
+
                                 float acc=((playerInfo.getCorrect()*100)/(playerInfo.getWrong()+playerInfo.getCorrect()));
 
                                 int min=playerInfo.getTotalTime()/60;
@@ -61,12 +62,15 @@ public class DataSetter {
                         }
 
                     }catch (Exception e){
+                        e.printStackTrace();
 
-                        try{
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(dataSnapshot.getKey()).removeValue();
-                        }catch (Exception e1){
+                        PlayerInfo playerInfo=dataSnapshot.getValue(PlayerInfo.class);
 
-                        }
+
+                        String totalTime="0 min 0 sec";
+                        String accStr="0.00 %";
+                        String highestScore="0";
+                        playerDataArrayList.add(new Details(playerInfo.getImageUrl(),playerInfo.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
 
                     }
 

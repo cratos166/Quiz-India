@@ -199,7 +199,12 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 try{
+
+
+
                     LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
+
+
 
                     PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true,1);
 
@@ -269,6 +274,8 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.MyView
             }
         });
     }
+
+
 
 
     @Override

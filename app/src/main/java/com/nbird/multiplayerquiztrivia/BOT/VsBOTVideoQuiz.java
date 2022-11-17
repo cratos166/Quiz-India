@@ -776,7 +776,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(13) + 5};
+        final int[] jk = {r.nextInt(10) + 5};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {

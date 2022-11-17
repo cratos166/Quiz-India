@@ -588,7 +588,7 @@ public class DataExchange {
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
-                    num=156;
+                    num=3464;
                 }
                 for(int i=0;i<11;i++){
                     int setNumber = random.nextInt(num)+1;

@@ -585,7 +585,7 @@ public class LobbyActivity extends AppCompatActivity {
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
-                    num=156;
+                    num=3464;
                 }
                 Random rand = new Random();
                 for(int i=0;i<=number;i++){

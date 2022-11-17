@@ -181,13 +181,19 @@ public class DialogBotWaiterVS {
             }
         });
 
-
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{countDownTimerIntent.cancel();}catch (Exception e){}
+                try{countDownTimerMain.cancel();}catch (Exception e){}
+                try{alertDialog.dismiss();}catch (Exception e){}
+            }
+        });
 
         myName.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context));
         Glide.with(context).load(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context)).apply(RequestOptions
                         .bitmapTransform(new RoundedCorners(18)))
                 .into(myImage);
-
 
         myBatchSetter(myBatch,myLevelText);
 
@@ -293,8 +299,6 @@ public class DialogBotWaiterVS {
         AvatarLink avatarLink=new AvatarLink();
 
         int tt=r.nextInt(20)+1;
-
-
 
         if(tt<9){
 

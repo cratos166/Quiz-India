@@ -27,8 +27,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.nbird.multiplayerquiztrivia.BOT.BotRequestDialog;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTNormalQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTPictureQuiz;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTVideoQuiz;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
@@ -56,11 +58,12 @@ public class DialogBotResult {
     ArrayList<Boolean> animList,oppoAnimList;
     View vv;
 
-    CountDownTimer countDownTimerRematch,countDownTimerBot;
+    CountDownTimer countDownTimerRematch,countDownTimerBot,countDownTimerBotOffline;
     boolean isRequestSend=false;
     int mode;
 
 
+    boolean isBotOnline=true;
     public DialogBotResult(int scoreInt, int correctAnsInt, int category, int timeTakenInt, int lifeLineUsedInt, int oppoScoreInt, int oppoCorrectAnsInt, int oppoTimeTakenInt, int oppoLifeLineUsedInt, CardView view, Context context, String myNameString, String myPicURL, String timeTakenString, String oppoNameString, String oppoPicURL, String oppoTimeTakenString, Map<String, Integer> llMap, Map<String, Integer> oppoLLMap, ArrayList<Boolean> animList, ArrayList<Boolean> oppoAnimList,View vv,int mode) {
         this.scoreInt = scoreInt;
         this.correctAnsInt = correctAnsInt;
@@ -206,7 +209,7 @@ public class DialogBotResult {
             partyPopper.playAnimation();
             partyPopper.loop(false);
         }else if(scoreInt<oppoScoreInt){
-            result.setText(oppoNameString);
+            result.setText(oppoNameString+" Won");
         }else{
             result.setText(myNameString+" Won");
             partyPopper.setAnimation(R.raw.party_popper);
@@ -332,6 +335,18 @@ public class DialogBotResult {
         });
 
 
+        countDownTimerBotOffline=new CountDownTimer(1000*60,1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                isBotOnline=false;
+            }
+        }.start();
+
 
         reMatch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,64 +355,84 @@ public class DialogBotResult {
 
                 isRequestSend=true;
 
-                Toast.makeText(context, "Rematch request send to the opponent", Toast.LENGTH_SHORT).show();
-                Random random=new Random();
-                int rr=random.nextInt(15);
-                int kk=random.nextInt(10)+2;
+                if(isBotOnline){
+                    Toast.makeText(context, "Rematch request send to the opponent", Toast.LENGTH_SHORT).show();
+                    Random random=new Random();
+                    int rr=random.nextInt(15);
+                    int kk=random.nextInt(5)+2;
 
 
-                countDownTimerRematch=new CountDownTimer(kk*1000,1000) {
-                    @Override
-                    public void onTick(long l) {
 
-                    }
+                    countDownTimerRematch=new CountDownTimer(kk*1000,1000) {
+                        @Override
+                        public void onTick(long l) {
 
-                    @Override
-                    public void onFinish() {
-
-                        isRequestSend=false;
-
-                        if(rr<12){
-
-                            try{
-                                countDownTimerRematch.cancel();
-                            }catch (Exception e){
-
-                            }
-
-                            try{
-                                countDownTimerBot.cancel();
-                            }catch (Exception e){
-
-                            }
-
-                            Toast.makeText(context, "The request was accepted by the opponent.", Toast.LENGTH_LONG).show();
-                            if(mode==1){
-                                Intent i=new Intent(context, VsBOTPictureQuiz.class);
-                                i.putExtra("oppoName",oppoNameString);
-                                i.putExtra("oppoImageURL",oppoPicURL);
-                                context.startActivity(i);
-                                ((Activity)context).finish();
-                            }else if(mode==2){
-                                Intent i=new Intent(context, VsBOTNormalQuiz.class);
-                                i.putExtra("oppoName",oppoNameString);
-                                i.putExtra("oppoImageURL",oppoPicURL);
-                                context.startActivity(i);
-                                ((Activity)context).finish();
-                            }else if(mode==3){
-
-                            }else{
-
-                            }
-
-                        }else if(rr<14){
-                            Toast.makeText(context, "The request was decline by the opponent.", Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(context, "Opponent has left the game.Please try to find some other opponent.", Toast.LENGTH_LONG).show();
                         }
 
-                    }
-                }.start();
+                        @Override
+                        public void onFinish() {
+
+                            isRequestSend=false;
+
+                            if(rr<12){
+
+                                try{
+                                    countDownTimerRematch.cancel();
+                                }catch (Exception e){
+
+                                }
+
+                                try{
+                                    countDownTimerBot.cancel();
+                                }catch (Exception e){
+
+                                }
+                                try{
+                                    countDownTimerBotOffline.cancel();
+                                }catch (Exception e){
+
+                                }
+
+                                Toast.makeText(context, "The request was accepted by the opponent.", Toast.LENGTH_LONG).show();
+                                if(mode==1){
+                                    Intent i=new Intent(context, VsBOTPictureQuiz.class);
+                                    i.putExtra("oppoName",oppoNameString);
+                                    i.putExtra("oppoImageURL",oppoPicURL);
+                                    context.startActivity(i);
+                                    ((Activity)context).finish();
+                                }else if(mode==2){
+                                    Intent i=new Intent(context, VsBOTNormalQuiz.class);
+                                    i.putExtra("oppoName",oppoNameString);
+                                    i.putExtra("oppoImageURL",oppoPicURL);
+                                    context.startActivity(i);
+                                    ((Activity)context).finish();
+                                }else if(mode==3){
+                                    Intent i=new Intent(context, VsBOTAudioQuiz.class);
+                                    i.putExtra("oppoName",oppoNameString);
+                                    i.putExtra("oppoImageURL",oppoPicURL);
+                                    context.startActivity(i);
+                                    ((Activity)context).finish();
+                                }else{
+                                    Intent i=new Intent(context, VsBOTVideoQuiz.class);
+                                    i.putExtra("oppoName",oppoNameString);
+                                    i.putExtra("oppoImageURL",oppoPicURL);
+                                    context.startActivity(i);
+                                    ((Activity)context).finish();
+                                }
+
+                            }else if(rr<14){
+                                Toast.makeText(context, "The request was decline by the opponent.", Toast.LENGTH_LONG).show();
+                            }else{
+                                Toast.makeText(context, "Opponent has left the game.Please try to find some other opponent.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    }.start();
+                }else{
+                    Toast.makeText(context, "Opponent has left the room.Please find some other opponent!", Toast.LENGTH_LONG).show();
+                }
+
+
             }
         });
 

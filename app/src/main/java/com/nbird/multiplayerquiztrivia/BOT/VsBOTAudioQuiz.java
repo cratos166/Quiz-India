@@ -469,7 +469,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
-                    num=156;
+                    num=3464;
                 }
                 for(int i=0;i<11;i++){
                     final Random rand = new Random();
@@ -986,7 +986,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(13) + 5};
+        final int[] jk = {r.nextInt(10) + 5};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
