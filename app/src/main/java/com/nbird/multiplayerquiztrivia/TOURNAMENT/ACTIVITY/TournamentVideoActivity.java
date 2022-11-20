@@ -23,6 +23,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -35,6 +36,16 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -120,10 +131,50 @@ public class TournamentVideoActivity extends AppCompatActivity {
     int statusFinder=1;
     Boolean isInBackground;
 
+
+    private InterstitialAd mInterstitialAd;
+    private void loadAds(){
+
+
+        String key=AppString.INTERSTITIAL_ID;
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, key, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("TAG", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("TAG", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_video_quiz);
+
+        loadAds();
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
@@ -505,13 +556,37 @@ public class TournamentVideoActivity extends AppCompatActivity {
 
                         try{table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
 
-                        Intent intent=new Intent(TournamentVideoActivity.this,ScoreActivity.class);
-                        intent.putExtra("roomCode",roomCode);
-                        intent.putExtra("maxQuestions",list.size()-1);
-                        intent.putExtra("playerNum",myPlayerNum);
-                        intent.putExtra("hostName",hostName);
-                        startActivity(intent);
-                        finish();
+
+
+
+                        if(mInterstitialAd!=null) {
+                            // Step 1: Display the interstitial
+                            mInterstitialAd.show(TournamentVideoActivity.this);
+                            // Step 2: Attach an AdListener
+                            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                    super.onAdFailedToShowFullScreenContent(adError);
+
+                                    intentFun();
+
+                                }
+
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent();
+
+                                    intentFun();
+                                }
+                            });
+
+
+                        }else{
+
+                            intentFun();
+                        }
+
+
                     }
                 });
 
@@ -524,39 +599,18 @@ public class TournamentVideoActivity extends AppCompatActivity {
     }
 
 
+    private void intentFun(){
+        Intent intent=new Intent(TournamentVideoActivity.this,ScoreActivity.class);
+        intent.putExtra("roomCode",roomCode);
+        intent.putExtra("maxQuestions",list.size()-1);
+        intent.putExtra("playerNum",myPlayerNum);
+        intent.putExtra("hostName",hostName);
+        startActivity(intent);
+        finish();
+    }
 
 
 
-
-//    public void songStopperAndResumer(){
-//        CardView cardViewSpeaker=(CardView) findViewById(R.id.cardViewSpeaker);
-//        final ImageView speakerImage=(ImageView) findViewById(R.id.speakerImage);
-//        final LinearLayout Speaker=(LinearLayout) findViewById(R.id.Speaker);
-//        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentVideoActivity.this)){
-//            songActivity=new SongActivity(this);
-//            songActivity.startMusic();
-//        }else{
-//            Speaker.setBackgroundResource(R.drawable.usedicon);
-//            speakerImage.setBackgroundResource(R.drawable.music_off);
-//        }
-//        cardViewSpeaker.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentVideoActivity.this)){
-//                    songActivity.songStop();
-//                    Speaker.setBackgroundResource(R.drawable.usedicon);
-//                    speakerImage.setBackgroundResource(R.drawable.music_off);
-//                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentVideoActivity.this,false);
-//                }else{
-//                    songActivity=new SongActivity(TournamentVideoActivity.this);
-//                    songActivity.startMusic();
-//                    Speaker.setBackgroundResource(R.drawable.single_color_2);
-//                    speakerImage.setBackgroundResource(R.drawable.music_on);
-//                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_SONG,TournamentVideoActivity.this,true);
-//                }
-//            }
-//        });
-//    }
 
     public void onBackPressed() {
         quitScoreActivityActivity();

@@ -30,6 +30,16 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -95,13 +105,50 @@ public class NormalVideoQuiz extends AppCompatActivity {
     int statusFinder=1;
     Boolean isInBackground;
 
+
+    private InterstitialAd mInterstitialAd;
+    private void loadAds(){
+
+
+        String key=AppString.INTERSTITIAL_ID;
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, key, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("TAG", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("TAG", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_normal_video_quiz);
 
+        loadAds();
 
-
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
 
         list=new ArrayList<>();
@@ -477,11 +524,46 @@ public class NormalVideoQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-        ResultHandling resultHandling =new ResultHandling(NormalVideoQuiz.this,map,animList,score,timeTakenString,
-                lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                category,4,timeTakenInt);
 
-        resultHandling.start();
+
+        if(mInterstitialAd!=null) {
+            // Step 1: Display the interstitial
+            mInterstitialAd.show(NormalVideoQuiz.this);
+            // Step 2: Attach an AdListener
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    super.onAdFailedToShowFullScreenContent(adError);
+                    ResultHandling resultHandling =new ResultHandling(NormalVideoQuiz.this,map,animList,score,timeTakenString,
+                            lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                            category,4,timeTakenInt);
+
+                    resultHandling.start();
+
+                }
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+                    ResultHandling resultHandling =new ResultHandling(NormalVideoQuiz.this,map,animList,score,timeTakenString,
+                            lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                            category,4,timeTakenInt);
+
+                    resultHandling.start();
+
+                }
+            });
+
+
+        }else{
+            ResultHandling resultHandling =new ResultHandling(NormalVideoQuiz.this,map,animList,score,timeTakenString,
+                    lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
+                    category,4,timeTakenInt);
+
+            resultHandling.start();
+        }
+
+
     }
 
 

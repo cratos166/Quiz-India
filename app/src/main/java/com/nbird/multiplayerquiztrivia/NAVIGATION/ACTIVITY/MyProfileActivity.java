@@ -32,6 +32,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -75,7 +77,6 @@ public class MyProfileActivity extends AppCompatActivity {
     BarChart barChart;
     String[] days = new String[]{"Sunday", "Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saturday"};
     int v=0,x=0;
-    BarChart barChart1;
     ArrayList<PieEntry> visitors1;
     PieChart pieChart;
     LineData lineData;
@@ -85,6 +86,10 @@ public class MyProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         Dialog dialog=null;
         supportAlertDialog=new SupportAlertDialog(dialog,MyProfileActivity.this);
@@ -99,7 +104,7 @@ public class MyProfileActivity extends AppCompatActivity {
         totalQuizPlayed=(TextView) findViewById(R.id.totalQuizPlayed);
         accuracy=(TextView) findViewById(R.id.accuracy);
         barChart = findViewById(R.id.idBarChart);
-        barChart1=(BarChart) findViewById(R.id.barChart);
+
         pieChart=(PieChart) findViewById(R.id.pieChart);
         lineChart = findViewById(R.id.lineChart);
         mAuth = FirebaseAuth.getInstance();
@@ -153,7 +158,7 @@ public class MyProfileActivity extends AppCompatActivity {
 
 
                 LineDataSet lineDataSet = new LineDataSet(entryList,"Quiz Score");
-                lineDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+                lineDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
                 lineDataSet.setFillAlpha(110);
                 lineData = new LineData(lineDataSet);
                 lineChart.getDescription().setEnabled(false);
@@ -242,11 +247,11 @@ public class MyProfileActivity extends AppCompatActivity {
 
 
         PieDataSet pieDataSet=new PieDataSet(visitors1,"Category Wise Total Number Of Times Played");
-        pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        pieDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
         pieDataSet.setValueTextColor(Color.BLACK);
         pieDataSet.setValueTextSize(10f);
         pieDataSet.setValueLineColor(R.color.black);
-        pieDataSet.setFormSize(3);
+        pieDataSet.setFormSize(2);
 
 
 
@@ -254,82 +259,14 @@ public class MyProfileActivity extends AppCompatActivity {
 
         pieChart.setData(pieData);
         pieChart.invalidate();         //Imporatant line showing pie chart
-        pieChart.setEntryLabelTextSize(3);
+        pieChart.setEntryLabelTextSize(5);
         pieChart.setEntryLabelColor(R.color.black);
         pieChart.getDescription().setEnabled(false);
-        pieChart.setCenterText("Number Of Times Played");
+        pieChart.setCenterText("Times Played");
         pieChart.animate();
     }
 
-//    public void barChart(){
-//
-//        final ArrayList<BarEntry> visitors=new ArrayList<>();
-//
-//
-//
-//        final List<Integer> q = new ArrayList<>();
-//        final ArrayList<String> xLabel = new ArrayList<>();
-//        final ArrayList<String> xAxisLabel = new ArrayList<>();
-//        table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("MY_DATA").child("LineGraph").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-//                    q.add(dataSnapshot1.getValue(Integer.class));
-//                    Log.d("kk",String.valueOf(dataSnapshot1.getValue(Integer.class)));
-//                    float minc=q.get(v)/60;
-//                    visitors.add(new BarEntry(v,minc));
-//                    v++;
-//                    xAxisLabel.add(dataSnapshot1.getKey());
-//                }
-//
-//
-//
-//
-//                BarDataSet barDataSet=new BarDataSet(visitors,"Time In Minutes");
-//                barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-//
-//                barDataSet.setValueTextSize(8f);
-//
-//                BarData barData=new BarData(barDataSet);
-//
-//                barChart1.setFitBars(true);
-//                barChart1.setData(barData);
-//                barChart1.getDescription().setText("Time Vs Day");
-//                barChart1.getDescription().setTextSize(3f);
-//                barChart1.animateY(2000);
-//
-//
-//
-//
-//
-//
-//                XAxis xAxis = barChart1.getXAxis();
-//                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
-//                xAxis.setTextSize(5f);
-//
-//                ValueFormatter formatter = new ValueFormatter() {
-//                    @Override
-//                    public String getFormattedValue(float value) {
-//                        return xAxisLabel.get((int) value);
-//                    }
-//                };
-//                xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-//                xAxis.setValueFormatter(formatter);
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//
-//
-//
-//
-//    }
+
 
 
     private void textDataSetter(){
@@ -408,7 +345,10 @@ public class MyProfileActivity extends AppCompatActivity {
         barDataSet2.setColor(Color.BLUE);
 
 
+
         BarData data = new BarData(barDataSet1, barDataSet2);
+        barDataSet1.setColors(ColorTemplate.LIBERTY_COLORS);
+        barDataSet2.setColors(ColorTemplate.LIBERTY_COLORS);
         barChart.setData(data);
         barChart.getDescription().setEnabled(false);
         XAxis xAxis = barChart.getXAxis();

@@ -7,6 +7,19 @@
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     tools:context=".NAVIGATION.ACTIVITY.MyProfileActivity">
 
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="@string/bannerId"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backlitemodeanim"
         android:layout_width="match_parent"
@@ -25,133 +38,128 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/linearLayout33"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/changeNameCardView"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/single_color_3"
-                    android:padding="10dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout33"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/changeNameCardView"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/single_color_3"
+                        android:padding="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/ubuntu"
+                            android:text="AAKASH CHANGE THESE TEXT. A NORMAL DISCRIPTION OF WHY THIS ACTIVITY"
+                            android:textColor="@color/text_head"
+                            android:textSize="8dp" />
+
+                    </LinearLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout33"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout33"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout33"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/single_color_3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profileImage">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
                         android:fontFamily="@font/ubuntu"
-                        android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                        android:textAlignment="center"
                         android:textColor="@color/text_head"
-                        android:textSize="8dp" />
+                        android:textSize="12dp" />
 
                 </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/changeNameCardView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:foreground="?selectableItemBackground"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout33"
+                    app:layout_constraintStart_toEndOf="@+id/linearLayout33"
+                    app:layout_constraintTop_toTopOf="@+id/linearLayout33"
+                    cardview:cardCornerRadius="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/text_head"
+                        android:orientation="vertical">
+
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:background="@drawable/pencil" />
+
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
             <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="@+id/linearLayout33"
-                app:layout_constraintStart_toStartOf="@+id/linearLayout33"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:id="@+id/linearLayout33"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/single_color_3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profileImage">
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:fontFamily="@font/ubuntu"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_head"
-                    android:textSize="12dp" />
-
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/changeNameCardView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:foreground="?selectableItemBackground"
-                app:layout_constraintBottom_toBottomOf="@+id/linearLayout33"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout33"
-                app:layout_constraintTop_toTopOf="@+id/linearLayout33"
-                cardview:cardCornerRadius="5dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/text_head"
-                    android:orientation="vertical">
-
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:background="@drawable/pencil" />
-
-                </LinearLayout>
-
-
-            </androidx.cardview.widget.CardView>
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="@drawable/border6"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"/>
-
-
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/border6" />
 
 
             <LinearLayout
@@ -162,8 +170,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -339,16 +346,13 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/ubuntu"
-                                        android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                        android:text="This data is only for single player normal quiz. It's the number of times a category is played"
                                         android:textColor="@color/text_head"
                                         android:textSize="8dp" />
                                 </LinearLayout>
 
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 
                         </LinearLayout>
@@ -359,8 +363,8 @@
                             android:layout_height="2dp"
                             android:layout_gravity="center"
                             android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
                             android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
                             android:background="@color/dark_back_4"
                             app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
                             app:layout_constraintStart_toEndOf="@+id/linearLayout36"
@@ -391,7 +395,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                android:text="This data is for single mode and vs mode. Each game score is displayed in this line chart"
                                 android:textColor="@color/text_head"
                                 android:textSize="8dp" />
                         </LinearLayout>
@@ -401,8 +405,8 @@
                             android:layout_height="2dp"
                             android:layout_gravity="center"
                             android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
                             android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
                             android:background="@color/dark_back_4"
                             app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
                             app:layout_constraintStart_toEndOf="@+id/linearLayout36"
@@ -418,7 +422,6 @@
                             android:layout_marginBottom="10dp" />
 
 
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -437,77 +440,22 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
+                                android:text="this data is for both single player and vs mode. Week wise all correct vs wrong"
                                 android:textColor="@color/text_head"
                                 android:textSize="8dp" />
                         </LinearLayout>
-
-
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginTop="5dp"
-                            android:background="@color/dark_back_4"
-                            app:layout_constraintBottom_toBottomOf="@+id/linearLayout36"
-                            app:layout_constraintStart_toEndOf="@+id/linearLayout36"
-                            app:layout_constraintTop_toTopOf="@+id/linearLayout36" />
-
-
-
-                        <com.github.mikephil.charting.charts.BarChart
-                            android:id="@+id/barChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_margin="10dp"
-                            android:layout_weight="1"
-                            app:layout_constraintEnd_toEndOf="@+id/imageView3"
-                            app:layout_constraintHorizontal_bias="0.333"
-                            app:layout_constraintStart_toStartOf="@+id/imageView3"
-                            app:layout_constraintTop_toBottomOf="@+id/textView16" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:background="@drawable/single_color_3"
-                            android:orientation="vertical"
-                            android:padding="5dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="@+id/pieChart"
-                            app:layout_constraintStart_toStartOf="@+id/pieChart"
-                            app:layout_constraintTop_toBottomOf="@+id/pieChart">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/ubuntu"
-                                android:text="dfdbfdub udfb udfbud fbud fbdu fudbf dfbdu \ndfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdudfdbfdub udfb udfbud fbud fbdu fudbf dfbdu"
-                                android:textColor="@color/text_head"
-                                android:textSize="8dp" />
-                        </LinearLayout>
-
 
 
                     </LinearLayout>
 
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
             </LinearLayout>
 
 
-
-
-    </LinearLayout>
+        </LinearLayout>
 
     </ScrollView>
 

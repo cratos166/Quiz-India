@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,10 +36,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -65,11 +70,13 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
 import com.nbird.multiplayerquiztrivia.Model.FirstTime;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.AboutUsActivity;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.MyProfileActivity;
+import com.nbird.multiplayerquiztrivia.NAVIGATION.MODEL.UpdateInfo;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
@@ -169,10 +176,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ImageView nav_image123;
     TextView nav_mail;
+
+
+
+    public static final int APP_UPDATE_VERSION_CODE = 1;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -184,6 +203,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
             signupDialog(this);
+        }else{
+            Dialog dialog=null;
+            SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,MainActivity.this);
+            supportAlertDialog.showLoadingDialog();
+
+
+                    table_user.child("UPDATE_CODE").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            try{
+                                supportAlertDialog.dismissLoadingDialog();
+
+                                UpdateInfo updateInfo=snapshot.getValue(UpdateInfo.class);
+
+                                if(updateInfo.getCODE()!=APP_UPDATE_VERSION_CODE){
+
+                                    updateDialog(updateInfo.getDIS(),updateInfo.getTITLE(),updateInfo.getLINKDATA());
+
+                                }
+
+                            }catch (Exception e){
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
 
         }
 
@@ -247,25 +300,143 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //   table_user.child("VS_CONNECTION").child(mAuth.getCurrentUser().getUid()).child("myStatus").removeValue();
             table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).removeValue();
 
-//            String roomCode=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.ROOM_CODE_TOURNAMENT,MainActivity.this);
-//
-//            if(!roomCode.equals("1")&&!roomCode.equals("")){
-//
-//                table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeValue();
-//                table_user.child("TOURNAMENT").child("ROOM").child(roomCode).removeValue();
-//                table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeValue();
-//
-//                appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.ROOM_CODE_TOURNAMENT, MainActivity.this, "1");
-//            }
-//
+
 
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
+        noInternet();
+
+    }
 
 
+    private void noInternet(){
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+
+
+        }
+        else {
+
+
+            noInternetDialog();
+
+
+        }
+    }
+
+    private void noInternetDialog(){
+
+
+
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_model_1,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+        Button button=(Button) viewRemove1.findViewById(R.id.button);
+
+        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+        textTitle.setText("No Internet");
+
+
+        TextView textDis=(TextView) viewRemove1.findViewById(R.id.textDis);
+        textDis.setText("This game requires internet connection for all the modes. Please connect with internet and retry again.");
+
+        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.anim);
+        anim.setAnimation(R.raw.no_internet);
+        anim.playAnimation();
+        anim.loop(true);
+
+
+
+        button.setText("OKAY");
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try{
+                    alertDialog.dismiss();
+                }catch (Exception e){
+
+                }
+
+            }
+        });
+
+    }
+
+
+
+    private void updateDialog(String dis,String title,String linkdata){
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_model_1,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+        Button button=(Button) viewRemove1.findViewById(R.id.button);
+
+        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+        textTitle.setText(title);
+
+
+        TextView textDis=(TextView) viewRemove1.findViewById(R.id.textDis);
+        textDis.setText(dis);
+
+        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.anim);
+        anim.setAnimation(R.raw.updateanim);
+        anim.playAnimation();
+        anim.loop(true);
+
+
+
+        button.setText("UPDATE");
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try{
+                    Intent browserIntent=new Intent(Intent.ACTION_VIEW, Uri.parse(linkdata));
+                    startActivity(browserIntent);
+                }catch (Exception e){
+
+                }
+            }
+        });
     }
 
 
@@ -414,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lstExam.add(new Modes("1 Vs 1",R.drawable.versusicon,"Time for the One-On-One. Compete with a rival online. Time your knowledge and be the champion."));
         lstExam.add(new Modes("Tournament Mode",R.drawable.tournament,"Quizzers from all over the world come together in the arena to show who's the ultimate leaderboard breaker."));
         lstExam.add(new Modes("Single Mode",R.drawable.singleicon,"Test your knowledge and compete against time. Score points for accuracy and achieve ranks."));
-        lstExam.add(new Modes("Buzzer Mode",R.drawable.buzzer_icon,"The legendary KBC is back! Crack the questions and earn as much as you can. It's your time to set the leaderboard UP!"));
+        lstExam.add(new Modes("Buzzer Mode",R.drawable.buzzer_icon_main,"The legendary KBC is back! Crack the questions and earn as much as you can. It's your time to set the leaderboard UP!"));
     }
 
 
@@ -1012,6 +1183,65 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem menuItem) {
 
         switch (menuItem.getItemId()){
+            case R.id.nav_logout:
+
+
+                AlertDialog.Builder builderRemove=new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+                View viewRemove1= LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+                builderRemove.setView(viewRemove1);
+                builderRemove.setCancelable(false);
+
+
+                Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
+                Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+                TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+                textTitle.setText("You really want to Logout?");
+
+                LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
+                anim.setAnimation(R.raw.logout);
+                anim.playAnimation();
+                anim.loop(true);
+
+
+
+
+
+                final AlertDialog alertDialog=builderRemove.create();
+                if(alertDialog.getWindow()!=null){
+                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                }
+                try{
+                    alertDialog.show();
+                }catch (Exception e){
+
+                }
+
+
+                yesButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    alertDialog.dismiss();
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent=new Intent(MainActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                    }
+                });
+
+                noButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                break;
+
+
+
             case R.id.nav_profile:
                 Intent intent=new Intent(MainActivity.this, MyProfileActivity.class);
                 startActivity(intent);
@@ -1025,19 +1255,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                startActivity(browserIntent);
 //                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
 //                break;
-//            case R.id.share_us:
-//                Toast.makeText(this, "Share Me!", Toast.LENGTH_SHORT).show();
-//                Intent shareIntent=new Intent(Intent.ACTION_SEND);
-//                shareIntent.setType("text/plane");
-//                String shareBody="MindScape: The ultimate Quiz Station!\n\n" +
-//                        "Experience the fun of quizzing with your friends and family in the most innovative way. \n\n" +
-//                        "Download Now! \n" + linkdata;
-//                String sharesub="Paper Wind";
-//
-//                shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
-//                shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
-//                startActivity(Intent.createChooser(shareIntent,"Share Using"));
-//                break;
+            case R.id.share_us:
+                Toast.makeText(this, "Share Me!", Toast.LENGTH_SHORT).show();
+                Dialog dialog=null;
+                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,MainActivity.this);
+                supportAlertDialog.showLoadingDialog();
+                table_user.child("UPDATE_CODE").child("linkdata").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        supportAlertDialog.dismissLoadingDialog();
+                        String linkdata=snapshot.getValue(String.class);
+                        Intent shareIntent=new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("text/plane");
+                        String shareBody="Multiplayer Quiz Trivia: The ultimate Quiz Station!\n\n" +
+                                "Experience the fun of quizzing with your friends and family in the most innovative way. \n\n" +
+                                "Download Now! \n" + linkdata;
+                        String sharesub="Multiplayer Quiz Trivia";
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                        startActivity(Intent.createChooser(shareIntent,"Share Using"));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                break;
 //            case R.id.nav_tos:
 //                Intent browserIntenttos = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FTERMS%20OF%20SERVICE-converted.pdf?alt=media&token=d07a0294-a15f-4c30-802b-d1ddc0a3eb31"));
 //                startActivity(browserIntenttos);

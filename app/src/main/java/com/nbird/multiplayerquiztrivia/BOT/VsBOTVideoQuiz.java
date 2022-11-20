@@ -33,6 +33,16 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -130,10 +140,52 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     LottieAnimationView loadingvideo;
     int statusFinder=1;
     Boolean isInBackground;
+
+
+
+    private InterstitialAd mInterstitialAd;
+    private void loadAds(){
+
+
+        String key=AppString.INTERSTITIAL_ID;
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, key, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("TAG", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d("TAG", loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vs_botvideo_quiz);
+
+        loadAds();
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         category=getIntent().getIntExtra("category",1);
 
@@ -714,20 +766,40 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
             }
         }
 
-        DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTVideoQuiz.this,
-                myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,4);
-        dialogBotResult.start();
 
-        Log.i("DONE" , "DONE");
+        if(mInterstitialAd!=null) {
+            // Step 1: Display the interstitial
+            mInterstitialAd.show(VsBOTVideoQuiz.this);
+            // Step 2: Attach an AdListener
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    super.onAdFailedToShowFullScreenContent(adError);
 
-//        for(int i=0;i<animList.size();i++){
-//            try{
-//                Log.i("ANIMATION LIST",String.valueOf(animList.get(i)));
-//            }catch (Exception e){
-//
-//            }
-//
-//        }
+                    DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTVideoQuiz.this,
+                            myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,4);
+                    dialogBotResult.start();
+
+                }
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+
+                    DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTVideoQuiz.this,
+                            myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,4);
+                    dialogBotResult.start();
+                }
+            });
+
+
+        }else{
+
+            DialogBotResult dialogBotResult=new DialogBotResult(myScore,score,category,timeTakenInt,lifelineSum,oppoTotalScore,oppoScoreCounter,oppoTimeTakenInt,oppoLifelineSum,audienceLL,VsBOTVideoQuiz.this,
+                    myName,myPicURL,timeTakenString,oppoNameString,oppoImageURL,oppoTimeTakenString,map,oppoMap,animList,oppoAnimList,audienceLL,4);
+            dialogBotResult.start();
+
+        }
 
     }
 
@@ -776,7 +848,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(10) + 5};
+        final int[] jk = {r.nextInt(9) + 3};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {

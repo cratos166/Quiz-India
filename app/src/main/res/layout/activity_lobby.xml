@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     xmlns:cardview="http://schemas.android.com/apk/res-auto">
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="@string/bannerId"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backlitemodeanim" />
+
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backlitemodeanim"
         android:layout_width="match_parent"
@@ -32,15 +45,13 @@
         android:scaleY="0.8"
         app:cardCornerRadius="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/single_color_3"
             android:orientation="vertical">
-
-
 
 
             <LinearLayout
@@ -50,14 +61,11 @@
                 android:orientation="horizontal">
 
 
-
-
                 <LinearLayout
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:orientation="vertical">
-
 
 
                     <TextView
@@ -67,8 +75,7 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="Privacy"
                         android:textColor="@color/dark_border_stroke"
-                        android:textSize="10dp"
-                        />
+                        android:textSize="10dp" />
 
                     <TextView
                         android:id="@+id/privacyTextView"
@@ -78,13 +85,7 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="PUBLIC "
                         android:textColor="@color/text_head"
-                        android:textSize="15dp"
-                        />
-
-
-
-
-
+                        android:textSize="15dp" />
 
 
                 </LinearLayout>
@@ -92,12 +93,10 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="30dp"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_gravity="center"
-                    android:background="@color/level_3"/>
-
-
+                    android:background="@color/level_3" />
 
 
                 <LinearLayout
@@ -107,7 +106,6 @@
                     android:orientation="vertical">
 
 
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -115,8 +113,7 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="Question"
                         android:textColor="@color/dark_border_stroke"
-                        android:textSize="10dp"
-                        />
+                        android:textSize="10dp" />
 
                     <TextView
                         android:id="@+id/questionTextView"
@@ -126,29 +123,22 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="10 "
                         android:textColor="@color/text_head"
-                        android:textSize="15dp"
-                        />
+                        android:textSize="15dp" />
 
 
                 </LinearLayout>
 
 
-
-
             </LinearLayout>
-
-
-
 
 
             <ImageView
                 android:layout_width="140dp"
                 android:layout_height="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
                 android:layout_gravity="center"
-                android:background="@drawable/border"/>
-
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/border" />
 
 
             <LinearLayout
@@ -158,14 +148,11 @@
                 android:orientation="horizontal">
 
 
-
-
                 <LinearLayout
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:orientation="vertical">
-
 
 
                     <TextView
@@ -175,8 +162,7 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="Time"
                         android:textColor="@color/dark_border_stroke"
-                        android:textSize="10dp"
-                        />
+                        android:textSize="10dp" />
 
                     <TextView
                         android:id="@+id/timeTextView"
@@ -186,13 +172,7 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="3 Mins "
                         android:textColor="@color/text_head"
-                        android:textSize="15dp"
-                        />
-
-
-
-
-
+                        android:textSize="15dp" />
 
 
                 </LinearLayout>
@@ -200,12 +180,10 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="30dp"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_gravity="center"
-                    android:background="@color/level_3"/>
-
-
+                    android:background="@color/level_3" />
 
 
                 <LinearLayout
@@ -215,7 +193,6 @@
                     android:orientation="vertical">
 
 
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -223,8 +200,7 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="Mode"
                         android:textColor="@color/dark_border_stroke"
-                        android:textSize="10dp"
-                        />
+                        android:textSize="10dp" />
 
                     <TextView
                         android:id="@+id/modeTextView"
@@ -234,21 +210,13 @@
                         android:fontFamily="@font/ubuntu"
                         android:text="Picture Normal"
                         android:textColor="@color/text_head"
-                        android:textSize="8dp"
-                        />
+                        android:textSize="8dp" />
 
 
                 </LinearLayout>
 
 
-
-
             </LinearLayout>
-
-
-
-
-
 
 
         </LinearLayout>
@@ -499,7 +467,7 @@
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -513,29 +481,28 @@
                 android:id="@+id/roomCodeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
                 android:fontFamily="@font/ubuntu"
                 android:text="Room Code : 452309"
-                android:layout_gravity="center"
-                android:textSize="10dp"
                 android:textColor="@color/white"
-                />
+                android:textSize="10dp" />
 
 
             <Button
                 android:id="@+id/shareButton"
                 android:layout_width="60dp"
                 android:layout_height="25dp"
-                android:clickable="true"
                 android:layout_gravity="center"
+                android:layout_margin="5dp"
                 android:background="@drawable/next_button"
+                android:clickable="true"
                 android:fontFamily="@font/ubuntu"
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:text="Share"
-                android:layout_margin="5dp"
                 android:textColor="#000000"
                 android:textSize="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -545,25 +512,24 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
                 android:layout_gravity="center"
-                android:background="@drawable/border"/>
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/border" />
 
             <TextView
                 android:id="@+id/hostName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
+                android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/ubuntu"
                 android:text="Host : KAAL"
-                android:layout_gravity="center"
-                android:textSize="10dp"
                 android:textColor="@color/text_head"
-                />
+                android:textSize="10dp" />
 
 
         </LinearLayout>

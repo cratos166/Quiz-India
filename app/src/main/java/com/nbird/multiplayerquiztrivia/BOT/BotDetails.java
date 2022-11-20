@@ -121,19 +121,10 @@ public class BotDetails {
         int tt=r.nextInt(20)+1;
 
 
-        if(tt<9){
+        if(tt<13){
 
 
             oppoURL= avatarLink.getArr().get(tom);
-            Glide.with(context)
-                    .load(oppoURL)
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
-                    .into(oppoImage);
-
-        }else if(tt==13){
-
-
-            oppoURL= "https://i.pravatar.cc/100";
             Glide.with(context)
                     .load(oppoURL)
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))

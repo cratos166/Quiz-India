@@ -15,7 +15,9 @@
     android:layout_marginLeft="2dp"
     android:background="@drawable/border_theme"
     android:layout_marginBottom="5dp"
+
     app:ignore="NamespaceTypo">
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -30,8 +32,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:background="@drawable/border_theme_2"
         android:orientation="vertical">
+
 
         <LinearLayout
             android:id="@+id/linearLayout"

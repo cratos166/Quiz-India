@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3015" />
         <entry key="app/src/main/res/drawable/border_theme.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/border_theme_2.xml" value="0.1925" />
         <entry key="app/src/main/res/drawable/border_theme_less_radius.xml" value="0.42" />
@@ -12,6 +13,9 @@
         <entry key="app/src/main/res/drawable/done_button.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/double_color_1.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/double_color_2.xml" value="0.284" />
+        <entry key="app/src/main/res/drawable/ic_baseline_mail_24.xml" value="0.3015" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3015" />
+        <entry key="app/src/main/res/drawable/icon_background.xml" value="0.3015" />
         <entry key="app/src/main/res/drawable/inner.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/inner_less_radius.xml" value="0.42" />
         <entry key="app/src/main/res/drawable/level_0.xml" value="0.284" />
@@ -24,23 +28,26 @@
         <entry key="app/src/main/res/drawable/single_color_1.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/single_color_2.xml" value="0.284" />
         <entry key="app/src/main/res/drawable/single_color_3.xml" value="0.2535" />
+        <entry key="app/src/main/res/drawable/single_color_3_without_radius.xml" value="0.3015" />
         <entry key="app/src/main/res/drawable/single_color_4.xml" value="0.284" />
+        <entry key="app/src/main/res/drawable/transparentbox.xml" value="0.3015" />
         <entry key="app/src/main/res/drawable/usedicon.xml" value="0.284" />
-        <entry key="app/src/main/res/layout/activity_buzzer_picture.xml" value="0.5666666666666667" />
+        <entry key="app/src/main/res/layout/activity_about_us.xml" value="0.2607913669064748" />
+        <entry key="app/src/main/res/layout/activity_buzzer_picture.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_buzzer_score.xml" value="0.34791666666666665" />
-        <entry key="app/src/main/res/layout/activity_lobby.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_lobby.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2755208333333333" />
         <entry key="app/src/main/res/layout/activity_my_profile.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_normal_audio_quiz.xml" value="0.1721014492753623" />
         <entry key="app/src/main/res/layout/activity_normal_picture_quiz.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/activity_normal_single_quiz.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/activity_normal_video_quiz.xml" value="0.12664640324214793" />
-        <entry key="app/src/main/res/layout/activity_score.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_score.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_slide.xml" value="0.35096774193548386" />
         <entry key="app/src/main/res/layout/activity_tournament_audio.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_tournament_buzzer.xml" value="0.5526041666666667" />
         <entry key="app/src/main/res/layout/activity_tournament_buzzer_normal.xml" value="0.32708333333333334" />
-        <entry key="app/src/main/res/layout/activity_tournament_normal.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_tournament_normal.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_tournament_picture.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_tournament_video_quiz.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_vs_audio_quiz.xml" value="0.21875" />
@@ -78,8 +85,8 @@
         <entry key="app/src/main/res/layout/dialog_tournament_join_create.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_tournament_winner.xml" value="0.4003623188405797" />
         <entry key="app/src/main/res/layout/dialog_trouble_shoot.xml" value="0.31849365234375004" />
-        <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.21875" />
-        <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/dialog_vs_first_done.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_waiter_onevsone.xml" value="0.25" />
         <entry key="app/src/main/res/layout/header.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/layout.xml" value="0.38958333333333334" />
         <entry key="app/src/main/res/layout/leader_board_listview.xml" value="0.4036458333333333" />
