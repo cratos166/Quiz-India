@@ -30,10 +30,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -111,8 +115,11 @@ public class DialogWaiterVS {
     int roomCodeInt;
 
     LeaderBoardHolder leaderBoardHolder;
+    NativeAd NATIVE_ADS;
 
-    public void start(Context context, View view,int quizMode){
+    public void start(Context context, View view, int quizMode){
+
+
 
         this.context=context;
 
@@ -189,7 +196,31 @@ public class DialogWaiterVS {
             dataForHorizontalSlide(context);
         }
 
-        roomCode(view1,quizMode);
+        roomCode(view1,quizMode,NATIVE_ADS);
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
 
 
 
@@ -211,6 +242,7 @@ public class DialogWaiterVS {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 try{ table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Personal").child("player2UID").removeEventListener(listenerOppoConnected); }catch (Exception e){ }
                 try{ countDownTimerIntent.cancel(); }catch (Exception e){ }
                 try{ table_user.child("VS_ARENA").child(mAuth.getCurrentUser().getUid()).removeValue(); }catch (Exception e){ }
@@ -223,7 +255,7 @@ public class DialogWaiterVS {
     }
 
 
-    public void roomCode(View view1,int quizMode){
+    public void roomCode(View view1, int quizMode, NativeAd NATIVE_ADS){
 
 
         TextView roomCode=(TextView) view1.findViewById(R.id.roomCode);
@@ -345,6 +377,9 @@ public class DialogWaiterVS {
 
                                     @Override
                                     public void onFinish() {
+
+                                        try{NATIVE_ADS.destroy();}catch (Exception e){}
+
                                         switch (quizMode) {
                                             case 2:
                                                 Intent intent = new Intent(context, VsNormalQuiz.class);

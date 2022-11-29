@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,13 +29,15 @@ public class FirstDoneVs {
     Context context;
     View v;
     WaitingDialog waitingDialog;
+    NativeAd NATIVE_ADS;
 
-    public FirstDoneVs(String hostUID, String oppoUID, ValueEventListener valueEventListener,Context context,View v) {
+    public FirstDoneVs(String hostUID, String oppoUID, ValueEventListener valueEventListener,Context context,View v,NativeAd NATIVE_ADS) {
         this.hostUID = hostUID;
         this.oppoUID = oppoUID;
         this.valueEventListener = valueEventListener;
         this.context=context;
         this.v=v;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
     public void start(){
@@ -51,11 +54,11 @@ public class FirstDoneVs {
                              waitingDialog.stop();
                              table_user.child("VS_PLAY").child(hostUID).child("Status").child(oppoUID).child("isComplete").removeEventListener(valueEventListener);
                          }else{
-                             waitingDialog=new WaitingDialog(context,v);
+                             waitingDialog=new WaitingDialog(context,v,NATIVE_ADS);
                              waitingDialog.start();
                          }
                      }catch (Exception e){
-                         waitingDialog=new WaitingDialog(context,v);
+                         waitingDialog=new WaitingDialog(context,v,NATIVE_ADS);
                          waitingDialog.start();
                      }
                 }

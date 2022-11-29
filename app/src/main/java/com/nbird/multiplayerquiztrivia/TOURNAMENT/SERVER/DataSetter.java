@@ -1,6 +1,7 @@
 package com.nbird.multiplayerquiztrivia.TOURNAMENT.SERVER;
 
 import android.widget.Adapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDataAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
@@ -28,7 +30,7 @@ public class DataSetter {
     public DataSetter() {
     }
 
-    public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter, ValueEventListener valueEventListener){
+    public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter, ValueEventListener valueEventListener, TextView numberOfPlayers){
 
         valueEventListener=new ValueEventListener() {
             @Override
@@ -75,6 +77,8 @@ public class DataSetter {
                     }
 
                 }
+
+                numberOfPlayers.setText(playerDataArrayList.size()+"/"+ AppString.TOURNAMENT_MAX_PLAYERS);
 
                 table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfPlayers").setValue(playerDataArrayList.size()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

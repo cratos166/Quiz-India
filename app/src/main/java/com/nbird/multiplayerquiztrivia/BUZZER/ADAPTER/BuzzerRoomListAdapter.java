@@ -142,6 +142,8 @@ public class BuzzerRoomListAdapter extends RecyclerView.Adapter<BuzzerRoomListAd
 
 
 
+                                            }else{
+                                                Toast.makeText(mContext, "Total "+AppString.BUZZER_MAX_PLAYERS+" players are already present in the lobby. Lobby maximum limit reached.", Toast.LENGTH_LONG).show();
                                             }
                                         }catch (Exception e){
                                             Toast.makeText(mContext, "They Have Started Playing!!!Please Refresh And Try Some Other Room", Toast.LENGTH_SHORT).show();

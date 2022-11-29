@@ -39,6 +39,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,6 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.BuzzerNormalActivity;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
 import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
@@ -101,6 +103,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
     String minutestext;
     String secondtext;
 
+    NativeAd NATIVE_ADS;
 
     private InterstitialAd mInterstitialAd;
     private void loadAds(){
@@ -134,17 +137,13 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_normal_single_quiz);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         category=getIntent().getIntExtra("category",1);
 
@@ -152,6 +151,20 @@ public class NormalSingleQuiz extends AppCompatActivity {
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, NormalSingleQuiz.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_NORMAL);
+            if(num==1){
+                loadAds();
+            }
+        }
 
         songStopperAndResumer();
 
@@ -208,6 +221,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
         highestScore=new HighestScore();
         highestScore.start();
 
+
     }
 
 
@@ -215,7 +229,14 @@ public class NormalSingleQuiz extends AppCompatActivity {
 
         lifeLine=new LifeLine(linearLayoutFiftyFifty,linearLayoutAudience,linearLayoutexpert,position,list,option1,option2,option3,option4,myName,NormalSingleQuiz.this);
 
-        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(fiftyfiftynum==0) { lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL(); }else{ lifeLine.LLUsed("FIFTY-FIFTY"); } }});
+        fiftyfiftyLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) {
+            if(fiftyfiftynum==0) {
+                lifelineSum++;fiftyfiftynum = 1;lifeLine.setPosition(position);lifeLine.fiftyfiftyLL();
+            }else{
+                lifeLine.LLUsed("FIFTY-FIFTY");
+            }
+        }
+        });
         audienceLL.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View view) { if(audiencenum==0) { lifelineSum++;audiencenum = 1;lifeLine.setPosition(position);lifeLine.audienceLL(); }else{ lifeLine.LLUsed("AUDIENCE"); } }});
 
 
@@ -282,79 +303,14 @@ public class NormalSingleQuiz extends AppCompatActivity {
     }
 
 
-    public void setCountDownTimer(int totalTime, int interval, TextView clockTextView, CardView clockCardView){
 
-            countDownTimer=new CountDownTimer(totalTime, interval) {
-
-
-                @SuppressLint("ResourceAsColor")
-                public void onTick(long millisUntilFinished) {
-
-
-                    if(second==0){
-                        minutes--;
-                        minutestext="0"+String.valueOf(minutes);
-                        second=59;
-                        if(second<10){
-                            secondtext="0"+String.valueOf(second);
-                        }else{
-                            secondtext=String.valueOf(second);
-                        }
-                        clockTextView.setText(minutestext+":"+secondtext+" ");
-
-                    }else{
-                        minutestext="0"+String.valueOf(minutes);
-                        if(second<10){
-                            secondtext="0"+String.valueOf(second);
-                        }else{
-                            secondtext=String.valueOf(second);
-                        }
-                        clockTextView.setText(minutestext+":"+secondtext+" ");
-                        second--;
-                    }
-
-                    //Last 15 seconds end animation
-                    if(minutes==0 && second<=15){
-
-                        clockTextView.setTextColor(R.color.red);
-
-                        //Continuous zoomIn - zoomOut
-                        ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
-                        ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
-
-                        scaleX.setRepeatCount(ObjectAnimator.INFINITE);
-                        scaleX.setRepeatMode(ObjectAnimator.REVERSE);
-
-                        scaleY.setRepeatCount(ObjectAnimator.INFINITE);
-                        scaleY.setRepeatMode(ObjectAnimator.REVERSE);
-
-                        AnimatorSet scaleAnim = new AnimatorSet();
-                        scaleAnim.setDuration(500);
-                        scaleAnim.play(scaleX).with(scaleY);
-
-                        scaleAnim.start();
-                    }
-
-                }
-                public void onFinish() {
-
-                    Toast.makeText(NormalSingleQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
-                    quizFinishDialog();
-
-
-                }
-
-            }.start();
-
-    }
 
             public void mainManupulations(){
 
                 num++;
                 if (num == 10) {
-                    setCountDownTimer(60000*3,1000,timerText,clockCardView);
-//                    timer=new QuizTimer(countDownTimer,60000*3,1000,NormalSingleQuiz.this,timerText,clockCardView);
-//                    timer.start();
+                      timer();
+
                     if (list.size() > 0) {
                         for (int i = 0; i < 4; i++) {
                             linearLayout.getChildAt(i).setOnClickListener(new View.OnClickListener() {
@@ -522,6 +478,73 @@ public class NormalSingleQuiz extends AppCompatActivity {
     }
 
 
+    public void timer(){
+        countDownTimer=new CountDownTimer(180*1000, 1000) {
+
+
+            @SuppressLint("ResourceAsColor")
+            public void onTick(long millisUntilFinished) {
+
+
+                if(second==0){
+                    minutes--;
+                    minutestext="0"+String.valueOf(minutes);
+                    second=59;
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+
+                }else{
+                    minutestext="0"+String.valueOf(minutes);
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+                    second--;
+                }
+
+                //Last 15 seconds end animation
+                if(minutes==0 && second<=15){
+
+                    timerText.setTextColor(Color.parseColor("#FF5E5E"));
+
+                    //Continuous zoomIn - zoomOut
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
+
+                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    AnimatorSet scaleAnim = new AnimatorSet();
+                    scaleAnim.setDuration(500);
+                    scaleAnim.play(scaleX).with(scaleY);
+
+                    scaleAnim.start();
+                }
+
+            }
+            public void onFinish() {
+                timerText.setText("00:00");
+                minutes=0;
+                second=0;
+
+                Toast.makeText(NormalSingleQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
+                quizFinishDialog();
+
+
+            }
+
+        }.start();
+    }
+
     public void quizFinishDialog(){
 
                try{
@@ -573,7 +596,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
                     super.onAdFailedToShowFullScreenContent(adError);
                     ResultHandling resultHandling =new ResultHandling(NormalSingleQuiz.this,map,animList,score,timeTakenString,
                             lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                            category,1,timeTakenInt);
+                            category,1,timeTakenInt,NATIVE_ADS);
 
                     resultHandling.start();
 
@@ -584,7 +607,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
                     super.onAdDismissedFullScreenContent();
                     ResultHandling resultHandling =new ResultHandling(NormalSingleQuiz.this,map,animList,score,timeTakenString,
                             lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                            category,1,timeTakenInt);
+                            category,1,timeTakenInt,NATIVE_ADS);
 
                     resultHandling.start();
 
@@ -595,7 +618,7 @@ public class NormalSingleQuiz extends AppCompatActivity {
         }else{
             ResultHandling resultHandling =new ResultHandling(NormalSingleQuiz.this,map,animList,score,timeTakenString,
                     lifelineSum,totalScore.getTotalScore(),highestScore.getHighestScore(),scoreGenerator.start(),audienceLL,myName,myPicURL,
-                    category,1,timeTakenInt);
+                    category,1,timeTakenInt,NATIVE_ADS);
 
             resultHandling.start();
         }
@@ -642,17 +665,17 @@ public class NormalSingleQuiz extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalSingleQuiz.this,countDownTimer,option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalSingleQuiz.this,countDownTimer,option1,songActivity,NATIVE_ADS);
         quizCancelDialog.startForSinglePlayer();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
-
+        try{mAdView.destroy();}catch (Exception e){}
         Runtime.getRuntime().gc();
     }
 

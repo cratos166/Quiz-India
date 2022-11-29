@@ -17,8 +17,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.StartingPackage.SliderAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.TroubleShootAdapter;
 
@@ -34,9 +42,11 @@ public class TroubleShootDialog {
     ImageView next_done_button;
 
     Context context;
+    NativeAd NATIVE_ADS;
 
-    public TroubleShootDialog(Context context) {
+    public TroubleShootDialog(Context context,NativeAd NATIVE_ADS) {
         this.context = context;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
     public void start(View view){
@@ -66,6 +76,34 @@ public class TroubleShootDialog {
         }
 
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)) {
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+
+        }
+
+
+
+
 
 
         troubleShootAdapter = new TroubleShootAdapter(context);
@@ -85,6 +123,8 @@ public class TroubleShootDialog {
                     }catch (Exception e){
 
                     }
+
+                    try{NATIVE_ADS.destroy();}catch (Exception e){}
 
                 }
                 slideViewPager.setCurrentItem(currentPage + 1);

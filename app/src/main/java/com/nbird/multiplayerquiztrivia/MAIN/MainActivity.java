@@ -41,8 +41,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -182,16 +189,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int APP_UPDATE_VERSION_CODE = 1;
 
 
-
+    AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
+        isShowAds();
+
+
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -311,6 +320,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void isShowAds(){
+        table_user.child("ADS").child("showAds").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    Boolean isShow=snapshot.getValue(Boolean.class);
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS,MainActivity.this,isShow);
+                    if(isShow){
+                        mAdView = findViewById(R.id.adView);
+                        AdRequest adRequest = new AdRequest.Builder().build();
+                        mAdView.loadAd(adRequest);
+                        mAdView.setVisibility(View.VISIBLE);
+                    }
+                }catch (Exception e){
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     private void noInternet(){
 
@@ -356,7 +390,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         button.setText("OKAY");
 
 
+        MobileAds.initialize(MainActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(MainActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
 
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
         final AlertDialog alertDialog=builderRemove.create();
         if(alertDialog.getWindow()!=null){
@@ -410,7 +460,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         button.setText("UPDATE");
 
+        MobileAds.initialize(context);
+        AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
 
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         final AlertDialog alertDialog=builderRemove.create();
@@ -902,11 +968,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if (username()) {
                                 String usernameEntered = usernameEditText.getText().toString();
 
+                                Dialog dialog=null;
+                                SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,MainActivity.this);
+                                supportAlertDialog.showLoadingDialog();
 
 
                                 myRef.child("NEW_APP").child("User").child(mAuth.getCurrentUser().getUid()).child("personal").child("userName").setValue(usernameEntered).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+                                        supportAlertDialog.dismissLoadingDialog();
                                         Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
                                         appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this,usernameEntered);
                                         nav_mail.setText(appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this));
@@ -930,10 +1000,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if (username()) {
                     String usernameEntered = usernameEditText.getText().toString();
+                    Dialog dialog=null;
+                    SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,MainActivity.this);
+                    supportAlertDialog.showLoadingDialog();
 
                     myRef.child("NEW_APP").child("User").child(mAuth.getCurrentUser().getUid()).child("personal").child("userName").setValue(usernameEntered).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+                            supportAlertDialog.dismissLoadingDialog();
                             Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
                             appData.setSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,MainActivity.this,usernameEntered);
 
@@ -986,8 +1060,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (name1.isEmpty()) {
             usernameEditText.setError("Field cannot be empty");
             return false;
-        } else if (name1.length() > 30) {
-            usernameEditText.setError("Username should be less than 30 characters");
+        } else if (name1.length() > 10) {
+            usernameEditText.setError("Username should be less than 10 characters");
             return false;
         } else
             usernameEditText.setError(null);
@@ -1203,6 +1277,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 anim.playAnimation();
                 anim.loop(true);
 
+                AppData appData=new AppData();
+                if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, MainActivity.this)){
+
+                    MobileAds.initialize(MainActivity.this);
+                    AdLoader adLoader = new AdLoader.Builder(MainActivity.this, AppString.NATIVE_ID)
+                            .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                                @Override
+                                public void onNativeAdLoaded(NativeAd nativeAd) {
+                                    ColorDrawable cd = new ColorDrawable(0x393F4E);
+                                    NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                                    TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                                    template.setStyles(styles);
+                                    template.setNativeAd(nativeAd);
+                                    template.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .build();
+
+                    adLoader.loadAd(new AdRequest.Builder().build());
+
+                }
+
 
 
 
@@ -1245,16 +1341,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_profile:
                 Intent intent=new Intent(MainActivity.this, MyProfileActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.nav_about:
                 Intent intent12=new Intent(MainActivity.this, AboutUsActivity.class);
                 startActivity(intent12);
                 break;
-//            case R.id.nav_rate:
-//                Intent browserIntent=new Intent(Intent.ACTION_VIEW, Uri.parse(linkdata));
-//                startActivity(browserIntent);
-//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
-//                break;
+            case R.id.nav_rate:
+                Dialog dialog1=null;
+                SupportAlertDialog supportAlertDialog1=new SupportAlertDialog(dialog1,MainActivity.this);
+                supportAlertDialog1.showLoadingDialog();
+                table_user.child("UPDATE_CODE").child("linkdata").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try{
+                            String linkdata=snapshot.getValue(String.class);
+                            Intent browserIntent=new Intent(Intent.ACTION_VIEW, Uri.parse(linkdata));
+                            startActivity(browserIntent);
+                            overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+                            supportAlertDialog1.dismissLoadingDialog();
+                        }catch (Exception e){
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                break;
             case R.id.share_us:
                 Toast.makeText(this, "Share Me!", Toast.LENGTH_SHORT).show();
                 Dialog dialog=null;
@@ -1263,17 +1380,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 table_user.child("UPDATE_CODE").child("linkdata").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        supportAlertDialog.dismissLoadingDialog();
-                        String linkdata=snapshot.getValue(String.class);
-                        Intent shareIntent=new Intent(Intent.ACTION_SEND);
-                        shareIntent.setType("text/plane");
-                        String shareBody="Multiplayer Quiz Trivia: The ultimate Quiz Station!\n\n" +
-                                "Experience the fun of quizzing with your friends and family in the most innovative way. \n\n" +
-                                "Download Now! \n" + linkdata;
-                        String sharesub="Multiplayer Quiz Trivia";
-                        shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
-                        shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
-                        startActivity(Intent.createChooser(shareIntent,"Share Using"));
+                        try{
+                            supportAlertDialog.dismissLoadingDialog();
+                            String linkdata=snapshot.getValue(String.class);
+                            Intent shareIntent=new Intent(Intent.ACTION_SEND);
+                            shareIntent.setType("text/plane");
+                            String shareBody="Multiplayer Quiz Trivia: The ultimate Quiz Station!\n\n" +
+                                    "Experience the fun of quizzing with your friends and family in the most innovative way. \n\n" +
+                                    "Download Now! \n" + linkdata;
+                            String sharesub="Multiplayer Quiz Trivia";
+                            shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
+                            shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                            startActivity(Intent.createChooser(shareIntent,"Share Using"));
+                        }catch (Exception e){
+
+                        }
+
                     }
 
                     @Override
@@ -1304,28 +1426,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
 //                finish();
 //                break;
-//            case R.id.nav_contact:
-//
-//                Intent intent2=new Intent(Intent.ACTION_SEND);
-//                String[] recipients={"niftynile@gmail.com"};
-//                intent2.putExtra(Intent.EXTRA_EMAIL, recipients);
-//                // intent2.putExtra(Intent.EXTRA_SUBJECT,"Subject text here...");
-//                // intent2.putExtra(Intent.EXTRA_TEXT,"Body of the content here...");
-//                // intent2.putExtra(Intent.EXTRA_CC,"mailcc@gmail.com");
-//                intent2.setType("text/html");
-//                intent2.setPackage("com.google.android.gm");
-//                startActivity(Intent.createChooser(intent2, "Send mail"));
-//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
-//
-//
-//                //String[] TO = {"niftynile@gmail.com"};
-//
-//                // Intent email = new Intent(Intent.ACTION_SEND);
-//                // email.setType("*/*");
-//                // email.putExtra(Intent.EXTRA_EMAIL, TO);
-//                // if(email.resolveActivity(getPackageManager()) != null)
-//                //     startActivity(email);
-//                break;
+
             default :
                 return true;
 
@@ -1334,7 +1435,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {mAdView.destroy();}catch (Exception e){}
+        Runtime.getRuntime().gc();
+    }
 }
 
 

@@ -18,9 +18,17 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +52,7 @@ public class LL_Video_Quiz {
     Button option1,option2,option3,option4;
     String myName;
     Context context;
+    NativeAd NATIVE_ADS;
 
     public LL_Video_Quiz(LinearLayout linearLayoutFiftyFifty, LinearLayout linearLayoutAudience, LinearLayout linearLayoutexpert, int position, List<VideoQuestionHolder> list, Button option1, Button option2, Button option3, Button option4, String myName, Context context) {
         this.linearLayoutFiftyFifty = linearLayoutFiftyFifty;
@@ -154,9 +163,34 @@ public class LL_Video_Quiz {
         final View view1 = LayoutInflater.from(context).inflate(R.layout.dialog_audience_ll, (ConstraintLayout) linearLayoutAudience.findViewById(R.id.layoutDialogContainer));
         builder.setView(view1);
         builder.setCancelable(false);
-        ((TextView) view1.findViewById(R.id.textTitle)).setText(" MindScapers from across the world have casted their votes above. Choose your option! ");
+        ((TextView) view1.findViewById(R.id.textTitle)).setText(" People from across the world have casted their votes above. Choose your option! ");
         ((Button) view1.findViewById(R.id.buttonYes)).setText("OKAY");
         BarChart barChart = ((BarChart) view1.findViewById(R.id.barChart));
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+        }
+
 
 
         final ArrayList<BarEntry> visitors = new ArrayList<>();
@@ -197,6 +231,7 @@ public class LL_Video_Quiz {
         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
             }
         });
@@ -223,6 +258,34 @@ public class LL_Video_Quiz {
         expertAdviceImageManupulator(expertImage,titleText);
 
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+
+        }
+
+
+
+
         final AlertDialog alertDialog=builder.create();
         if(alertDialog.getWindow()!=null){
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -236,6 +299,7 @@ public class LL_Video_Quiz {
         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
             }
         });
@@ -323,9 +387,37 @@ public class LL_Video_Quiz {
 
         }
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+        }
+
+
+
+
         view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
             }
         });

@@ -12,11 +12,6 @@
                         android:icon="@drawable/nav_profile"
                         />
                     <item
-                        android:id="@+id/nav_help"
-                        android:title="Help Guide"
-                        android:icon="@drawable/nav_help"
-                        />
-                    <item
                         android:id="@+id/nav_logout"
                         android:title="Logout"
                         android:icon="@drawable/nav_logout"
@@ -35,11 +30,7 @@
 
             <group android:checkableBehavior="single">
 
-                <item
-                    android:id="@+id/nav_contact"
-                    android:title="Contact Us"
-                    android:icon="@drawable/nav_contact"
-                    />
+
 
                 <item
                     android:id="@+id/nav_about"

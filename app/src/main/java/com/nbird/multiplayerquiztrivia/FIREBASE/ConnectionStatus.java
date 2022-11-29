@@ -16,7 +16,16 @@ public class ConnectionStatus {
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference table_user = database.getReference("NEW_APP");
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
+    ValueEventListener valueEventListener = null;
+    ValueEventListener valueEventListenerHost = null;
+    boolean oneTime=true;
+    boolean oneTimeHost=true;
 
+
+    ValueEventListener valueEventListenerBUZZER = null;
+    ValueEventListener valueEventListenerHostBUZZER = null;
+    boolean oneTimeBUZZER=true;
+    boolean oneTimeHostBUZZER=true;
 
     public void myStatusSetter(){
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
@@ -56,30 +65,37 @@ public class ConnectionStatus {
     public void buzzerStatusSetter(String roomCode){
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
 
-
-        connectedRef.addValueEventListener(new ValueEventListener() {
+        valueEventListenerBUZZER=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean connected = snapshot.getValue(Boolean.class);
                 if (connected) {
-                    table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
 
-                        }
-                    });
-                    table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").onDisconnect().setValue(false);
+                    if(oneTimeBUZZER){
+                        oneTimeBUZZER=false;
+                        table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                            }
+                        });
+                        table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").onDisconnect().setValue(false);
+                    }
                 }
                 else {
-
+                    connectedRef.removeEventListener(valueEventListenerBUZZER);
                 }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+
+        connectedRef.addValueEventListener(valueEventListenerBUZZER);
+
     }
 
 
@@ -87,21 +103,27 @@ public class ConnectionStatus {
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
 
 
-        connectedRef.addValueEventListener(new ValueEventListener() {
+        valueEventListenerHostBUZZER=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean connected = snapshot.getValue(Boolean.class);
                 if (connected) {
-                    table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
 
-                        }
-                    });
-                    table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").onDisconnect().setValue(false);
+                    if(oneTimeHostBUZZER){
+                        oneTimeHostBUZZER=false;
+                        table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                            }
+                        });
+                        table_user.child("BUZZER").child("ROOM").child(roomCode).child("hostActive").onDisconnect().setValue(false);
+                    }
+
+
                 }
                 else {
-
+                    connectedRef.removeEventListener(valueEventListenerHostBUZZER);
                 }
             }
 
@@ -109,7 +131,9 @@ public class ConnectionStatus {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+
+        connectedRef.addValueEventListener(valueEventListenerHostBUZZER);
     }
 
 
@@ -117,21 +141,27 @@ public class ConnectionStatus {
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
 
 
-        connectedRef.addValueEventListener(new ValueEventListener() {
+
+
+        valueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean connected = snapshot.getValue(Boolean.class);
                 if (connected) {
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+                    if(oneTime){
+                        oneTime =false;
+                        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
 
-                        }
-                    });
-                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").onDisconnect().setValue(false);
+                            }
+                        });
+                        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").onDisconnect().setValue(false);
+                    }
+
                 }
                 else {
-
+                    connectedRef.removeEventListener(valueEventListener);
                 }
             }
 
@@ -139,7 +169,39 @@ public class ConnectionStatus {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+
+        connectedRef.addValueEventListener(valueEventListener);
+
+
+//        connectedRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                boolean connected = snapshot.getValue(Boolean.class);
+//                if (connected) {
+//                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//
+//                        }
+//                    });
+//                    table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").onDisconnect().setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Void> task) {
+//                            connectedRef.removeEventListener();
+//                        }
+//                    });
+//                }
+//                else {
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
 
@@ -148,21 +210,25 @@ public class ConnectionStatus {
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
 
 
-        connectedRef.addValueEventListener(new ValueEventListener() {
+        valueEventListenerHost=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean connected = snapshot.getValue(Boolean.class);
                 if (connected) {
-                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+                    if(oneTimeHost){
+                        oneTimeHost=false;
+                        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
 
-                        }
-                    });
-                    table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").onDisconnect().setValue(false);
+                            }
+                        });
+                        table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").onDisconnect().setValue(false);
+                    }
+
                 }
                 else {
-
+                    connectedRef.removeEventListener(valueEventListenerHost);
                 }
             }
 
@@ -170,7 +236,9 @@ public class ConnectionStatus {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+
+        connectedRef.addValueEventListener(valueEventListenerHost);
     }
 
 

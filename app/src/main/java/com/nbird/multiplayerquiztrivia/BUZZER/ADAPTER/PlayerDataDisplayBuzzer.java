@@ -31,13 +31,14 @@ public class PlayerDataDisplayBuzzer {
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
     int currentQuestionStatus;
 
-
-    public PlayerDataDisplayBuzzer(Context context, ValueEventListener valueEventListener, String roomCode, RecyclerView recyclerView, int currentQuestionStatus) {
+    int size;
+    public PlayerDataDisplayBuzzer(Context context, ValueEventListener valueEventListener, String roomCode, RecyclerView recyclerView, int currentQuestionStatus,int size) {
         this.context = context;
         this.valueEventListener = valueEventListener;
         this.roomCode = roomCode;
         this.recyclerView=recyclerView;
         this.currentQuestionStatus=currentQuestionStatus;
+        this.size=size;
 
     }
 
@@ -53,7 +54,7 @@ public class PlayerDataDisplayBuzzer {
         arrayList=new ArrayList<>();
 
 
-        playerDisplayInBuzzerAdapter = new PlayerDisplayInBuzzerAdapter(context,arrayList,currentQuestionStatus);
+        playerDisplayInBuzzerAdapter = new PlayerDisplayInBuzzerAdapter(context,arrayList,currentQuestionStatus,size);
         recyclerView.setAdapter(playerDisplayInBuzzerAdapter);
 
 

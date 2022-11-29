@@ -30,7 +30,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -40,6 +43,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +54,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTNormalQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTVideoQuiz;
 import com.nbird.multiplayerquiztrivia.BUZZER.ADAPTER.PlayerDataDisplayBuzzer;
 
@@ -68,6 +73,7 @@ import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BuzzerNormalActivity extends AppCompatActivity {
     TextView questionTextView,scoreBoard,timerText;
@@ -159,17 +165,13 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_buzzer_normal);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
         roomCode=getIntent().getStringExtra("roomCode");
@@ -181,6 +183,21 @@ public class BuzzerNormalActivity extends AppCompatActivity {
         list=new ArrayList<>();
         appData=new AppData();
         ansList=new ArrayList<>();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, BuzzerNormalActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_NORMAL);
+            if(num==1){
+                loadAds();
+            }
+        }
 
 
         if(myPlayerNum==1){
@@ -220,7 +237,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
         answerUploader=new BuzzerAnswerUploader(roomCode,myName,myPicURL);
         answerUploader.start();
 
-        playerDataDisplayBuzzer=new PlayerDataDisplayBuzzer(BuzzerNormalActivity.this,playerInfoGetterListener,roomCode,recyclerView,currentQuestionStatus);
+        playerDataDisplayBuzzer=new PlayerDataDisplayBuzzer(BuzzerNormalActivity.this,playerInfoGetterListener,roomCode,recyclerView,currentQuestionStatus,listAns.size());
         playerDataDisplayBuzzer.start();
 
 
@@ -360,7 +377,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
     private void BUZZERStatusSetter(int value){
 
-        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).child("currentQuestionStatus").setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+        table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).child("currentQuestionStatus").setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -373,7 +390,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
 
     private void BUZZEROptionsSetter(String button,int value){
-        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).child(button).setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+        table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).child(button).setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -525,7 +542,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
                         supportAlertDialog.dismissLoadingDialog();
 
                         try{ table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
-                        try{ myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
+                        try{ table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
 
 
 
@@ -576,6 +593,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
 
     private void intentFun(){
+
         Intent intent=new Intent(BuzzerNormalActivity.this,BuzzerScoreActivity.class);
         intent.putExtra("roomCode",roomCode);
         intent.putExtra("maxQuestions",list.size()-1);
@@ -627,10 +645,12 @@ public class BuzzerNormalActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        listenerRemover();
+        try{table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeEventListener(playerInfoGetterListener);}catch (Exception e){}
+        try{mAdView.destroy();}catch (Exception e){}
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
-
         Runtime.getRuntime().gc();
     }
 
@@ -653,6 +673,23 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
+        MobileAds.initialize(BuzzerNormalActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(BuzzerNormalActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
@@ -751,6 +788,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
         try{countDownTimer.cancel();}catch (Exception e){}
 
+        listenerRemover();
 
         Intent intent=new Intent(BuzzerNormalActivity.this, MainActivity.class);
         startActivity(intent);
@@ -782,7 +820,10 @@ public class BuzzerNormalActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         enableOption(true);
                     }
+
+
                     listenerRemover();
+
                     position++;
                     listnereSetter();
                     if (position == listAns.size()-1) { }
@@ -807,7 +848,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
 
 
     private void listenerRemover(){
-        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);
+        try{table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).removeEventListener(BUZZERTrackerListener);}catch (Exception e){}
     }
 
 
@@ -897,7 +938,7 @@ public class BuzzerNormalActivity extends AppCompatActivity {
             }
         };
 
-        myRef.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).addValueEventListener(BUZZERTrackerListener);
+        table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).child(String.valueOf(position)).addValueEventListener(BUZZERTrackerListener);
     }
 
 }

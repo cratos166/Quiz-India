@@ -22,6 +22,9 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -30,6 +33,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +50,8 @@ import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.ACTIVITY.ScoreActivity;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.BasicDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
 
@@ -77,7 +83,7 @@ public class BuzzerScoreActivity extends AppCompatActivity {
     Boolean winnerDeclared = false, isHostActive;
     TextView dis;
 
-
+    AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +92,15 @@ public class BuzzerScoreActivity extends AppCompatActivity {
 
 
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        AppData appData=new AppData();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, BuzzerScoreActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
 
         roomCode = getIntent().getStringExtra("roomCode");
         maxQuestions = getIntent().getIntExtra("maxQuestions", 10);
@@ -192,7 +204,7 @@ public class BuzzerScoreActivity extends AppCompatActivity {
                     table_user.child("BUZZER").child("QUESTIONS").child(roomCode).removeValue();
                     table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeValue();
                     table_user.child("BUZZER").child("CHAT").child(roomCode).removeValue();
-
+                    table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).removeValue();
                     roomEnter();
 
                 } else {
@@ -284,6 +296,7 @@ public class BuzzerScoreActivity extends AppCompatActivity {
             table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeValue();
             table_user.child("BUZZER").child("QUESTIONS").child(roomCode).removeValue();
             table_user.child("BUZZER").child("RESULT").child(roomCode).removeValue();
+            table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).removeValue();
         }
 
 
@@ -362,7 +375,8 @@ public class BuzzerScoreActivity extends AppCompatActivity {
                 try {
 
                     if (numberOfActivePlayer == playerDataArrayList.size()) {
-
+                        TextView title=(TextView) findViewById(R.id.title);
+                        title.setText("All the members completed the quiz.");
                         resultComparator();
                         Collections.reverse(playerDataArrayList);
                         winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
@@ -425,7 +439,8 @@ public class BuzzerScoreActivity extends AppCompatActivity {
                 if (numberOfActivePlayer == playerDataArrayList.size()) {
 
                     resultComparator();
-
+                    TextView title=(TextView) findViewById(R.id.title);
+                    title.setText("All the members completed the quiz.");
                     Collections.reverse(playerDataArrayList);
                     winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
 
@@ -503,6 +518,23 @@ public class BuzzerScoreActivity extends AppCompatActivity {
         Button okButton = (Button) view1.findViewById(R.id.okButton);
 
 
+        MobileAds.initialize(BuzzerScoreActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(BuzzerScoreActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = view1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                    }
+                })
+                .build();
+        adLoader.loadAd(new AdRequest.Builder().build());
+
+
         AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -512,6 +544,8 @@ public class BuzzerScoreActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+
+
 
         party_popper.setAnimation(R.raw.party_popper);
         party_popper.playAnimation();
@@ -557,6 +591,24 @@ public class BuzzerScoreActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
+        MobileAds.initialize(BuzzerScoreActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(BuzzerScoreActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
+
 
         LottieAnimationView anim = (LottieAnimationView) viewRemove1.findViewById(R.id.imageIcon);
         anim.setAnimation(R.raw.exit_lobby);
@@ -600,6 +652,7 @@ public class BuzzerScoreActivity extends AppCompatActivity {
                             table_user.child("BUZZER").child("QUESTIONS").child(roomCode).removeValue();
                             table_user.child("BUZZER").child("ANSWERS").child(roomCode).removeValue();
                             table_user.child("BUZZER").child("CHAT").child(roomCode).removeValue();
+                            table_user.child("BUZZER").child("BUZZER_TRACKER").child(roomCode).removeValue();
 
                             intentMain();
 
@@ -662,4 +715,10 @@ public class BuzzerScoreActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try{mAdView.destroy();}catch (Exception e){}
+        Runtime.getRuntime().gc();
+    }
 }

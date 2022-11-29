@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,10 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDisplayInQuizAadapter;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.RoomListAdapter;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerDisplayInQuizHolder;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
 
 import java.util.ArrayList;
 
@@ -36,11 +31,13 @@ public class PlayerDisplayInQuiz {
     DatabaseReference table_user = database.getReference("NEW_APP");
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
-    public PlayerDisplayInQuiz(Context context, ValueEventListener valueEventListener, String roomCode,RecyclerView recyclerView) {
+    int size;
+    public PlayerDisplayInQuiz(Context context, ValueEventListener valueEventListener, String roomCode, RecyclerView recyclerView, int size) {
         this.context = context;
         this.valueEventListener = valueEventListener;
         this.roomCode = roomCode;
         this.recyclerView=recyclerView;
+        this.size=size;
     }
 
     public void start(){
@@ -55,7 +52,7 @@ public class PlayerDisplayInQuiz {
         arrayList=new ArrayList<>();
 
 
-        playerDisplayInQuizAadapter = new PlayerDisplayInQuizAadapter(context,arrayList);
+        playerDisplayInQuizAadapter = new PlayerDisplayInQuizAadapter(context,arrayList,size);
         recyclerView.setAdapter(playerDisplayInQuizAadapter);
 
 

@@ -14,16 +14,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 public class QuizCancelDialog {
 
@@ -38,8 +46,9 @@ public class QuizCancelDialog {
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
     DatabaseReference myRef = database.getReference();
     ValueEventListener lisnerForConnectionStatus,vsRematchListener,isCompletedListener,myConnectionLisner;
+    NativeAd NATIVE_ADS;
 
-    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, ValueEventListener lisnerForConnectionStatus,String oppoUID,ValueEventListener vsRematchListener,ValueEventListener isCompletedListener) {
+    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, ValueEventListener lisnerForConnectionStatus,String oppoUID,ValueEventListener vsRematchListener,ValueEventListener isCompletedListener,NativeAd NATIVE_ADS) {
         this.context = context;
         this.countDownTimer = countDownTimer;
         this.v = v;
@@ -48,9 +57,10 @@ public class QuizCancelDialog {
         this.oppoUID=oppoUID;
         this.vsRematchListener=vsRematchListener;
         this.isCompletedListener=isCompletedListener;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
-    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, ValueEventListener lisnerForConnectionStatus, String oppoUID, ValueEventListener vsRematchListener, ValueEventListener isCompletedListener, ValueEventListener myConnectionLisner) {
+    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, ValueEventListener lisnerForConnectionStatus, String oppoUID, ValueEventListener vsRematchListener, ValueEventListener isCompletedListener, ValueEventListener myConnectionLisner,NativeAd NATIVE_ADS) {
         this.context = context;
         this.countDownTimer = countDownTimer;
         this.v = v;
@@ -60,13 +70,15 @@ public class QuizCancelDialog {
         this.vsRematchListener=vsRematchListener;
         this.isCompletedListener=isCompletedListener;
         this.myConnectionLisner=myConnectionLisner;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
-    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button option1, SongActivity songActivity) {
+    public QuizCancelDialog(Context context, CountDownTimer countDownTimer, Button option1, SongActivity songActivity,NativeAd NATIVE_ADS) {
         this.context = context;
         this.countDownTimer = countDownTimer;
         this.v = option1;
         this.songActivity = songActivity;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
 
@@ -77,6 +89,28 @@ public class QuizCancelDialog {
         builderRemove.setCancelable(false);
         Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
         Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
 
 
 
@@ -125,6 +159,8 @@ public class QuizCancelDialog {
 
                         alertDialog.cancel();
 
+                        try {NATIVE_ADS.destroy();}catch (Exception e){}
+
                         Intent intent=new Intent(context,MainActivity.class);
                         context.startActivity(intent);
                         ((Activity) context).finish();
@@ -139,6 +175,7 @@ public class QuizCancelDialog {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
             }
         });
@@ -156,6 +193,24 @@ public class QuizCancelDialog {
 
 
 
+        MobileAds.initialize(context);
+        AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                        NATIVE_ADS=nativeAd;
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         final AlertDialog alertDialog=builderRemove.create();
@@ -173,6 +228,8 @@ public class QuizCancelDialog {
             @Override
             public void onClick(View view) {
 
+                try {NATIVE_ADS.destroy();}catch (Exception e){}
+
              Intent intent=new Intent(context,MainActivity.class);
              context.startActivity(intent);
              ((Activity) context).finish();
@@ -183,6 +240,7 @@ public class QuizCancelDialog {
         noButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
             }
         });

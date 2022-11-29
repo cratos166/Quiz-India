@@ -28,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -36,7 +35,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -46,6 +48,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,12 +65,10 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LL_Video_Quiz;
-import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.Model.VideoQuestionHolder;
-import com.nbird.multiplayerquiztrivia.Model.questionHolder;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.AnswerUploader;
@@ -76,6 +77,7 @@ import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.PlayerDisplayInQuiz;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class TournamentVideoActivity extends AppCompatActivity {
     TextView questionTextView,scoreBoard,timerText;
@@ -164,17 +166,13 @@ public class TournamentVideoActivity extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_video_quiz);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
 
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
@@ -193,6 +191,20 @@ public class TournamentVideoActivity extends AppCompatActivity {
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentVideoActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_VIDEO);
+            if(num==1){
+                loadAds();
+            }
+        }
 
         if(myPlayerNum==1){
             table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
@@ -253,7 +265,7 @@ public class TournamentVideoActivity extends AppCompatActivity {
         answerUploader=new AnswerUploader(roomCode,myName,myPicURL);
         answerUploader.start();
 
-        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentVideoActivity.this,playerInfoGetterListener,roomCode,recyclerView);
+        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentVideoActivity.this,playerInfoGetterListener,roomCode,recyclerView, listAns.size());
         playerDisplayInQuiz.start();
 
 
@@ -619,10 +631,10 @@ public class TournamentVideoActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
-
+        try{mAdView.destroy();}catch (Exception e){}
         if(counterDownTimerSeeker!=null){ counterDownTimerSeeker.cancel();}
         Runtime.getRuntime().gc();
     }
@@ -645,6 +657,23 @@ public class TournamentVideoActivity extends AppCompatActivity {
         }else {
             textTitle.setText("You really want to quit ?");
         }
+        MobileAds.initialize(TournamentVideoActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(TournamentVideoActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
 
@@ -785,7 +814,7 @@ public class TournamentVideoActivity extends AppCompatActivity {
                 //Last 15 seconds end animation
                 if(minutes==0 && second<=15){
 
-                    timerText.setTextColor(R.color.red);
+                    timerText.setTextColor(Color.parseColor("#FF5E5E"));
 
                     //Continuous zoomIn - zoomOut
                     ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
@@ -810,6 +839,7 @@ public class TournamentVideoActivity extends AppCompatActivity {
 
 
 
+                timerText.setText("00:00");
                 minutes=0;
                 second=0;
 

@@ -21,6 +21,9 @@ public class AppData {
         }
     }
 
+
+
+
     public void setSharedPreferencesString(String stringA,String stringB, Context context,String value){
         final SharedPreferences sharedPreferences = context.getSharedPreferences(stringA, 0);
         final SharedPreferences.Editor editor = sharedPreferences.edit();

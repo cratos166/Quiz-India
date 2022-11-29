@@ -43,6 +43,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,6 +62,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
+import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.VsAudioQuiz;
@@ -139,6 +141,8 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     
     ImageView questionImage;
 
+    NativeAd NATIVE_ADS;
+
     private InterstitialAd mInterstitialAd;
     private void loadAds(){
 
@@ -171,17 +175,13 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
     }
-    
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vs_botaudio_quiz);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         category=getIntent().getIntExtra("category",1);
 
@@ -198,6 +198,24 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         oppoAnimList = new ArrayList<>(12);
         map=new HashMap<>();
         //songStopperAndResumer();
+
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, VsBOTAudioQuiz.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_AUIO);
+            if(num==1){
+                loadAds();
+            }
+
+
+        }
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -599,7 +617,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                 //Last 15 seconds end animation
                 if(minutes==0 && second<=15){
 
-                    clockTextView.setTextColor(R.color.red);
+                    clockTextView.setTextColor(Color.parseColor("#FF5E5E"));
 
                     //Continuous zoomIn - zoomOut
                     ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
@@ -620,7 +638,9 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
             }
             public void onFinish() {
-
+                timerText.setText("00:00");
+                minutes=0;
+                second=0;
                 Toast.makeText(VsBOTAudioQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
                 quizFinishDialog();
 
@@ -869,7 +889,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         if(binaryPosition<10){
             clearMediaPlayer();
             completedFirst=true;
-            waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), timeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum), VsBOTAudioQuiz.this,questionTextView);
+            waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), timeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum), VsBOTAudioQuiz.this,questionTextView,NATIVE_ADS);
             waitingVSInGameDialog.start();
         }else{
 
@@ -907,40 +927,55 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         oppoMap.put("Fifty-Fifty",0);
         oppoMap.put("Flip",0);
         for(int i=0;i<oppoLifelineSum;){
-
-            if(oppoMap.get("Expert")==0){
-                boolean isUse=random.nextBoolean();
-                if(isUse){
-                    oppoMap.put("Expert",1);
-                    i++;
-                    Log.i("Expert","true");
+            if(i<oppoLifelineSum){
+                if(oppoMap.get("Expert")==0){
+                    boolean isUse=random.nextBoolean();
+                    if(isUse){
+                        oppoMap.put("Expert",1);
+                        i++;
+                        Log.i("Expert","true");
+                    }
                 }
             }
 
-            if(oppoMap.get("Audience")==0){
-                boolean isUse=random.nextBoolean();
-                if(isUse){
-                    oppoMap.put("Audience",1);
-                    i++;
-                    Log.i("Audience","true");
+
+
+            if(i<oppoLifelineSum){
+                if(oppoMap.get("Audience")==0){
+                    boolean isUse=random.nextBoolean();
+                    if(isUse){
+                        oppoMap.put("Audience",1);
+                        i++;
+                        Log.i("Audience","true");
+                    }
                 }
             }
 
-            if(oppoMap.get("Fifty-Fifty")==0){
-                boolean isUse=random.nextBoolean();
-                if(isUse){
-                    oppoMap.put("Fifty-Fifty",1);
-                    i++;
-                    Log.i("Fifty-Fifty","true");
+
+
+
+            if(i<oppoLifelineSum){
+                if(oppoMap.get("Fifty-Fifty")==0){
+                    boolean isUse=random.nextBoolean();
+                    if(isUse){
+                        oppoMap.put("Fifty-Fifty",1);
+                        i++;
+                        Log.i("Fifty-Fifty","true");
+                    }
                 }
             }
 
-            if(oppoMap.get("Flip")==0){
-                boolean isUse=random.nextBoolean();
-                if(isUse){
-                    oppoMap.put("Flip",1);
-                    i++;
-                    Log.i("Flip","true");
+
+
+
+            if(i<oppoLifelineSum){
+                if(oppoMap.get("Flip")==0){
+                    boolean isUse=random.nextBoolean();
+                    if(isUse){
+                        oppoMap.put("Flip",1);
+                        i++;
+                        Log.i("Flip","true");
+                    }
                 }
             }
 
@@ -1018,13 +1053,22 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTAudioQuiz.this,countDownTimer,option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsBOTAudioQuiz.this,countDownTimer,option1,songActivity,NATIVE_ADS);
         quizCancelDialog.startForSinglePlayer();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        try{
+            NATIVE_ADS.destroy();
+        }catch (Exception e){
+
+        }
+        try{mAdView.destroy();}catch (Exception e){}
+
+        try{mInterstitialAd=null;}catch (Exception e){}
 
         try{ songActivity.songStop(); }catch (Exception e){ e.printStackTrace(); }
 
@@ -1065,7 +1109,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(8) + 3};
+        final int[] jk = {r.nextInt(8) + 5};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -1093,7 +1137,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                     animManupulation(ans,binaryPosition);
                     marker[0] =false;
 
-                    jk[0] =r.nextInt(13)+5;
+                    jk[0] =r.nextInt(8)+5;
 
                     if(binaryPosition<10){
 

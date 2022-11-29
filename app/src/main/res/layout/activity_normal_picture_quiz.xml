@@ -9,6 +9,20 @@
     android:orientation="vertical"
     tools:context=".QUIZ.NormalSingleQuiz">
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        android:visibility="gone"
+        app:adUnitId="@string/bannerId"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backlitemodeanim"
         android:layout_width="match_parent"
@@ -39,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="@+id/cardView2"
         app:layout_constraintStart_toStartOf="@+id/cardView3"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <LinearLayout
             android:id="@+id/Speaker"
@@ -62,22 +76,20 @@
     </androidx.cardview.widget.CardView>
 
 
-
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:clickable="true"
         android:elevation="10dp"
-        android:scaleY="0.8"
-        android:scaleX="0.8"
         android:foreground="?selectableItemBackground"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
         app:cardCornerRadius="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,10 +104,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:elevation="10dp"
-                android:scaleX="0.9"
-                android:scaleY="0.9"
                 android:fontFamily="@font/ubuntu"
                 android:gravity="right"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
                 android:text=""
                 android:textColor="@color/text_head"
                 android:textSize="22dp"
@@ -122,7 +134,7 @@
         android:scaleY="0.8"
         app:cardCornerRadius="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <LinearLayout
             android:id="@+id/TimerLL"
@@ -693,18 +705,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                app:adSize="SMART_BANNER"
-                app:adUnitId="@string/bannerId"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
         </LinearLayout>
 
     </ScrollView>

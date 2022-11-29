@@ -25,12 +25,19 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
@@ -41,6 +48,7 @@ import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,10 +78,11 @@ public class ResultHandling {
 
     //Single Mode Normal Quiz : 1
 
+    NativeAd NATIVE_ADS;
     public ResultHandling(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList,
                           int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt,
                           int higestScoreInt, int scoreInt, CardView view, String myNameString,
-                          String myPicURL, int category, int IntentInt, int timeTakenInt) {
+                          String myPicURL, int category, int IntentInt, int timeTakenInt,NativeAd NATIVE_ADS) {
         this.context = context;
         this.llMap = llMap;
         this.animList = animList;
@@ -89,6 +98,7 @@ public class ResultHandling {
         this.category=category;
         this.IntentInt=IntentInt;
         this.timeTakenInt=timeTakenInt;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
 
@@ -107,6 +117,30 @@ public class ResultHandling {
         View viewRemove1= LayoutInflater.from(context).inflate(R.layout.dialog_result_single_player,(ConstraintLayout) view.findViewById(R.id.layoutDialogContainer),false);
         builderRemove.setView(viewRemove1);
         builderRemove.setCancelable(false);
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
 
 
         TextView correctAnswer=(TextView) viewRemove1.findViewById(R.id.correctAnswer);
@@ -192,15 +226,20 @@ public class ResultHandling {
 
 
         for(int i=0;i<animationList.size();i++){
-            if(animList.get(i)){
-                animationList.get(i).setAnimation(R.raw.tickanim);
-                animationList.get(i).playAnimation();
-                animationList.get(i).loop(false);
-            }else{
-                animationList.get(i).setAnimation(R.raw.wronganim);
-                animationList.get(i).playAnimation();
-                animationList.get(i).loop(false);
+            try{
+                if(animList.get(i)){
+                    animationList.get(i).setAnimation(R.raw.tickanim);
+                    animationList.get(i).playAnimation();
+                    animationList.get(i).loop(false);
+                }else{
+                    animationList.get(i).setAnimation(R.raw.wronganim);
+                    animationList.get(i).playAnimation();
+                    animationList.get(i).loop(false);
+                }
+            }catch (Exception e){
+
             }
+
 
         }
 
@@ -218,6 +257,7 @@ public class ResultHandling {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
                 Intent i=new Intent(context,MainActivity.class);
                 context.startActivity(i);
@@ -231,6 +271,7 @@ public class ResultHandling {
         changeCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 alertDialog.dismiss();
                 DialogCategory dialogCategory=new DialogCategory(context,view);
                 dialogCategory.start();
@@ -241,6 +282,7 @@ public class ResultHandling {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 switch (IntentInt){
                     case 1:
                         Intent intent = new Intent(context, NormalSingleQuiz.class);

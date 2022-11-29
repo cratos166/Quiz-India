@@ -7,22 +7,34 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.BuzzerPictureActivity;
+import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
+
+import java.util.Random;
 
 public class AboutUsActivity extends AppCompatActivity {
 
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_us);
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        AppData appData=new AppData();
+        boolean ads=appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, AboutUsActivity.this);
+        if(ads){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
 
         TextView emailKartik=(TextView) findViewById(R.id.emailKartik);
         TextView instaKartik=(TextView) findViewById(R.id.instaKartik);
@@ -98,4 +110,21 @@ public class AboutUsActivity extends AppCompatActivity {
 
 
     }
+
+    public void onBackPressed() {
+        Intent intent=new Intent(AboutUsActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        try{mAdView.destroy();}catch (Exception e){}
+        Runtime.getRuntime().gc();
+
+    }
+
 }

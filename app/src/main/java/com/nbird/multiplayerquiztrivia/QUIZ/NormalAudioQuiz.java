@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Dialog;
@@ -46,6 +49,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +57,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
 import com.nbird.multiplayerquiztrivia.Dialog.ResultHandling;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
@@ -65,8 +70,8 @@ import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
-import com.nbird.multiplayerquiztrivia.Timers.NormalAudQuizTimer;
-import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
+
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,7 +89,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
     LottieAnimationView anim11,anim12,anim13,anim14,anim15,anim16,anim17,anim18,anim19,anim20;
     ImageView myPic, questionImage;
     Dialog loadingDialog;
-    CountDownTimer countDownTimer,c1;
+    CountDownTimer countDownTimer,c1,c;
 
     FirebaseDatabase database=FirebaseDatabase.getInstance();
     DatabaseReference myRef=database.getReference();
@@ -100,12 +105,11 @@ public class NormalAudioQuiz extends AppCompatActivity {
     AppData appData;
     SongActivity songActivity;
     LLManupulator llManupulator;
-    NormalAudQuizTimer timer;
     LifeLine lifeLine;
     SupportAlertDialog supportAlertDialog;
     TotalScore totalScore;
     HighestScore highestScore;
-    PicLoader picLoader;
+
 
 
     CardView playOrPauseButton;
@@ -113,6 +117,13 @@ public class NormalAudioQuiz extends AppCompatActivity {
     SeekBar seekBar;
     LinearLayout linearFun1;
     MediaPlayer music;
+
+    NativeAd NATIVE_ADS;
+
+    int minutes=2;
+    int second=59;
+    String minutestext;
+    String secondtext;
 
 
     private InterstitialAd mInterstitialAd;
@@ -147,24 +158,35 @@ public class NormalAudioQuiz extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_normal_audio_quiz);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
 
         list=new ArrayList<>();
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
 
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, NormalAudioQuiz.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
 
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_AUIO);
+            if(num==1){
+                loadAds();
+            }
+
+
+        }
 
         questionTextView=findViewById(R.id.question);
         scoreBoard=findViewById(R.id.questionNumber);
@@ -237,14 +259,34 @@ public class NormalAudioQuiz extends AppCompatActivity {
         supportAlertDialog=new SupportAlertDialog(loadingDialog,NormalAudioQuiz.this);
         supportAlertDialog.showLoadingDialog();
 
-        timer=new NormalAudQuizTimer(countDownTimer,60000*3,1000,NormalAudioQuiz.this,timerText,clockCardView);
 
 
         lifeLine();
         questionSelector();
 
-        picLoader=new PicLoader(timer,questionImage,supportAlertDialog);
-        picLoader.startAudio();
+        c=new CountDownTimer(1000*15,1000) {
+            @Override
+            public void onTick(long l) {
+                if(questionImage.getDrawable() != null){
+                    try {
+                        if(c!=null){
+                            c.cancel();
+                        }
+                        timer();
+                        supportAlertDialog.dismissLoadingDialog();
+                    }catch (Exception e){
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                timer();
+                supportAlertDialog.dismissLoadingDialog();
+            }
+        }.start();
 
 
 
@@ -257,6 +299,74 @@ public class NormalAudioQuiz extends AppCompatActivity {
 
 
 
+    }
+
+
+    public void timer(){
+        countDownTimer=new CountDownTimer(180*1000, 1000) {
+
+
+            @SuppressLint("ResourceAsColor")
+            public void onTick(long millisUntilFinished) {
+
+
+                if(second==0){
+                    minutes--;
+                    minutestext="0"+String.valueOf(minutes);
+                    second=59;
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+
+                }else{
+                    minutestext="0"+String.valueOf(minutes);
+                    if(second<10){
+                        secondtext="0"+String.valueOf(second);
+                    }else{
+                        secondtext=String.valueOf(second);
+                    }
+                    timerText.setText(minutestext+":"+secondtext+" ");
+                    second--;
+                }
+
+                //Last 15 seconds end animation
+                if(minutes==0 && second<=15){
+
+                    timerText.setTextColor(Color.parseColor("#FF5E5E"));
+
+                    //Continuous zoomIn - zoomOut
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(clockCardView, "scaleY", 0.9f, 1f);
+
+                    scaleX.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleX.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    scaleY.setRepeatCount(ObjectAnimator.INFINITE);
+                    scaleY.setRepeatMode(ObjectAnimator.REVERSE);
+
+                    AnimatorSet scaleAnim = new AnimatorSet();
+                    scaleAnim.setDuration(500);
+                    scaleAnim.play(scaleX).with(scaleY);
+
+                    scaleAnim.start();
+                }
+
+            }
+            public void onFinish() {
+                timerText.setText("00:00");
+                minutes=0;
+                second=0;
+
+                Toast.makeText(NormalAudioQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
+                quizFinishDialog();
+
+
+            }
+
+        }.start();
     }
 
     public void lifeLine(){
@@ -523,13 +633,13 @@ public class NormalAudioQuiz extends AppCompatActivity {
     public void quizFinishDialog(){
 
         try{
-            timer.getCountDownTimer().cancel();
+            countDownTimer.cancel();
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        int minutesLeft=timer.getMinutes();
-        int secondsLeft=timer.getSecond();
+        int minutesLeft=minutes;
+        int secondsLeft=second;
 
         String timeTakenString;
         if((60-secondsLeft)>=10){
@@ -544,7 +654,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
 
         int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
 
-        ScoreGenerator scoreGenerator=new ScoreGenerator(timer.getMinutes(),timer.getSecond(),lifelineSum,score);
+        ScoreGenerator scoreGenerator=new ScoreGenerator(minutes,second,lifelineSum,score);
 
         totalScore.setTotalScore(scoreGenerator.start()+totalScore.getTotalScore());
         totalScore.setSingleModeScore();
@@ -579,7 +689,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
                     super.onAdFailedToShowFullScreenContent(adError);
                     ResultHandling resultHandling = new ResultHandling(NormalAudioQuiz.this, map, animList, score, timeTakenString,
                             lifelineSum, totalScore.getTotalScore(), highestScore.getHighestScore(), scoreGenerator.start(), audienceLL, myName, myPicURL,
-                            category, 3, timeTakenInt);
+                            category, 3, timeTakenInt,NATIVE_ADS);
 
                     resultHandling.start();
 
@@ -590,7 +700,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
                     super.onAdDismissedFullScreenContent();
                     ResultHandling resultHandling = new ResultHandling(NormalAudioQuiz.this, map, animList, score, timeTakenString,
                             lifelineSum, totalScore.getTotalScore(), highestScore.getHighestScore(), scoreGenerator.start(), audienceLL, myName, myPicURL,
-                            category, 3, timeTakenInt);
+                            category, 3, timeTakenInt,NATIVE_ADS);
 
                     resultHandling.start();
 
@@ -601,7 +711,7 @@ public class NormalAudioQuiz extends AppCompatActivity {
         }else{
             ResultHandling resultHandling = new ResultHandling(NormalAudioQuiz.this, map, animList, score, timeTakenString,
                     lifelineSum, totalScore.getTotalScore(), highestScore.getHighestScore(), scoreGenerator.start(), audienceLL, myName, myPicURL,
-                    category, 3, timeTakenInt);
+                    category, 3, timeTakenInt,NATIVE_ADS);
 
             resultHandling.start();
         }
@@ -792,23 +902,25 @@ public class NormalAudioQuiz extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalAudioQuiz.this,timer.getCountDownTimer(),option1,songActivity);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(NormalAudioQuiz.this,countDownTimer,option1,songActivity,NATIVE_ADS);
         quizCancelDialog.startForSinglePlayer();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
-
+        try{mAdView.destroy();}catch (Exception e){}
+        if(c!=null){ c.cancel();}
 
         if(c1!=null){
             c1.cancel();
         }
 
 
+        try{NATIVE_ADS.destroy();}catch (Exception e){}
 
         Runtime.getRuntime().gc();
     }

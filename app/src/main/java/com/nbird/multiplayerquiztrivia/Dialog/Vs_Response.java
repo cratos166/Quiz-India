@@ -17,6 +17,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,12 +31,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.QUIZ.VsAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.VsNormalQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.VsPictureQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.VsVideoQuiz;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -52,6 +60,8 @@ public class Vs_Response {
     String oppoUID, oppoNameString, oppoImgStr;
 
     ValueEventListener questionGetterListner,lisnerForConnectionStatus,vsRematchListener,isCompletedListener;
+
+    NativeAd NATIVE_ADS;
 
     public Vs_Response(Context context, CountDownTimer countDownTimer, Button v, SongActivity songActivity, int animInt, int mode, String title, String oppoUID, String oppoNameString, String oppoImgStr,ValueEventListener lisnerForConnectionStatus,ValueEventListener vsRematchListener,ValueEventListener isCompletedListener) {
         this.context = context;
@@ -89,6 +99,32 @@ public class Vs_Response {
 
         yesButton.setText("Accept");
         noButton.setText("Reject");
+
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
+
 
         final AlertDialog alertDialog=builderRemove.create();
         if(alertDialog.getWindow()!=null){
@@ -158,6 +194,7 @@ public class Vs_Response {
 
                                             if(countDownTimer!=null){ countDownTimer.cancel();}
 
+                                            try {NATIVE_ADS.destroy();}catch (Exception e){}
 
                                             switch (mode) {
                                                 case 2:
@@ -247,6 +284,7 @@ public class Vs_Response {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(context,"Response Send",Toast.LENGTH_SHORT).show();
+                        try {NATIVE_ADS.destroy();}catch (Exception e){}
                         noButton.setEnabled(true);
                         yesButton.setEnabled(true);
                         try{
@@ -257,8 +295,6 @@ public class Vs_Response {
 
                     }
                 });
-
-
 
             }
         });

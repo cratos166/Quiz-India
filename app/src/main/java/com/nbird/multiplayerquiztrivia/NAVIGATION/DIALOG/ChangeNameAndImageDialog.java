@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -41,6 +43,9 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class ChangeNameAndImageDialog {
 
@@ -333,8 +338,8 @@ public class ChangeNameAndImageDialog {
         if (name1.isEmpty()) {
             usernameEditText.setError("Field cannot be empty");
             return false;
-        } else if (name1.length() > 30) {
-            usernameEditText.setError("Username should be less than 30 characters");
+        } else if (name1.length() > 10) {
+            usernameEditText.setError("Username should be less than 10 characters");
             return false;
         } else
             usernameEditText.setError(null);
@@ -399,6 +404,7 @@ public class ChangeNameAndImageDialog {
         });
         builder.show();
     }
+
 
 
     private void uploadImage() {

@@ -39,7 +39,10 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -49,6 +52,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,14 +72,12 @@ import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
-import com.nbird.multiplayerquiztrivia.QUIZ.NormalPictureQuiz;
+import com.nbird.multiplayerquiztrivia.QUIZ.VsPictureQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.AnswerUploader;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.PlayerDisplayInQuiz;
-import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,11 +134,7 @@ public class TournamentPictureActivity extends AppCompatActivity {
     ImageView questionImage;
 
 
-    CardView playOrPauseButton;
-    LottieAnimationView backwardanim,forwardanim;
-    SeekBar seekBar;
-    LinearLayout linearFun1;
-    MediaPlayer music;
+
 
 
     private InterstitialAd mInterstitialAd;
@@ -171,18 +169,13 @@ public class TournamentPictureActivity extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_picture);
 
-        loadAds();
 
-
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
         roomCode=getIntent().getStringExtra("roomCode");
@@ -194,6 +187,21 @@ public class TournamentPictureActivity extends AppCompatActivity {
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentPictureActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_PICTURE);
+            if(num==1){
+                loadAds();
+            }
+        }
 
         if(myPlayerNum==1){
             table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
@@ -221,11 +229,7 @@ public class TournamentPictureActivity extends AppCompatActivity {
         recyclerView=(RecyclerView) findViewById(R.id.recyclerView) ;
         questionImage=(ImageView) findViewById(R.id.questionImage);
 
-        linearFun1=(LinearLayout) findViewById(R.id.linearFun1);
-        playOrPauseButton=(CardView) findViewById(R.id.mainButton);
-        seekBar=(SeekBar) findViewById(R.id.determinateBar);
-        backwardanim=(LottieAnimationView) findViewById(R.id.backwardanim);
-        forwardanim=(LottieAnimationView) findViewById(R.id.forwardanim);
+
 
 
         clockCardView = (CardView) findViewById(R.id.cardView3);
@@ -235,27 +239,6 @@ public class TournamentPictureActivity extends AppCompatActivity {
 
 
         llManupulator=new LLManupulator(audienceLL,expertAdviceLL,fiftyfiftyLL,swapTheQuestionLL);
-
-       // timer=new QuizTimer(countDownTimer,60000*3,1000, TournamentPictureActivity.this,timerText,clockCardView);
-
-        animationListner();
-        seekerManupulator();
-
-
-        c1=new CountDownTimer(3*60*1000,1000){
-            @Override
-            public void onTick(long millisUntilFinished) {
-                try {
-                    seekBar.setProgress(music.getCurrentPosition());
-                }catch (Exception e){
-
-                }
-            }
-            @Override
-            public void onFinish() {
-
-            }
-        }.start();
 
 
         supportAlertDialog=new SupportAlertDialog(loadingDialog,TournamentPictureActivity.this);
@@ -301,7 +284,7 @@ public class TournamentPictureActivity extends AppCompatActivity {
         answerUploader=new AnswerUploader(roomCode,myName,myPicURL);
         answerUploader.start();
 
-        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentPictureActivity.this,playerInfoGetterListener,roomCode,recyclerView);
+        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentPictureActivity.this,playerInfoGetterListener,roomCode,recyclerView, listAns.size());
         playerDisplayInQuiz.start();
         
         
@@ -344,10 +327,12 @@ public class TournamentPictureActivity extends AppCompatActivity {
 
 
     public void fireBaseData2 ( int setNumber){
-        myRef.child("SongQuizJson").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
+        Log.i("SET NUMBER",String.valueOf(setNumber));
+        myRef.child("PictureQuizMain").child(String.valueOf(setNumber)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.add(snapshot.getValue(questionHolder.class));
+
                 try{
                     Glide.with(getBaseContext())
                             .load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).error((Drawable) Glide.with(getBaseContext()).load(list.get(num).getQuestionPicture()).preload(20,10)).preload(20,10)).preload(20,10))
@@ -421,16 +406,16 @@ public class TournamentPictureActivity extends AppCompatActivity {
                     String option="";
                     if(count==0){
 
-                        String linkHolder=list.get(position).getImageURL();
+                        String linkHolder=list.get(position).getQuestionPicture();
+                        try{
+                            Glide.with(getBaseContext())
+                                    .load(linkHolder)
+                                    .error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder).error(Glide.with(getBaseContext()).load(linkHolder))))
+                                    .into(questionImage);
+                        }catch (Exception e){
 
+                        }
 
-                        clearMediaPlayer();
-                        songURLDownload(list.get(position).getSongURL());
-
-
-                        Glide.with(getBaseContext()).load(linkHolder).apply(RequestOptions
-                                        .bitmapTransform(new RoundedCorners(14)))
-                                .into(questionImage);
 
                         option=list.get(position).getOption1();
                         option1.setTextColor(Color.parseColor("#DEE7FF"));
@@ -705,7 +690,8 @@ public class TournamentPictureActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        try{mAdView.destroy();}catch (Exception e){}
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
         if(c!=null){ c.cancel();}
@@ -732,6 +718,23 @@ public class TournamentPictureActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
+        MobileAds.initialize(TournamentPictureActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(TournamentPictureActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
@@ -871,7 +874,7 @@ public class TournamentPictureActivity extends AppCompatActivity {
                 //Last 15 seconds end animation
                 if(minutes==0 && second<=15){
 
-                    timerText.setTextColor(R.color.red);
+                    timerText.setTextColor(Color.parseColor("#FF5E5E"));
 
                     //Continuous zoomIn - zoomOut
                     ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
@@ -896,6 +899,7 @@ public class TournamentPictureActivity extends AppCompatActivity {
 
 
 
+                timerText.setText("00:00");
                 minutes=0;
                 second=0;
 
@@ -908,235 +912,10 @@ public class TournamentPictureActivity extends AppCompatActivity {
         }.start();
     }
 
-    public void animationListner(){
-        playOrPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(statusFinder==1){
-                    statusFinder=0;
-                    linearFun1.setBackgroundResource(R.drawable.play_button);
-                    pauseMusic();
-                }else{
-                    statusFinder=1;
-                    linearFun1.setBackgroundResource(R.drawable.pause_button);
-                    startMusic();
-                }
-            }
-        });
-
-        backwardanim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int i=music.getCurrentPosition();
-                if(i<=5000){
-                    music.seekTo(0);
-                    seekBar.setProgress(0);
-
-                }else{
-                    int p=i-5000;
-                    music.seekTo(p);
-                    seekBar.setProgress(p);
-                }
-                backwardanim.setAnimation(R.raw.rewind_anim);
-                backwardanim.playAnimation();
-                backwardanim.loop(false);
-
-            }
-        });
-
-        forwardanim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int i=music.getCurrentPosition();
-                try{
-                    int p=i+5000;
-                    music.seekTo(p);
-                    seekBar.setProgress(p);
-                }catch (Exception e){
-                    music.seekTo(music.getDuration());
-                    seekBar.setProgress(music.getDuration());
-                    music.pause();
-                }
-                forwardanim.setAnimation(R.raw.forward_anim);
-                forwardanim.playAnimation();
-                forwardanim.loop(false);
-            }
-        });
-    }
-
-
-    public void seekerManupulator(){
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-                // seekBarHint.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                // seekBarHint.setVisibility(View.VISIBLE);
 
 
 
-            }
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-
-                if (music != null && music.isPlaying()) {
-                    music.seekTo(seekBar.getProgress());
-                    music.start();
-                }
-            }
-        });
-    }
-    private void clearMediaPlayer() {
-        try {
-            music.stop();
-            music.release();
-            music = null;
-        }catch (Exception e){
-
-        }
-
-    }
-
-    public void pauseMusic(){
-        try{
-            music.pause();
-        }catch (Exception e){
-
-        }
-
-    }
-
-    public void startMusic(){
-
-        try{
-            music.start();
-        }catch (Exception e){
-
-        }
-
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(myProcess);
-        Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-        if (isInBackground) {
-            music.pause();
-        } else {
-            try{
-                if (!music.isPlaying()) {
-                    music.start();
-                    music.setVolume(0.4f,0.4f);
-                }
-            }catch (Exception e){
-
-            }
-
-        }
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try{
-            music.pause();
-        }catch (Exception e){
-
-        }
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(myProcess);
-        Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
-        if (isInBackground) {
-
-            try{
-                music.pause();
-            }catch (Exception e){
-
-            }
-        } else {
-            try{
-                if (!music.isPlaying()) {
-                    music.start();
-                    music.setVolume(0.4f,0.4f);
-                }
-            }catch (Exception e){
-
-            }
-
-        }
-    }
-
-
-    private  class DownloadData extends AsyncTask<String,Void,String> {
-        private static final String TAG = "DownloadData";
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            supportAlertDialog.dismissLoadingDialog();
-
-            try{
-                DownloadData.this.cancel(true);
-            }catch (Exception e){
-
-            }
-
-
-            return;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            try {
-                music.setDataSource(strings[0]);
-            } catch (IOException e) {
-
-            }
-            music.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    music.start();
-                    seekBar.setMax(music.getDuration());
-                    music.setLooping(true);
-
-                }
-            });
-            music.prepareAsync();
-            return null;
-        }
-    }
-
-    public void songURLDownload(String musicUrl){
-
-        music = new MediaPlayer();
-
-        try{
-            DownloadData downloadData=new DownloadData();
-            downloadData.execute(musicUrl);
-        }catch (Exception e) {
-
-        }
-
-    }
 
 
 }

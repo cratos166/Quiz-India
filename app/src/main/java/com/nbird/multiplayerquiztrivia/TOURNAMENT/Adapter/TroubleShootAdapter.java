@@ -23,30 +23,21 @@ public class TroubleShootAdapter extends PagerAdapter {
 
     //Array
     public int[] slide_images={
-            R.raw.slide1,
-            R.raw.slide2,
-            R.raw.slide3,
+            R.raw.ts1,
+            R.raw.ts2,
+            R.raw.ts3,
     };
 
     public String[] slide_Headings={
-      "Experience Quizing Like Never Before! ",
-      "KBC - Custom Quiz - Picture Quiz",
-      "Play more To Achieve Ranks! "
+      "Anti-Cheat",
+      "Duplicate player details",
+      "Facing other issues? "
     };
 
     public String[] slide_descs={
-      "Compete with players across the world. \n" +
-              "1 vs 1 - Tournaments - Single player",
-      "Play the legendary KBC... \n" +
-              "Test your visual skills with picture mode and \n"+
-              "Do your friends really know you? \n" +
-              "Check out the personal custom quiz. \n" +
-              "Create Share Enjoy! ",
-      "* Top the Leadership boards\n" +
-              "* Track your progress and achievements\n" +
-              "\n" +
-              "Welcome to the best way to\n" +
-              "Learn, Compete and Have Fun!!!",
+      "- Using App In Background for long will result in automatic kick-outs",
+      "- Relax, it can be caused due to poor network. Will be solved later on in quiz itself or you can rejoin the lobby. \n\n" + "- Restarting app can solve Sluggishness (if any)\n ",
+      "- Check your Network Connection\n\n" + "- Re-creating Or Re-joining lobby might be a possible solution.",
     };
     @Override
     public int getCount() {
@@ -77,9 +68,9 @@ public class TroubleShootAdapter extends PagerAdapter {
 
         switch (position){
             case 1:
-                animation.setScaleY(0.85f);animation.setScaleX(0.85f);break;
+                animation.setScaleY(1.5f);animation.setScaleX(1.5f);break;
             case 2:
-                animation.setScaleY(0.75f);animation.setScaleX(0.75f);break;
+                animation.setScaleY(1.25f);animation.setScaleX(1.25f);break;
         }
 
 

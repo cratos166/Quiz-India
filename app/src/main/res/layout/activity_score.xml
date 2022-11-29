@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        app:adSize="SMART_BANNER"
+        app:adSize="BANNER"
+        android:visibility="gone"
         app:adUnitId="@string/bannerId"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/backlitemodeanim"
@@ -49,18 +49,18 @@
         android:elevation="-20dp"
         app:lottie_speed="1" />
 
-
     <LinearLayout
         android:id="@+id/linear123"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/border_theme_less_radius"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/adView">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/anim_official_name"
@@ -78,35 +78,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical"
-            android:padding="7dp"
-            android:scaleX="0.95"
-            android:scaleY="0.95">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/ubuntu_bold"
-                android:text="Waiting for other players to complete the quiz."
-                android:textColor="@color/text_head"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/backlitemodeanim" />
-
+            >
             <TextView
                 android:id="@+id/dis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu"
-                android:text=""
-                android:textColor="@color/text_dis"
-                android:textSize="10dp"
+                android:text="Waiting for other players to complete the"
+                android:textColor="@color/text_head"
+                android:textSize="13dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/backlitemodeanim" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu"
+                android:layout_marginTop="2dp"
+                android:text="Waiting for other players to complete the quiz."
+                android:textColor="@color/text_dis"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/backlitemodeanim" />
+
 
         </LinearLayout>
 
@@ -135,7 +133,7 @@
         android:layout_marginEnd="10dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintBottom_toBottomOf="@+id/backlitemodeanim"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -149,7 +147,7 @@
             android:background="@drawable/next_button_3"
             android:fontFamily="@font/ubuntu_bold"
             android:text="QUIT"
-            android:textColor="@color/text_dis"
+            android:textColor="@color/text_head"
             android:textSize="10sp" />
 
 
@@ -176,7 +174,7 @@
             android:background="@drawable/next_button"
             android:fontFamily="@font/ubuntu_bold"
             android:text="REMATCH"
-            android:textColor="@color/level_2"
+            android:textColor="@color/level_3"
             android:textSize="10sp" />
 
     </LinearLayout>

@@ -33,14 +33,17 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,6 +53,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTPictureQuiz;
 import com.nbird.multiplayerquiztrivia.Dialog.DialogModel_1;
 import com.nbird.multiplayerquiztrivia.Dialog.QuizCancelDialog;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
@@ -67,12 +71,12 @@ import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
-import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
-import com.nbird.multiplayerquiztrivia.Timers.QuizTimer;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class VsPictureQuiz extends AppCompatActivity {
 
@@ -131,6 +135,8 @@ public class VsPictureQuiz extends AppCompatActivity {
     boolean rematchButtonEnable=true;
     DataExchange dataExchange;
 
+    NativeAd NATIVE_ADS;
+
 
     private InterstitialAd mInterstitialAd;
     private void loadAds(){
@@ -164,23 +170,34 @@ public class VsPictureQuiz extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vs_picture_quiz);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         list=new ArrayList<>();
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
         ansArray = new ArrayList<>();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, VsPictureQuiz.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_PICTURE);
+            if(num==1){
+                loadAds();
+            }
+        }
 
         answerUploaderAndReceiver=new AnswerUploaderAndReceiver();
 
@@ -341,7 +358,7 @@ public class VsPictureQuiz extends AppCompatActivity {
                     int value=snapshot.getValue(Integer.class);
 
                     if(value==0){
-                        dialogModel_1=new DialogModel_1(VsPictureQuiz.this,"Opponent is disconnected from the server.","Possible reasons may be Slow Internet or your opponent would have left the game.\nTry to find another opponent.",R.raw.userremoved,"Okay",questionTextView,isCompletedListener,vsRematchListener,lisnerForConnectionStatus,answerUploaderAndReceiver,oppoUID);
+                        dialogModel_1=new DialogModel_1(VsPictureQuiz.this,"Opponent is disconnected from the server.","Possible reasons may be Slow Internet or your opponent would have left the game.\nTry to find another opponent.",R.raw.userremoved,"Okay",questionTextView,isCompletedListener,vsRematchListener,lisnerForConnectionStatus,answerUploaderAndReceiver,oppoUID,NATIVE_ADS);
                         dialogModel_1.displayDialog();
                         try{
                             table_user.child("VS_CONNECTION").child(oppoUID).child("myStatus").removeEventListener(lisnerForConnectionStatus);
@@ -547,7 +564,7 @@ public class VsPictureQuiz extends AppCompatActivity {
                         position++;
                         llManupulator.True();
 
-                        if (swapnum == 0) { if (position == 10) { quizFinishDialog(0);return; } } else { if (position == 11) { quizFinishDialog(0);return; } }
+                        if (swapnum == 0) { if (position == 10) { adShow(0);return; } } else { if (position == 11) { adShow(0);return; } }
                         count = 0;
                         playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
                     }
@@ -743,7 +760,7 @@ public class VsPictureQuiz extends AppCompatActivity {
                     //Last 15 seconds end animation
                     if(minutes==0 && second<=15){
 
-                        timerText.setTextColor(R.color.red);
+                        timerText.setTextColor(Color.parseColor("#FF5E5E"));
 
                         //Continuous zoomIn - zoomOut
                         ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
@@ -765,10 +782,12 @@ public class VsPictureQuiz extends AppCompatActivity {
                 }
                 public void onFinish() {
 
-
+                    timerText.setText("00:00");
+                    minutes=0;
+                    second=0;
 
                     Toast.makeText(VsPictureQuiz.this, "Time Over", Toast.LENGTH_SHORT).show();
-                    quizFinishDialog(1);
+                    adShow(1);
 
 
                 }
@@ -969,7 +988,7 @@ public class VsPictureQuiz extends AppCompatActivity {
                                 dataExchange.start();
                             }else{
 
-                                WaitingVSInGameDialog waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), finalTimeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum),VsPictureQuiz.this,questionTextView);
+                                WaitingVSInGameDialog waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), finalTimeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum),VsPictureQuiz.this,questionTextView,NATIVE_ADS);
                                 isCompletedListener=new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1078,17 +1097,17 @@ public class VsPictureQuiz extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsPictureQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener);
+        QuizCancelDialog quizCancelDialog=new QuizCancelDialog(VsPictureQuiz.this,countDownTimer,option1,songActivity,lisnerForConnectionStatus,oppoUID,vsRematchListener,isCompletedListener,NATIVE_ADS);
         quizCancelDialog.startVsMode();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
-
+        try{mAdView.destroy();}catch (Exception e){}
 
         try{table_user.child("VS_PLAY").child("IsDone").child(oppoUID).removeEventListener(isCompletedListener);}catch (Exception e){}
 
@@ -1098,7 +1117,38 @@ public class VsPictureQuiz extends AppCompatActivity {
 
         answerUploaderAndReceiver.removeAnimListener(oppoUID);
 
+        try{NATIVE_ADS.destroy();}catch (Exception e){}
+
         Runtime.getRuntime().gc();
     }
+
+    public void adShow(int i){
+
+        if(mInterstitialAd!=null) {
+            // Step 1: Display the interstitial
+            mInterstitialAd.show(VsPictureQuiz.this);
+            // Step 2: Attach an AdListener
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    super.onAdFailedToShowFullScreenContent(adError);
+                    quizFinishDialog(i);
+
+                }
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+                    quizFinishDialog(i);
+
+                }
+            });
+
+
+        }else{
+            quizFinishDialog(i);
+        }
+    }
+
 
 }

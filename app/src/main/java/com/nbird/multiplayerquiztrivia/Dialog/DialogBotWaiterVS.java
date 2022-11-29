@@ -28,6 +28,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -104,6 +110,7 @@ public class DialogBotWaiterVS {
     String oppoURL="";
 
 
+    NativeAd NATIVE_ADS;
     public void start (Context context, View view, int quizMode){
         this.context=context;
 
@@ -155,6 +162,31 @@ public class DialogBotWaiterVS {
 
         roomCodeLinear.setVisibility(View.GONE);
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
+
 
         final AlertDialog alertDialog=builder.create();
         if(alertDialog.getWindow()!=null){
@@ -184,6 +216,7 @@ public class DialogBotWaiterVS {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 try{countDownTimerIntent.cancel();}catch (Exception e){}
                 try{countDownTimerMain.cancel();}catch (Exception e){}
                 try{alertDialog.dismiss();}catch (Exception e){}
@@ -232,7 +265,7 @@ public class DialogBotWaiterVS {
 
                     @Override
                     public void onFinish() {
-
+                        try{NATIVE_ADS.destroy();}catch (Exception e){}
                         if(quizMode==1){
                             try{
                                 alertDialog.dismiss();
@@ -309,7 +342,8 @@ public class DialogBotWaiterVS {
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
                     .into(oppoImage);
 
-        }else if(tt==13){
+        }
+        else if(tt==13){
 
 
             oppoURL= "https://i.pravatar.cc/100";
@@ -318,7 +352,8 @@ public class DialogBotWaiterVS {
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(10)))
                     .into(oppoImage);
 
-        }else{
+        }
+        else{
             task = new DownloadTask();
             task.execute("https://randomuser.me/api/?format=JSON");
         }

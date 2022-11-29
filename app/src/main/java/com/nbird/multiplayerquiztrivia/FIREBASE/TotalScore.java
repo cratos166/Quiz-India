@@ -36,7 +36,7 @@ public class TotalScore {
                 try{
                     totalScore= snapshot.getValue(Long.class);
                 }catch (Exception e){
-
+                    totalScore=0;
                 }
             }
 

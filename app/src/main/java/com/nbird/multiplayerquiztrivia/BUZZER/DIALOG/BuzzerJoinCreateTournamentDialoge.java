@@ -20,6 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.BuzzerScoreActivity;
 import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.LobbyBuzzerActivity;
 import com.nbird.multiplayerquiztrivia.BUZZER.ADAPTER.BuzzerRoomListAdapter;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
@@ -56,8 +63,11 @@ public class BuzzerJoinCreateTournamentDialoge {
     ArrayList<Room> list;
     BuzzerRoomListAdapter categoryAdapter;
     TextView recyclerText;
-
+    NativeAd NATIVE_ADS;
     public void start(Context context, View view) {
+
+
+
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
         View view1 = LayoutInflater.from(context).inflate(R.layout.dialog_tournament_join_create, (ConstraintLayout) view.findViewById(R.id.layoutDialogContainer));
@@ -92,6 +102,28 @@ public class BuzzerJoinCreateTournamentDialoge {
         recyclerView.setAdapter(categoryAdapter);
 
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
 
         final AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
@@ -117,6 +149,7 @@ public class BuzzerJoinCreateTournamentDialoge {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 try{
                     alertDialog.dismiss();
                 }catch (Exception e){
@@ -129,7 +162,7 @@ public class BuzzerJoinCreateTournamentDialoge {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BuzzerJoinWithPasswordDialog joinWithPasswordDialog=new BuzzerJoinWithPasswordDialog(context,joinButton);
+                BuzzerJoinWithPasswordDialog joinWithPasswordDialog=new BuzzerJoinWithPasswordDialog(context,joinButton,NATIVE_ADS);
                 joinWithPasswordDialog.start();
             }
         });
@@ -137,7 +170,7 @@ public class BuzzerJoinCreateTournamentDialoge {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 createRoom(context,alertDialog);
+                 createRoom(context,alertDialog,NATIVE_ADS);
             }
         });
 
@@ -162,26 +195,20 @@ public class BuzzerJoinCreateTournamentDialoge {
                     try{
                         Room room=dataSnapshot.getValue(Room.class);
 
-
-
-
                         if(room.isHostActive()){
                             if(room.isActive()==1){
                                 if(room.isPrivacy()){
-                                    list.add(room);
+                                    if(room.getNumberOfPlayers()!=0){
+                                        list.add(room);
+                                    }else{
+                                        table_user.child("BUZZER").child("ROOM").child(String.valueOf(dataSnapshot.getKey())).removeValue();
+                                        table_user.child("BUZZER").child("CHAT").child(String.valueOf(dataSnapshot.getKey())).removeValue();
+                                    }
                                 }
                             }
                         }else{
-
                             table_user.child("BUZZER").child("ROOM").child(String.valueOf(dataSnapshot.getKey())).removeValue();
                             table_user.child("BUZZER").child("CHAT").child(String.valueOf(dataSnapshot.getKey())).removeValue();
-
-
-//                            table_user.child("TOURNAMENT").child("CHAT").child(dataSnapshot.getKey()).removeValue();
-//                            table_user.child("TOURNAMENT").child("PLAYERS").child(dataSnapshot.getKey()).removeValue();
-//                            table_user.child("TOURNAMENT").child("RESULT").child(dataSnapshot.getKey()).removeValue();
-//                            table_user.child("TOURNAMENT").child("QUESTIONS").child(dataSnapshot.getKey()).removeValue();
-//                            table_user.child("TOURNAMENT").child("ANSWERS").child(dataSnapshot.getKey()).removeValue();
                         }
 
                     }catch (Exception e){
@@ -218,7 +245,7 @@ public class BuzzerJoinCreateTournamentDialoge {
 
 
 
-    private void createRoom(Context context, AlertDialog alertDialog){
+    private void createRoom(Context context, AlertDialog alertDialog, NativeAd NATIVE_ADS){
 
         String myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context);
         String myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, context);
@@ -298,6 +325,7 @@ public class BuzzerJoinCreateTournamentDialoge {
 
                                     }
 
+                                    try{NATIVE_ADS.destroy();}catch (Exception e){}
 
                                     connectionStatus.buzzerStatusSetter(String.valueOf(roomCodeInt));
                                     connectionStatus.buzzerMAINS_STATUS(String.valueOf(roomCodeInt));
@@ -329,6 +357,8 @@ public class BuzzerJoinCreateTournamentDialoge {
 
                                     }
 
+                                    try{NATIVE_ADS.destroy();}catch (Exception e){}
+
                                     connectionStatus.buzzerStatusSetter(String.valueOf(roomCodeInt));
                                     connectionStatus.buzzerMAINS_STATUS(String.valueOf(roomCodeInt));
 
@@ -352,12 +382,6 @@ public class BuzzerJoinCreateTournamentDialoge {
 
                     }
                 });
-
-
-
-
-
-
 
 
 

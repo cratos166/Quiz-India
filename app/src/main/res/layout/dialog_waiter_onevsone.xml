@@ -37,12 +37,25 @@
         android:orientation="vertical">
 
 
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/border_theme"
             android:orientation="vertical">
+
+            <!--     @layout/gnt_medium_template_view -->
+            <!--     @layout/gnt_small_template_view -->
+            <com.google.android.ads.nativetemplates.TemplateView
+                android:visibility="gone"
+                android:id="@+id/my_template"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                shimmer:gnt_template_type="@layout/gnt_small_template_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,7 +79,7 @@
                         android:textColor="@color/text_head"
                         android:fontFamily="@font/ubuntu"
                         android:padding="10dp"
-                        android:text="Please share the the below code with you friend or family member to play the game."/>
+                        android:text="Please share the below code with you friend or family member to play the game."/>
 
                 </LinearLayout>
 
@@ -581,11 +594,14 @@
                 android:scaleX="0.9"
                 android:padding="15dp"
                 android:gravity="center"
-                android:textColor="@color/text_dis"
+                android:textColor="@color/level_3"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"/>
 
+
         </LinearLayout>
+
+
 
     </LinearLayout>
     </androidx.cardview.widget.CardView>

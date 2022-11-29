@@ -24,6 +24,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +41,7 @@ import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +77,9 @@ public class WaitingVSInGameDialog {
 
     private int currentPage;
 
-    public WaitingVSInGameDialog(String myPicStr,String username, String score, String timeTaken, String accuracy, String totalLifeLineUsed, Context context, TextView v) {
+    NativeAd NATIVE_ADS;
+
+    public WaitingVSInGameDialog(String myPicStr,String username, String score, String timeTaken, String accuracy, String totalLifeLineUsed, Context context, TextView v, NativeAd NATIVE_ADS) {
         this.myPicStr = myPicStr;
         this.username = username;
         this.scoreStr = score;
@@ -79,6 +88,7 @@ public class WaitingVSInGameDialog {
         this.totalLifeLineUsed = totalLifeLineUsed;
         this.context=context;
         this.v=v;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
     public void start(){
@@ -120,6 +130,30 @@ public class WaitingVSInGameDialog {
         }
 
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+
+        }
+
+
 
         alertDialog=builderRemove.create();
         if(alertDialog.getWindow()!=null){
@@ -134,6 +168,7 @@ public class WaitingVSInGameDialog {
     }
 
     public void dismiss(){
+        try{NATIVE_ADS.destroy();}catch (Exception e){}
         try{
             alertDialog.cancel();
         }catch (Exception e){

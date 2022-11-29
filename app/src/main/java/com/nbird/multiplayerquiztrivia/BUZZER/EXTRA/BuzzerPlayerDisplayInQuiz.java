@@ -31,11 +31,14 @@ public class BuzzerPlayerDisplayInQuiz {
     DatabaseReference table_user = database.getReference("NEW_APP");
     FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
-    public BuzzerPlayerDisplayInQuiz(Context context, ValueEventListener valueEventListener, String roomCode, RecyclerView recyclerView) {
+    int size;
+
+    public BuzzerPlayerDisplayInQuiz(Context context, ValueEventListener valueEventListener, String roomCode, RecyclerView recyclerView,int size) {
         this.context = context;
         this.valueEventListener = valueEventListener;
         this.roomCode = roomCode;
         this.recyclerView=recyclerView;
+        this.size=size;
     }
 
     public void start(){
@@ -50,7 +53,7 @@ public class BuzzerPlayerDisplayInQuiz {
         arrayList=new ArrayList<>();
 
 
-        playerDisplayInQuizAadapter = new PlayerDisplayInQuizAadapter(context,arrayList);
+        playerDisplayInQuizAadapter = new PlayerDisplayInQuizAadapter(context,arrayList, size);
         recyclerView.setAdapter(playerDisplayInQuizAadapter);
 
 

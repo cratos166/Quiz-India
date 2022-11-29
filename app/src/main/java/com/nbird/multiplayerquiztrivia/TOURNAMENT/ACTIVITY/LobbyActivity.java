@@ -21,8 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -74,7 +79,7 @@ public class LobbyActivity extends AppCompatActivity {
 
     String roomCode,hostNameStr;
 
-    TextView privacyTextView,questionTextView,timeTextView,modeTextView,hostName,roomCodeTextView;
+    TextView privacyTextView,questionTextView,timeTextView,modeTextView,hostName,roomCodeTextView,numberOfPlayers;
 
     int numberofQuestion=1,gameMode=1,timeInt=1;
     Boolean privacy=true;
@@ -90,18 +95,33 @@ public class LobbyActivity extends AppCompatActivity {
 
     ArrayList<Integer> listAns;
 
+    NativeAd NATIVE_ADS;
+    AdView mAdView;
+
+    Button shareButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
+
+
+
 
         recyclerview=(RecyclerView) findViewById(R.id.recyclerview);
 
+        shareButton=(Button) findViewById(R.id.shareButton);
+
         appData=new AppData();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, LobbyActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
 
         myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME,LobbyActivity.this);
         myPicStr=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,LobbyActivity.this);
@@ -112,6 +132,7 @@ public class LobbyActivity extends AppCompatActivity {
         timeTextView=(TextView) findViewById(R.id.timeTextView);
         modeTextView=(TextView) findViewById(R.id.modeTextView);
         hostName=(TextView) findViewById(R.id.hostName);
+        numberOfPlayers=(TextView) findViewById(R.id.numberOfPlayers);
 
 
         factButton=(CardView) findViewById(R.id.card1fact);
@@ -140,7 +161,7 @@ public class LobbyActivity extends AppCompatActivity {
             table_user.child("TOURNAMENT").child("ANSWERS").child(roomCode).removeValue();
         }
 
-        roomCodeTextView.setText("Room Code : "+roomCode);
+        roomCodeTextView.setText(roomCode);
 
         playerDataArrayList=new ArrayList<>();
 
@@ -151,14 +172,14 @@ public class LobbyActivity extends AppCompatActivity {
 
      //   playerDataSetter();
         DataSetter dataSetter=new DataSetter();
-        dataSetter.getPlayerData(roomCode,playerDataArrayList,myAdapter,valueEventListener);
+        dataSetter.getPlayerData(roomCode,playerDataArrayList,myAdapter,valueEventListener,numberOfPlayers);
 
 
 
         SettingDialog settingDialog=new SettingDialog(LobbyActivity.this,roomCode);
 
 
-        hostName.setText("Host : "+hostNameStr);
+        hostName.setText(hostNameStr);
 
         if(myPlayerNum!=1){
             startButton.setTextSize(8.0f);
@@ -176,45 +197,6 @@ public class LobbyActivity extends AppCompatActivity {
 
             questionDownloader();
 
-            myEventListener=new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    try{
-                        Boolean bb=snapshot.getValue(Boolean.class);
-                        if(bb==true){
-                         //   Toast.makeText(LobbyActivity.this, "true", Toast.LENGTH_SHORT).show();
-                        }else{
-                            try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
-                            try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
-                            try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
-                            try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
-
-
-                            try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
-                            try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
-                            try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
-                            try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
-                            try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
-
-                            try{countDownTimer.cancel();}catch (Exception e){}
-
-                            Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-
-                    }catch (Exception e){
-                        intentFunctionMainActivity();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            };
-
-            table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").addValueEventListener(myEventListener);
 
 
 
@@ -228,6 +210,69 @@ public class LobbyActivity extends AppCompatActivity {
 
 
         }
+
+
+        myEventListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    Boolean bb=snapshot.getValue(Boolean.class);
+                    if(bb==true){
+                        //   Toast.makeText(LobbyActivity.this, "true", Toast.LENGTH_SHORT).show();
+                    }else{
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e){}
+                        try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
+
+
+                        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e){}
+                        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e){}
+
+                        try{countDownTimer.cancel();}catch (Exception e){}
+
+                        Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                }catch (Exception e){
+                    if(myPlayerNum==1){
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e1){}
+                        try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").removeEventListener(hostEventListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").removeEventListener(myEventListener);}catch (Exception e1){}
+
+
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("active").removeEventListener(questionGetterListener);}catch (Exception e1){}
+                        try{  table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("privacy").removeEventListener(privacyListener);}catch (Exception e1){}
+                        try{table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("numberOfQuestions").removeEventListener(numberOfQuestionListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("time").removeEventListener(totalTimeListener);}catch (Exception e1){}
+                        try{ table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("gameMode").removeEventListener(modeListener);}catch (Exception e1){}
+
+                        try{countDownTimer.cancel();}catch (Exception e1){}
+
+
+                        Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        intentFunctionMainActivity();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).child(mAuth.getCurrentUser().getUid()).child("active").addValueEventListener(myEventListener);
 
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -248,7 +293,7 @@ public class LobbyActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ChatDialog chatDialog=new ChatDialog(LobbyActivity.this,roomCode,myName,chatEventListener);
+                ChatDialog chatDialog=new ChatDialog(LobbyActivity.this,roomCode,myName,chatEventListener,NATIVE_ADS);
                 chatDialog.start(chatButton);
             }
         });
@@ -267,7 +312,7 @@ public class LobbyActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                FactsDialog factsDialog=new FactsDialog(LobbyActivity.this);
+                FactsDialog factsDialog=new FactsDialog(LobbyActivity.this,NATIVE_ADS);
                 factsDialog.start(factButton);
 
 
@@ -278,7 +323,7 @@ public class LobbyActivity extends AppCompatActivity {
         troubleshoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TroubleShootDialog troubleShootDialog=new TroubleShootDialog(LobbyActivity.this);
+                TroubleShootDialog troubleShootDialog=new TroubleShootDialog(LobbyActivity.this,NATIVE_ADS);
                 troubleShootDialog.start(troubleshoot);
             }
         });
@@ -344,6 +389,22 @@ public class LobbyActivity extends AppCompatActivity {
         });
 
 
+        String myNameStr=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, LobbyActivity.this);
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent shareIntent=new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plane");
+                String shareBody=myNameStr+" Has Created A Room To Play With You.\n"+"Here's Your Room Code : "+roomCode+".";
+                String sharesub="Multiplayer Quiz Trivia";
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT,sharesub);
+                shareIntent.putExtra(Intent.EXTRA_TEXT,shareBody);
+                startActivity(Intent.createChooser(shareIntent,"Room Code"));
+            }
+        });
+
+
     }
 
 
@@ -404,10 +465,6 @@ public class LobbyActivity extends AppCompatActivity {
 
 
     private void intentFunctionMainActivity(){
-
-
-
-
 
         try{ table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(valueEventListener);}catch (Exception e1){}
         try{  table_user.child("TOURNAMENT").child("CHAT").child(roomCode).removeEventListener(chatEventListener);}catch (Exception e1){}
@@ -648,6 +705,11 @@ public class LobbyActivity extends AppCompatActivity {
 
 
     private void settingsEventListner(){
+
+
+
+
+
         privacyListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -840,6 +902,23 @@ public class LobbyActivity extends AppCompatActivity {
         anim.loop(true);
 
 
+        MobileAds.initialize(LobbyActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(LobbyActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
 
@@ -955,5 +1034,13 @@ public class LobbyActivity extends AppCompatActivity {
         quitLobbyActivity();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        try{NATIVE_ADS.destroy();}catch (Exception e){}
+        try{mAdView.destroy();}catch (Exception e){}
+        Runtime.getRuntime().gc();
+
+    }
 }

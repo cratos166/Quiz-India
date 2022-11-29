@@ -27,12 +27,12 @@ public class PlayerDisplayInBuzzerAdapter extends RecyclerView.Adapter<PlayerDis
 
 
 
-
-    public PlayerDisplayInBuzzerAdapter(Context mContext, ArrayList<PlayerDisplayBuzzerHolder> arrayList, int currentQuestionStatus){
+    int size;
+    public PlayerDisplayInBuzzerAdapter(Context mContext, ArrayList<PlayerDisplayBuzzerHolder> arrayList, int currentQuestionStatus,int size){
         this.mContext=mContext;
         this.arrayList=arrayList;
         this.currentQuestionStatus=currentQuestionStatus;
-
+        this.size=size;
     }
 
 
@@ -49,13 +49,31 @@ public class PlayerDisplayInBuzzerAdapter extends RecyclerView.Adapter<PlayerDis
     private void manupulator(MyViewHolder holder ,int position){
         ArrayList<ImageView> list=new ArrayList<>();
 
+        try{
+            if(size==11){
+                list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+                list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
+                holder.anim11.setVisibility(View.GONE);holder.anim12.setVisibility(View.GONE);holder.anim13.setVisibility(View.GONE);holder.anim14.setVisibility(View.GONE);holder.anim15.setVisibility(View.GONE);
+                holder.anim16.setVisibility(View.GONE);holder.anim17.setVisibility(View.GONE);holder.anim18.setVisibility(View.GONE);holder.anim19.setVisibility(View.GONE);holder.anim20.setVisibility(View.GONE);
+            }else if(size==16){
+                list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+                list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
+                list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
+                holder.anim16.setVisibility(View.GONE);holder.anim17.setVisibility(View.GONE);holder.anim18.setVisibility(View.GONE);holder.anim19.setVisibility(View.GONE);holder.anim20.setVisibility(View.GONE);
+            }else{
+                list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+                list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
+                list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
+                list.add(holder.anim16);list.add(holder.anim17);list.add(holder.anim18);list.add(holder.anim19);list.add(holder.anim20);
+            }
+
+
+        }catch (Exception e){
+
+        }
 
 
 
-        list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
-        list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
-        list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
-        list.add(holder.anim16);list.add(holder.anim17);list.add(holder.anim18);list.add(holder.anim19);list.add(holder.anim20);
 
 
         try{

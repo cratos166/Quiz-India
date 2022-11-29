@@ -39,7 +39,10 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -49,6 +52,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +62,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.BuzzerNormalActivity;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
@@ -74,12 +79,13 @@ import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.AnswerUploader;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.EXTRA.PlayerDisplayInQuiz;
-import com.nbird.multiplayerquiztrivia.Timers.PicLoader;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class TournamentAudioActivity extends AppCompatActivity {
     TextView questionTextView,scoreBoard,timerText;
@@ -127,7 +133,7 @@ public class TournamentAudioActivity extends AppCompatActivity {
     String minutestext;
     String secondtext,hostName;
     ImageView questionImage;
-    PicLoader picLoader;
+
 
 
 
@@ -170,17 +176,13 @@ public class TournamentAudioActivity extends AppCompatActivity {
 
 
     }
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_audio);
 
-        loadAds();
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         listAns=getIntent().getIntegerArrayListExtra("answerInt");
         roomCode=getIntent().getStringExtra("roomCode");
@@ -193,9 +195,27 @@ public class TournamentAudioActivity extends AppCompatActivity {
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
 
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentAudioActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+
+
+            Random r=new Random();
+            int num=r.nextInt(AppString.ADS_FREQUENCY_AUIO);
+            if(num==1){
+                loadAds();
+            }
+
+
+        }
+
         if(myPlayerNum==1){
             table_user.child("TOURNAMENT").child("RESULT").child(roomCode).removeValue();
         }
+
 
 
 
@@ -297,7 +317,7 @@ public class TournamentAudioActivity extends AppCompatActivity {
         answerUploader=new AnswerUploader(roomCode,myName,myPicURL);
         answerUploader.start();
 
-        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentAudioActivity.this,playerInfoGetterListener,roomCode,recyclerView);
+        playerDisplayInQuiz=new PlayerDisplayInQuiz(TournamentAudioActivity.this,playerInfoGetterListener,roomCode,recyclerView,listAns.size());
         playerDisplayInQuiz.start();
         
         
@@ -689,7 +709,8 @@ public class TournamentAudioActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        try{mAdView.destroy();}catch (Exception e){}
+        try{mInterstitialAd=null;}catch (Exception e){}
         try{ songActivity.songStop(); }catch (Exception e){ }
         if(countDownTimer!=null){ countDownTimer.cancel();}
         if(c!=null){ c.cancel();}
@@ -716,6 +737,23 @@ public class TournamentAudioActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
+        MobileAds.initialize(TournamentAudioActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(TournamentAudioActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
@@ -912,7 +950,7 @@ public class TournamentAudioActivity extends AppCompatActivity {
                 //Last 15 seconds end animation
                 if(minutes==0 && second<=15){
 
-                    timerText.setTextColor(R.color.red);
+                    timerText.setTextColor(Color.parseColor("#FF5E5E"));
 
                     //Continuous zoomIn - zoomOut
                     ObjectAnimator scaleX = ObjectAnimator.ofFloat(clockCardView, "scaleX", 0.9f, 1f);
@@ -937,6 +975,7 @@ public class TournamentAudioActivity extends AppCompatActivity {
 
 
 
+                timerText.setText("00:00");
                 minutes=0;
                 second=0;
 

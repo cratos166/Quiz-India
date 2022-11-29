@@ -59,14 +59,14 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/single_color_3"
                     android:fontFamily="@font/ubuntu"
                     android:padding="15dp"
                     android:text="Sorry Lucy! You Have Used The 50:50 Life Line."
                     android:textAlignment="center"
                     android:textColor="@color/text_head"
-                    android:textSize="16dp"
+                    android:textSize="12dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/buttonYes"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -76,21 +76,32 @@
 
                 <Button
                     android:id="@+id/buttonYes"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
+                    android:layout_width="130dp"
+                    android:layout_height="45dp"
                     android:layout_marginStart="60dp"
                     android:layout_marginEnd="60dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/next_button"
                     android:fontFamily="@font/ubuntu"
-                    android:textColor="@color/white"
+                    android:textColor="@color/level_3"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/my_template"
                     app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
                     app:layout_constraintStart_toStartOf="@+id/layoutDialog" />
 
-
+                <!--     @layout/gnt_medium_template_view -->
+                <!--     @layout/gnt_small_template_view -->
+                <com.google.android.ads.nativetemplates.TemplateView
+                    android:id="@+id/my_template"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:gnt_template_type="@layout/gnt_medium_template_view"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
         </LinearLayout>

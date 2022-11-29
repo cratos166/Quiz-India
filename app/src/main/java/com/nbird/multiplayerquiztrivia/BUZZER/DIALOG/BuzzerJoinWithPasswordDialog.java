@@ -10,12 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,10 +51,11 @@ public class BuzzerJoinWithPasswordDialog {
     Context context;
     View v;
     AppData appData;
-
-    public BuzzerJoinWithPasswordDialog(Context context, View v) {
+    NativeAd NATIVE_ADS;
+    public BuzzerJoinWithPasswordDialog(Context context, View v, NativeAd NATIVE_ADS) {
         this.context = context;
         this.v = v;
+        this.NATIVE_ADS=NATIVE_ADS;
     }
 
     public void start(){
@@ -63,6 +71,7 @@ public class BuzzerJoinWithPasswordDialog {
 
         Button done=(Button) viewFact.findViewById(R.id.joinButton1);
         EditText codeEditText=(EditText) viewFact.findViewById(R.id.username);
+        ImageView cancel=(ImageView) viewFact.findViewById(R.id.cancel);
 
         if(alertDialog.getWindow()!=null){
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -73,6 +82,40 @@ public class BuzzerJoinWithPasswordDialog {
         }catch (Exception e){
 
         }
+
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
+                try{alertDialog.dismiss();}catch (Exception e){}
+            }
+        });
+
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewFact.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +195,8 @@ public class BuzzerJoinWithPasswordDialog {
 
                                             }
 
+                                            try{NATIVE_ADS.destroy();}catch (Exception e){}
+
                                             Intent intent = new Intent(context, LobbyBuzzerActivity.class);
                                             intent.putExtra("playerNum", 2);
                                             intent.putExtra("roomCode", String.valueOf(room.getRoomCode()));
@@ -183,6 +228,8 @@ public class BuzzerJoinWithPasswordDialog {
 
                                             connectionStatus.tournamentStatusSetter(roomCode);
 
+                                            try{NATIVE_ADS.destroy();}catch (Exception e){}
+
                                             Intent intent = new Intent(context, LobbyBuzzerActivity.class);
                                             intent.putExtra("playerNum", 2);
                                             intent.putExtra("roomCode", String.valueOf(room.getRoomCode()));
@@ -204,6 +251,8 @@ public class BuzzerJoinWithPasswordDialog {
                         });
 
 
+                    }else{
+                        Toast.makeText(context, "Total "+AppString.BUZZER_MAX_PLAYERS+" players are already present in the lobby. Lobby maximum limit reached.", Toast.LENGTH_LONG).show();
                     }
 
 

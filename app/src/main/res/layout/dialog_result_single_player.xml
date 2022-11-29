@@ -253,36 +253,6 @@
 
                                 </androidx.cardview.widget.CardView>
 
-                                <androidx.cardview.widget.CardView
-                                    android:id="@+id/audience"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    android:layout_weight="1"
-                                    android:clickable="true"
-                                    android:foreground="?selectableItemBackground"
-                                    android:scaleX="0.75"
-                                    android:scaleY="0.75"
-                                    app:layout_constraintTop_toBottomOf="@+id/imageView"
-                                    cardview:cardCornerRadius="5dp">
-
-
-                                    <LinearLayout
-                                        android:id="@+id/linearLayoutAudience"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:background="@drawable/border_theme">
-
-                                        <ImageView
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:background="@drawable/flip1"
-                                            android:scaleX="0.7"
-                                            android:scaleY="0.75" />
-
-                                    </LinearLayout>
-
-
-                                </androidx.cardview.widget.CardView>
 
                                 <androidx.cardview.widget.CardView
                                     android:id="@+id/swap"
@@ -299,6 +269,39 @@
 
                                     <LinearLayout
                                         android:id="@+id/linearLayoutSwap"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@drawable/border_theme">
+
+                                        <ImageView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@drawable/flip1"
+                                            android:scaleX="0.7"
+                                            android:scaleY="0.75" />
+
+                                    </LinearLayout>
+
+
+                                </androidx.cardview.widget.CardView>
+
+
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/audience"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_weight="1"
+                                    android:clickable="true"
+                                    android:foreground="?selectableItemBackground"
+                                    android:scaleX="0.75"
+                                    android:scaleY="0.75"
+                                    app:layout_constraintTop_toBottomOf="@+id/imageView"
+                                    cardview:cardCornerRadius="5dp">
+
+
+                                    <LinearLayout
+                                        android:id="@+id/linearLayoutAudience"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:background="@drawable/border_theme">
@@ -539,6 +542,7 @@
                             android:layout_gravity="center"
                             android:layout_marginBottom="5dp"
                             android:layout_weight="1"
+                            android:visibility="gone"
                             android:background="@drawable/border_theme"
                             android:fontFamily="@font/ubuntu"
                             android:padding="8dp"
@@ -605,7 +609,17 @@
 
                         </LinearLayout>
 
-
+                        <!--     @layout/gnt_medium_template_view -->
+                        <!--     @layout/gnt_small_template_view -->
+                        <com.google.android.ads.nativetemplates.TemplateView
+                            android:visibility="gone"
+                            android:id="@+id/my_template"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:gnt_template_type="@layout/gnt_small_template_view"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
                     </LinearLayout>
 
 

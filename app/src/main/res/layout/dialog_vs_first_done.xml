@@ -178,7 +178,20 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!--     @layout/gnt_medium_template_view -->
+        <!--     @layout/gnt_small_template_view -->
+        <com.google.android.ads.nativetemplates.TemplateView
+            android:visibility="gone"
+            android:id="@+id/my_template"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            shimmer:gnt_template_type="@layout/gnt_small_template_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
     </LinearLayout>
+
 
 
     </LinearLayout>

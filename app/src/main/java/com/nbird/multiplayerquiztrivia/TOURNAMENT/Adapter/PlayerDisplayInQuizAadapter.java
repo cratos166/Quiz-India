@@ -8,16 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.R;
-import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.ChatHolder;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerDisplayInQuizHolder;
 
 import java.util.ArrayList;
@@ -27,14 +23,12 @@ public class PlayerDisplayInQuizAadapter extends RecyclerView.Adapter<PlayerDisp
     ArrayList<PlayerDisplayInQuizHolder> arrayList;
 
 
+    int size;
 
-
-
-
-
-    public PlayerDisplayInQuizAadapter(Context mContext, ArrayList<PlayerDisplayInQuizHolder> arrayList){
+    public PlayerDisplayInQuizAadapter(Context mContext, ArrayList<PlayerDisplayInQuizHolder> arrayList, int size){
         this.mContext=mContext;
         this.arrayList=arrayList;
+        this.size=size;
     }
 
 
@@ -54,11 +48,27 @@ public class PlayerDisplayInQuizAadapter extends RecyclerView.Adapter<PlayerDisp
 
 
 
-        list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
-        list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
-        list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
-        list.add(holder.anim16);list.add(holder.anim17);list.add(holder.anim18);list.add(holder.anim19);list.add(holder.anim20);
 
+        try{
+            if(size==11){
+                list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+                list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
+                holder.anim11.setVisibility(View.GONE);holder.anim12.setVisibility(View.GONE);holder.anim13.setVisibility(View.GONE);holder.anim14.setVisibility(View.GONE);holder.anim15.setVisibility(View.GONE);
+                holder.anim16.setVisibility(View.GONE);holder.anim17.setVisibility(View.GONE);holder.anim18.setVisibility(View.GONE);holder.anim19.setVisibility(View.GONE);holder.anim20.setVisibility(View.GONE);
+            }else if(size==16){
+                list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+                list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
+                list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
+                holder.anim16.setVisibility(View.GONE);holder.anim17.setVisibility(View.GONE);holder.anim18.setVisibility(View.GONE);holder.anim19.setVisibility(View.GONE);holder.anim20.setVisibility(View.GONE);
+            }else{
+                list.add(holder.anim1);list.add(holder.anim2);list.add(holder.anim3);list.add(holder.anim4);list.add(holder.anim5);
+                list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
+                list.add(holder.anim11);list.add(holder.anim12);list.add(holder.anim13);list.add(holder.anim14);list.add(holder.anim15);
+                list.add(holder.anim16);list.add(holder.anim17);list.add(holder.anim18);list.add(holder.anim19);list.add(holder.anim20);
+            }
+        }catch (Exception e){
+
+        }
 
         try{
 

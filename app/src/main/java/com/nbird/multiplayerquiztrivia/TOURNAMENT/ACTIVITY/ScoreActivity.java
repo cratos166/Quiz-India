@@ -23,8 +23,13 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,10 +39,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDataAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.ResultAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.BasicDialog;
@@ -73,15 +80,22 @@ public class ScoreActivity extends AppCompatActivity {
 
     Boolean winnerDeclared = false, isHostActive;
     TextView dis;
-
+    AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        AppData appData=new AppData();
+
+
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, ScoreActivity.this)){
+            mAdView = findViewById(R.id.adView);
+            mAdView.setVisibility(View.VISIBLE);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
+
 
         roomCode = getIntent().getStringExtra("roomCode");
         maxQuestions = getIntent().getIntExtra("maxQuestions", 10);
@@ -336,6 +350,8 @@ public class ScoreActivity extends AppCompatActivity {
 
                     if (numberOfActivePlayer == playerDataArrayList.size()) {
 
+                        TextView title=(TextView) findViewById(R.id.title);
+                        title.setText("All the members completed the quiz.");
                         resultComparator();
                         Collections.reverse(playerDataArrayList);
                         winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
@@ -399,7 +415,8 @@ public class ScoreActivity extends AppCompatActivity {
                 if (numberOfActivePlayer == playerDataArrayList.size()) {
 
                     resultComparator();
-
+                    TextView title=(TextView) findViewById(R.id.title);
+                    title.setText("All the members completed the quiz.");
                     Collections.reverse(playerDataArrayList);
                     winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
 
@@ -475,6 +492,22 @@ public class ScoreActivity extends AppCompatActivity {
 
         Button okButton = (Button) view1.findViewById(R.id.okButton);
 
+        MobileAds.initialize(ScoreActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(ScoreActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = view1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
         AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
@@ -529,6 +562,24 @@ public class ScoreActivity extends AppCompatActivity {
         } else {
             textTitle.setText("You really want to quit ?");
         }
+
+        MobileAds.initialize(ScoreActivity.this);
+        AdLoader adLoader = new AdLoader.Builder(ScoreActivity.this, AppString.NATIVE_ID)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    @Override
+                    public void onNativeAdLoaded(NativeAd nativeAd) {
+                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                        template.setStyles(styles);
+                        template.setNativeAd(nativeAd);
+                        template.setVisibility(View.VISIBLE);
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         LottieAnimationView anim = (LottieAnimationView) viewRemove1.findViewById(R.id.imageIcon);
@@ -634,5 +685,14 @@ public class ScoreActivity extends AppCompatActivity {
         quitScoreActivityActivity();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        try{mAdView.destroy();}catch (Exception e){}
+        Runtime.getRuntime().gc();
+
+    }
 
 }

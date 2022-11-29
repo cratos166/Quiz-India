@@ -5,16 +5,25 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerRemoveAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
 
@@ -35,7 +44,7 @@ public class BuzzerRemovePlayerDialog {
     PlayerRemoveAdapter myAdapter;
 
 
-
+    NativeAd NATIVE_ADS;
     public BuzzerRemovePlayerDialog(Context context, String roomCode) {
         this.context = context;
         this.roomCode=roomCode;
@@ -52,6 +61,7 @@ public class BuzzerRemovePlayerDialog {
 
         recyclerView = (RecyclerView) viewFact.findViewById(R.id.recyclerViewRemovePlayer);
         Button done=(Button) viewFact.findViewById(R.id.doneButton);
+        TextView notter=(TextView) viewFact.findViewById(R.id.notter);
 
         if(alertDialog.getWindow()!=null){
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -64,10 +74,40 @@ public class BuzzerRemovePlayerDialog {
         }
 
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewFact.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
+
 
         int[] arr=new int[playerDataArrayList.size()];
 
 
+        if(playerDataArrayList.size()==0){
+            notter.setVisibility(View.VISIBLE);
+        }else{
+            notter.setVisibility(View.GONE);
+        }
 
         myAdapter=new PlayerRemoveAdapter(context,playerDataArrayList,arr);
         recyclerView.setLayoutManager(new GridLayoutManager(context,2));
@@ -80,7 +120,7 @@ public class BuzzerRemovePlayerDialog {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 try{alertDialog.dismiss();}catch (Exception e){}
 
 
@@ -92,7 +132,7 @@ public class BuzzerRemovePlayerDialog {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 try{alertDialog.dismiss();}catch (Exception e){}
 
            //     int tracker=0;

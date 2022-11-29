@@ -21,6 +21,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.BuzzerScoreActivity;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.FIREBASE.ConnectionStatus;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
@@ -59,6 +66,8 @@ public class JoinCreateTournamentDialoge {
     RoomListAdapter categoryAdapter;
     TextView recyclerText;
 
+    int roomCodeInt;
+
     public void start(Context context, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
 
@@ -83,6 +92,31 @@ public class JoinCreateTournamentDialoge {
 
         list=new ArrayList<>();
 
+        NativeAd NATIVE_ADS=null;
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)) {
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        NativeAd N_D=NATIVE_ADS;
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = view1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            N_D=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         linearLayoutManager.setOrientation(recyclerView.VERTICAL);
@@ -92,8 +126,23 @@ public class JoinCreateTournamentDialoge {
 
         categoryAdapter = new RoomListAdapter(context,list);
         recyclerView.setAdapter(categoryAdapter);
-
-
+//
+//        MobileAds.initialize(context);
+//        AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+//                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+//                    @Override
+//                    public void onNativeAdLoaded(NativeAd nativeAd) {
+//                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+//
+//                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+//                        TemplateView template = view1.findViewById(R.id.my_template);
+//
+//                        template.setStyles(styles);
+//                        template.setNativeAd(nativeAd);
+//                    }
+//                })
+//                .build();
+//        adLoader.loadAd(new AdRequest.Builder().build());
 
         final AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
@@ -119,6 +168,8 @@ public class JoinCreateTournamentDialoge {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
+
                 try{
                     alertDialog.dismiss();
                 }catch (Exception e){
@@ -131,6 +182,7 @@ public class JoinCreateTournamentDialoge {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
                 JoinWithPasswordDialog joinWithPasswordDialog=new JoinWithPasswordDialog(context,joinButton);
                 joinWithPasswordDialog.start();
             }
@@ -139,7 +191,7 @@ public class JoinCreateTournamentDialoge {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 createRoom(context,alertDialog);
+                 createRoom(context,alertDialog,NATIVE_ADS);
             }
         });
 
@@ -170,7 +222,10 @@ public class JoinCreateTournamentDialoge {
                         if(room.isHostActive()){
                             if(room.isActive()==1){
                                 if(room.isPrivacy()){
-                                    list.add(room);
+                                    if(room.getNumberOfPlayers()!=0){
+                                        list.add(room);
+                                    }
+
                                 }
                             }
                         }else{
@@ -218,7 +273,7 @@ public class JoinCreateTournamentDialoge {
 
 
 
-    private void createRoom(Context context, AlertDialog alertDialog){
+    private void createRoom(Context context, AlertDialog alertDialog, NativeAd NATIVE_ADS){
 
         String myName=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context);
         String myPicURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC, context);
@@ -232,8 +287,143 @@ public class JoinCreateTournamentDialoge {
          */
 
         RoomCodeGenerator roomCodeGenerator=new RoomCodeGenerator();
-        int roomCodeInt=roomCodeGenerator.start();
+        roomCodeInt=roomCodeGenerator.start();
 
+
+        Dialog dialog = null;
+        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
+        supportAlertDialog.showLoadingDialog();
+
+
+        table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try{
+                    Room room1=snapshot.getValue(Room.class);
+
+
+                    if(room1==null){
+                        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,1,true);
+
+
+
+                        ConnectionStatus connectionStatus=new ConnectionStatus();
+//        connectionStatus.myStatusSetter();
+                        //  table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).removeValue();
+                        table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+
+                                table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                        try{
+                                            LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
+
+                                            PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true,1);
+
+
+                                            //        table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).removeValue();
+                                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    supportAlertDialog.dismissLoadingDialog();
+                                                    try{
+                                                        alertDialog.dismiss();
+                                                    }catch (Exception e){
+
+                                                    }
+
+                                                    try{NATIVE_ADS.destroy();}catch (Exception e){}
+
+                                                    connectionStatus.tournamentStatusSetter(String.valueOf(roomCodeInt));
+                                                    connectionStatus.tournamentMAINS_STATUS(String.valueOf(roomCodeInt));
+
+                                                    Intent intent=new Intent(context, LobbyActivity.class);
+                                                    intent.putExtra("playerNum",1);
+                                                    intent.putExtra("roomCode",String.valueOf(roomCodeInt));
+                                                    intent.putExtra("hostName",myName);
+                                                    context.startActivity(intent);
+                                                    ((Activity) context).finish();
+                                                }
+                                            });
+
+                                        }catch (Exception e){
+                                            String name=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context);
+                                            String imageURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context);
+                                            LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(name,0,0,0,0,imageURL,0);
+
+                                            PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true,1);
+
+
+                                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    supportAlertDialog.dismissLoadingDialog();
+                                                    try{
+                                                        alertDialog.dismiss();
+                                                    }catch (Exception e){
+
+                                                    }
+
+                                                    try{NATIVE_ADS.destroy();}catch (Exception e){}
+
+                                                    connectionStatus.tournamentStatusSetter(String.valueOf(roomCodeInt));
+                                                    connectionStatus.tournamentMAINS_STATUS(String.valueOf(roomCodeInt));
+
+                                                    Intent intent=new Intent(context, LobbyActivity.class);
+                                                    intent.putExtra("playerNum",1);
+                                                    intent.putExtra("roomCode",String.valueOf(roomCodeInt));
+                                                    intent.putExtra("hostName",myName);
+                                                    context.startActivity(intent);
+                                                    ((Activity) context).finish();
+                                                }
+                                            });
+
+                                        }
+
+
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+
+
+
+
+
+
+
+
+                            }
+                        });
+                    }else{
+                        supportAlertDialog.dismissLoadingDialog();
+                        createRoom(context,alertDialog,NATIVE_ADS);
+                    }
+
+
+
+
+                }catch (Exception e){
+                    supportAlertDialog.dismissLoadingDialog();
+                    createRoom(context,alertDialog,NATIVE_ADS);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         /*
         TIME 1 : 120 SEC
@@ -262,107 +452,7 @@ public class JoinCreateTournamentDialoge {
          */
 
 
-        Room room =new Room(mAuth.getCurrentUser().getUid(),myName,1,myPicURL,String.valueOf(roomCodeInt),1,1,1,true,1,true);
 
-        Dialog dialog = null;
-        SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,context);
-        supportAlertDialog.showLoadingDialog();
-
-
-        ConnectionStatus connectionStatus=new ConnectionStatus();
-//        connectionStatus.myStatusSetter();
-      //  table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).removeValue();
-        table_user.child("TOURNAMENT").child("ROOM").child(String.valueOf(roomCodeInt)).setValue(room).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-
-
-                table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        try{
-                            LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
-
-                            PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true,1);
-
-
-                    //        table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).removeValue();
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    supportAlertDialog.dismissLoadingDialog();
-                                    try{
-                                        alertDialog.dismiss();
-                                    }catch (Exception e){
-
-                                    }
-
-
-                                    connectionStatus.tournamentStatusSetter(String.valueOf(roomCodeInt));
-                                    connectionStatus.tournamentMAINS_STATUS(String.valueOf(roomCodeInt));
-
-                                    Intent intent=new Intent(context, LobbyActivity.class);
-                                    intent.putExtra("playerNum",1);
-                                    intent.putExtra("roomCode",String.valueOf(roomCodeInt));
-                                    intent.putExtra("hostName",myName);
-                                    context.startActivity(intent);
-                                    ((Activity) context).finish();
-                                }
-                            });
-
-                        }catch (Exception e){
-                            String name=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_NAME, context);
-                            String imageURL=appData.getSharedPreferencesString(AppString.SP_MAIN,AppString.SP_MY_PIC,context);
-                            LeaderBoardHolder leaderBoardHolder=new LeaderBoardHolder(name,0,0,0,0,imageURL,0);
-
-                            PlayerInfo playerInfo = new PlayerInfo(leaderBoardHolder.getUsername(),leaderBoardHolder.getScore(),leaderBoardHolder.getTotalTime(),leaderBoardHolder.getCorrect(),leaderBoardHolder.getWrong(),leaderBoardHolder.getImageUrl(),leaderBoardHolder.getSumationScore(),true,1);
-
-
-                            table_user.child("TOURNAMENT").child("PLAYERS").child(String.valueOf(roomCodeInt)).child(mAuth.getCurrentUser().getUid()).setValue(playerInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    supportAlertDialog.dismissLoadingDialog();
-                                    try{
-                                        alertDialog.dismiss();
-                                    }catch (Exception e){
-
-                                    }
-
-                                    connectionStatus.tournamentStatusSetter(String.valueOf(roomCodeInt));
-                                    connectionStatus.tournamentMAINS_STATUS(String.valueOf(roomCodeInt));
-
-                                    Intent intent=new Intent(context, LobbyActivity.class);
-                                    intent.putExtra("playerNum",1);
-                                    intent.putExtra("roomCode",String.valueOf(roomCodeInt));
-                                    intent.putExtra("hostName",myName);
-                                    context.startActivity(intent);
-                                    ((Activity) context).finish();
-                                }
-                            });
-
-                        }
-
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
-
-
-
-
-
-
-
-            }
-        });
 
 
 

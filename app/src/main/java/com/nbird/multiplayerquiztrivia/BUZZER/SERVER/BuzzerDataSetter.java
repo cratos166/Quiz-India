@@ -1,5 +1,7 @@
 package com.nbird.multiplayerquiztrivia.BUZZER.SERVER;
 
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -10,6 +12,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDataAdapter;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.Details;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.MODEL.PlayerInfo;
@@ -25,7 +28,7 @@ public class BuzzerDataSetter {
     public BuzzerDataSetter() {
     }
 
-    public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter, ValueEventListener valueEventListener){
+    public void getPlayerData(String roomCode, ArrayList<Details> playerDataArrayList, PlayerDataAdapter myAdapter, ValueEventListener valueEventListener, TextView numberOfPlayers){
 
         valueEventListener=new ValueEventListener() {
             @Override
@@ -61,15 +64,22 @@ public class BuzzerDataSetter {
 
                     }catch (Exception e){
 
-                        try{
-                            table_user.child("BUZZER").child("PLAYERS").child(roomCode).child(dataSnapshot.getKey()).removeValue();
-                        }catch (Exception e1){
+                        e.printStackTrace();
 
-                        }
+                        PlayerInfo playerInfo=dataSnapshot.getValue(PlayerInfo.class);
+
+
+                        String totalTime="0 min 0 sec";
+                        String accStr="0.00 %";
+                        String highestScore="0";
+                        playerDataArrayList.add(new Details(playerInfo.getImageUrl(),playerInfo.getUsername(),totalTime,accStr,highestScore,dataSnapshot.getKey()));
 
                     }
 
                 }
+
+                numberOfPlayers.setText(playerDataArrayList.size()+"/"+ AppString.BUZZER_MAX_PLAYERS);
+
 
                 table_user.child("BUZZER").child("ROOM").child(roomCode).child("numberOfPlayers").setValue(playerDataArrayList.size()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

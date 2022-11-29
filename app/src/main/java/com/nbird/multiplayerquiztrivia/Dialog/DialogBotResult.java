@@ -24,8 +24,15 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.BOT.BotRequestDialog;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTNormalQuiz;
@@ -34,6 +41,7 @@ import com.nbird.multiplayerquiztrivia.BOT.VsBOTVideoQuiz;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -62,6 +70,7 @@ public class DialogBotResult {
     boolean isRequestSend=false;
     int mode;
 
+    NativeAd NATIVE_ADS;
 
     boolean isBotOnline=true;
     public DialogBotResult(int scoreInt, int correctAnsInt, int category, int timeTakenInt, int lifeLineUsedInt, int oppoScoreInt, int oppoCorrectAnsInt, int oppoTimeTakenInt, int oppoLifeLineUsedInt, CardView view, Context context, String myNameString, String myPicURL, String timeTakenString, String oppoNameString, String oppoPicURL, String oppoTimeTakenString, Map<String, Integer> llMap, Map<String, Integer> oppoLLMap, ArrayList<Boolean> animList, ArrayList<Boolean> oppoAnimList,View vv,int mode) {
@@ -105,6 +114,30 @@ public class DialogBotResult {
         View viewRemove1= LayoutInflater.from(context).inflate(R.layout.dialog_result_vs,(ConstraintLayout) vv.findViewById(R.id.layoutDialogContainer),false);
         builderRemove.setView(viewRemove1);
         builderRemove.setCancelable(false);
+
+
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
 
 
 
@@ -315,6 +348,8 @@ public class DialogBotResult {
             @Override
             public void onClick(View view) {
 
+                try{NATIVE_ADS.destroy();}catch (Exception e){}
+
                 try{
                     countDownTimerRematch.cancel();
                 }catch (Exception e){
@@ -392,7 +427,7 @@ public class DialogBotResult {
                                 }catch (Exception e){
 
                                 }
-
+                                try{NATIVE_ADS.destroy();}catch (Exception e){}
                                 Toast.makeText(context, "The request was accepted by the opponent.", Toast.LENGTH_LONG).show();
                                 if(mode==1){
                                     Intent i=new Intent(context, VsBOTPictureQuiz.class);
