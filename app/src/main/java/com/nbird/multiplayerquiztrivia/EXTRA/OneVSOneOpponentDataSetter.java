@@ -42,12 +42,12 @@ public class OneVSOneOpponentDataSetter {
         this.oppoLevelText = oppoLevelText;
     }
 
-
-
     public void start(){
+
+
         Glide.with(mContext).load(leaderBoardHolder.getImageUrl()).into(oppoImage);
         oppoName.setText(leaderBoardHolder.getUsername());
-        highestScore.setText("Highest Score : "+leaderBoardHolder.getSumationScore());
+        highestScore.setText("Highest Score : "+leaderBoardHolder.getScore());
 
         String timeStr=leaderBoardHolder.getTotalTime()/60+" Min "+leaderBoardHolder.getTotalTime()%60+" Sec ";
         totalTime.setText("Total Time : "+timeStr);

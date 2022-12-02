@@ -31,20 +31,20 @@ public class SliderAdapter extends PagerAdapter {
 
     public String[] slide_Headings={
       "Experience Quizing Like Never Before! ",
-      "KBC - Custom Quiz - Picture Quiz",
+      "Audio - Video - Picture Quiz",
       "Play more To Achieve Ranks! "
     };
 
     public String[] slide_descs={
       "Compete with players across the world. \n" +
-              "1 vs 1 - Tournaments - Single player",
-      "Play the legendary KBC... \n" +
-              "Test your visual skills with picture mode and \n"+
-              "Do your friends really know you? \n" +
-              "Check out the personal custom quiz. \n" +
-              "Create Share Enjoy! ",
-      "* Top the Leadership boards\n" +
-              "* Track your progress and achievements\n" +
+              "1 vs 1 - Tournaments(10vs10) - Single player",
+      "Challenge your senses with creative quizzing modes...  \n" +
+              "Ace with your skills. Learn and win! \n"+
+              "With Audio, Video and Picture Quiz \n" +
+              "Play with your freinds and family...  \n" +
+              "Quiz, Learn and Enjoy! ",
+      "Track your progress and achievements\n" +
+              "Score more, rank high and rule all\n" +
               "\n" +
               "Welcome to the best way to\n" +
               "Learn, Compete and Have Fun!!!",

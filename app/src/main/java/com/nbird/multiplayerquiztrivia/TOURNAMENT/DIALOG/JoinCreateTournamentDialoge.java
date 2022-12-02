@@ -102,7 +102,6 @@ public class JoinCreateTournamentDialoge {
                         @Override
                         public void onNativeAdLoaded(NativeAd nativeAd) {
                             ColorDrawable cd = new ColorDrawable(0x393F4E);
-
                             NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
                             TemplateView template = view1.findViewById(R.id.my_template);
                             template.setStyles(styles);
@@ -126,23 +125,7 @@ public class JoinCreateTournamentDialoge {
 
         categoryAdapter = new RoomListAdapter(context,list);
         recyclerView.setAdapter(categoryAdapter);
-//
-//        MobileAds.initialize(context);
-//        AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
-//                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-//                    @Override
-//                    public void onNativeAdLoaded(NativeAd nativeAd) {
-//                        ColorDrawable cd = new ColorDrawable(0x393F4E);
-//
-//                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-//                        TemplateView template = view1.findViewById(R.id.my_template);
-//
-//                        template.setStyles(styles);
-//                        template.setNativeAd(nativeAd);
-//                    }
-//                })
-//                .build();
-//        adLoader.loadAd(new AdRequest.Builder().build());
+
 
         final AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
@@ -222,10 +205,9 @@ public class JoinCreateTournamentDialoge {
                         if(room.isHostActive()){
                             if(room.isActive()==1){
                                 if(room.isPrivacy()){
-                                    if(room.getNumberOfPlayers()!=0){
+                                    if(room.getNumberOfPlayers()!=0 && room.getNumberOfPlayers()<AppString.TOURNAMENT_MAX_PLAYERS){
                                         list.add(room);
                                     }
-
                                 }
                             }
                         }else{

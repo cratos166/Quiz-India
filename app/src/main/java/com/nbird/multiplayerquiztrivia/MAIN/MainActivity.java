@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -80,6 +81,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.FACTS.mainMenuFactsHolder;
 import com.nbird.multiplayerquiztrivia.FACTS.slideAdapterMainMenuHorizontalSlide;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.Model.FirstTime;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.AboutUsActivity;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.MyProfileActivity;
@@ -191,6 +193,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     AdView mAdView;
 
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,6 +238,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                     updateDialog(updateInfo.getDIS(),updateInfo.getTITLE(),updateInfo.getLINKDATA());
 
+                                }else{
+
+                                    table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            try{
+                                                LeaderBoardHolder leaderBoardHolder=snapshot.getValue(LeaderBoardHolder.class);
+                                                if(leaderBoardHolder.getSumationScore()>2000&&leaderBoardHolder.getSumationScore()<5000){
+                                                    table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("isReview").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            try{
+                                                                if(!snapshot.getValue(Boolean.class)){
+
+                                                                }
+                                                            }catch (Exception e){
+
+                                                                table_user.child("UPDATE_CODE").child("linkdata").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                        try{
+                                                                            String urlStr=snapshot.getValue(String.class);
+                                                                            reViewDialog(urlStr);
+                                                                        }catch (Exception e1){
+
+                                                                        }
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                    }
+                                                                });
+
+
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                                }
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                 }
 
                             }catch (Exception e){
@@ -261,6 +322,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+
 
         mToggle = new ActionBarDrawerToggle(MainActivity.this,drawerLayout,R.string.open,R.string.close);
 
@@ -318,7 +381,102 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         noInternet();
 
+
+
+
+
+
+
+
+
+
     }
+
+    public void reViewDialog(String urlStr){
+        AlertDialog.Builder builderRemove=new AlertDialog.Builder(MainActivity.this, R.style.AlertDialogTheme);
+        View viewRemove1= LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_model_2,(ConstraintLayout) findViewById(R.id.layoutDialogContainer),false);
+        builderRemove.setView(viewRemove1);
+        builderRemove.setCancelable(false);
+
+
+        Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
+        Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
+
+        TextView textTitle=(TextView) viewRemove1.findViewById(R.id.textTitle);
+        textTitle.setTextSize(13);
+        textTitle.setText("Please do tell us how you liked the game by giving a review to our app.It will help our game grow.  Will just take 5 seconds, please!!!");
+
+
+
+        yesButton.setTextSize(8);
+        noButton.setTextSize(8);
+        yesButton.setText("Yes, Ofcourse");
+        noButton.setText("No, Not Interested");
+
+        LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);
+        anim.setAnimation(R.raw.rateus_anim);
+        anim.playAnimation();
+        anim.loop(true);
+
+
+
+
+
+
+
+        final AlertDialog alertDialog=builderRemove.create();
+        if(alertDialog.getWindow()!=null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        try{
+            alertDialog.show();
+        }catch (Exception e){
+
+        }
+
+
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("isReview").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+
+                Intent browserIntent=new Intent(Intent.ACTION_VIEW, Uri.parse(urlStr));
+                startActivity(browserIntent);
+                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+
+                alertDialog.cancel();
+
+            }
+        });
+
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("isReview").setValue(false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+
+
+
+
+
 
     private void isShowAds(){
         table_user.child("ADS").child("showAds").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -390,23 +548,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         button.setText("OKAY");
 
 
-        MobileAds.initialize(MainActivity.this);
-        AdLoader adLoader = new AdLoader.Builder(MainActivity.this, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+
+
+
+
 
         final AlertDialog alertDialog=builderRemove.create();
         if(alertDialog.getWindow()!=null){
@@ -460,23 +607,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         button.setText("UPDATE");
 
-        MobileAds.initialize(context);
-        AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+        }
+
+
 
 
         final AlertDialog alertDialog=builderRemove.create();
@@ -651,7 +806,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lstExam.add(new Modes("1 Vs 1",R.drawable.versusicon,"Time for the One-On-One. Compete with a rival online. Time your knowledge and be the champion."));
         lstExam.add(new Modes("Tournament Mode",R.drawable.tournament,"Quizzers from all over the world come together in the arena to show who's the ultimate leaderboard breaker."));
         lstExam.add(new Modes("Single Mode",R.drawable.singleicon,"Test your knowledge and compete against time. Score points for accuracy and achieve ranks."));
-        lstExam.add(new Modes("Buzzer Mode",R.drawable.buzzer_icon_main,"The legendary KBC is back! Crack the questions and earn as much as you can. It's your time to set the leaderboard UP!"));
+        lstExam.add(new Modes("Buzzer Mode",R.drawable.buzzer_icon_main,"The test of agility! Smart buzzers! Experience it in the Buzzer mode and be the first one to buzz your way ahead!"));
     }
 
 
@@ -1405,21 +1560,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
 
                 break;
-//            case R.id.nav_tos:
-//                Intent browserIntenttos = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FTERMS%20OF%20SERVICE-converted.pdf?alt=media&token=d07a0294-a15f-4c30-802b-d1ddc0a3eb31"));
-//                startActivity(browserIntenttos);
-//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
-//                break;
-//            case R.id.nav_ref:
-//                Intent browserIntenttos1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FRefund%20Policy-converted.pdf?alt=media&token=2679a62d-0b1a-4b57-8eb0-903295225076"));
-//                startActivity(browserIntenttos1);
-//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
-//                break;
-//            case R.id.nav_ps:
-//                Intent browserIntenttos2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FMindscape-PrivacyPoilcy-converted.pdf?alt=media&token=593f0977-c7da-4530-a9a2-12d29168eeca"));
-//                startActivity(browserIntenttos2);
-//                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
-//                break;
+            case R.id.nav_tos:
+                Intent browserIntenttos = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FMULTIPLAYER%20TRIVIA%2FTERMS_OF_SERVICE_Multiplayer_Quiz_Trivia.pdf?alt=media&token=9529f008-a6f9-47cd-8793-15ab326b25bf"));
+                startActivity(browserIntenttos);
+                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+                break;
+            case R.id.nav_ref:
+                Intent browserIntenttos1 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FMULTIPLAYER%20TRIVIA%2FRefund_Policy_Multiplayer_Quiz_Trivia.pdf?alt=media&token=5802edbd-d3d9-41db-b890-3b1904a71da1"));
+                startActivity(browserIntenttos1);
+                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+                break;
+            case R.id.nav_ps:
+                Intent browserIntenttos2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FMULTIPLAYER%20TRIVIA%2FPrivacy_policy_MULTIPLAYER%20TRIVIA%20QUIZ.pdf?alt=media&token=cef533fc-94b8-4155-b1bd-b52bde245ce8"));
+                startActivity(browserIntenttos2);
+                overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
+                break;
 //            case R.id.nav_help:
 //                Intent helpguide = new Intent(mainMenuActivity.this,HelpGuide1.class);
 //                startActivity(helpguide);

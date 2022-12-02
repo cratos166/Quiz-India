@@ -198,7 +198,7 @@ public class BuzzerJoinCreateTournamentDialoge {
                         if(room.isHostActive()){
                             if(room.isActive()==1){
                                 if(room.isPrivacy()){
-                                    if(room.getNumberOfPlayers()!=0){
+                                    if(room.getNumberOfPlayers()!=0 && room.getNumberOfPlayers()<AppString.BUZZER_MAX_PLAYERS){
                                         list.add(room);
                                     }else{
                                         table_user.child("BUZZER").child("ROOM").child(String.valueOf(dataSnapshot.getKey())).removeValue();

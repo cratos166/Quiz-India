@@ -191,26 +191,29 @@ public class QuizCancelDialog {
         Button yesButton=(Button) viewRemove1.findViewById(R.id.buttonYes);
         Button noButton=(Button) viewRemove1.findViewById(R.id.buttonNo);
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+            MobileAds.initialize(context);
+            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                            NATIVE_ADS=nativeAd;
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
 
 
-        MobileAds.initialize(context);
-        AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
-
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                        NATIVE_ADS=nativeAd;
-                    }
-                })
-                .build();
-
-        adLoader.loadAd(new AdRequest.Builder().build());
 
 
         final AlertDialog alertDialog=builderRemove.create();

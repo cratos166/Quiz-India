@@ -72,7 +72,6 @@
                 android:scaleY="0.9"
                 android:fontFamily="@font/ubuntu"
                 android:gravity="right"
-                android:text=""
                 android:textColor="@color/text_head"
                 android:textSize="22dp"
                 android:textStyle="bold"
@@ -83,6 +82,14 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
 
 
     <androidx.cardview.widget.CardView
@@ -394,11 +401,11 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView123"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="200dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:elevation="-2dp"

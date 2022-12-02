@@ -52,8 +52,8 @@
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/backlitemodeanim"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
@@ -74,11 +74,11 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
+                        android:layout_margin="5dp"
                         android:fontFamily="@font/ubuntu"
                         android:text=" Waiting For Opponent to Complete the Quiz."
                         android:textColor="@color/white"
-                        android:textSize="20dp" />
+                        android:textSize="18dp" />
 
                 </LinearLayout>
 

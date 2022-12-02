@@ -109,8 +109,8 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     int oppoScoreCounter=0;
     int oppoWrongAnsCounter=0;
 
-    int minutes=2,oppoMinute=2;
-    int second=59,oppoSecond=59;
+    int minutes=3,oppoMinute=3;
+    int second=0,oppoSecond=0;
     String minutestext,oppominutestext;
     String secondtext,opposecondtext;
 
@@ -850,6 +850,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         int secondsLeft=second;
 
 
+
         if((60-secondsLeft)>=10){
             if(secondsLeft==0){
                 timeTakenString="0"+String.valueOf(2-minutesLeft+1)+":00";
@@ -884,10 +885,9 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
 
-
+        clearMediaPlayer();
 
         if(binaryPosition<10){
-            clearMediaPlayer();
             completedFirst=true;
             waitingVSInGameDialog =new WaitingVSInGameDialog(myPicURL,myName,String.valueOf(score), timeTakenString,String.valueOf(score*10),String.valueOf(lifelineSum), VsBOTAudioQuiz.this,questionTextView,NATIVE_ADS);
             waitingVSInGameDialog.start();
@@ -996,10 +996,21 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
 
         if((60-oppoSecond)>=10){
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
+            if(oppoSecond==0){
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute+1)+":00";
+            }else{
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoMinute);
+            }
         }else{
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoMinute);
         }
+
+
+//        if((60-oppoSecond)>=10){
+//            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
+//        }else{
+//            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
+//        }
 
         Log.i("oppoTimeTakenString" , String.valueOf(oppoTimeTakenString));
 
@@ -1015,6 +1026,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
 
         if(mInterstitialAd!=null) {
             // Step 1: Display the interstitial
+
             mInterstitialAd.show(VsBOTAudioQuiz.this);
             // Step 2: Attach an AdListener
             mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -1109,7 +1121,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(8) + 5};
+        final int[] jk = {r.nextInt(8) + 6};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -1137,7 +1149,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                     animManupulation(ans,binaryPosition);
                     marker[0] =false;
 
-                    jk[0] =r.nextInt(8)+5;
+                    jk[0] =r.nextInt(8)+6;
 
                     if(binaryPosition<10){
 

@@ -113,8 +113,8 @@ public class NormalVideoQuiz extends AppCompatActivity {
 
     NativeAd NATIVE_ADS;
 
-    int minutes=2;
-    int second=59;
+    int minutes=3;
+    int second=0;
     String minutestext;
     String secondtext;
 
@@ -282,7 +282,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
-                    num=118;
+                    num=2719;
                 }
                 for(int i=0;i<11;i++){
                     // create instance of Random class
@@ -613,7 +613,7 @@ public class NormalVideoQuiz extends AppCompatActivity {
         map.put("Audience",audiencenum);
         map.put("Fifty-Fifty",fiftyfiftynum);
 
-
+        pauseVideo();
 
         if(mInterstitialAd!=null) {
             // Step 1: Display the interstitial

@@ -134,10 +134,10 @@
                         android:fontFamily="@font/ubuntu"
                         android:scaleX="0.85"
                         android:scaleY="0.85"
-                        android:text="Yes"
+                        android:text="YES"
                         android:textColor="@color/layer_3"
-
                         android:textSize="17dp"
+
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/layoutDialog"
                         app:layout_constraintStart_toStartOf="@+id/layoutDialog" />

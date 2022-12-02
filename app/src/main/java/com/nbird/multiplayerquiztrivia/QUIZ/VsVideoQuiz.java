@@ -120,8 +120,8 @@ public class VsVideoQuiz extends AppCompatActivity {
 
 
 
-    int minutes=2;
-    int second=59;
+    int minutes=3;
+    int second=0;
     String minutestext;
     String secondtext,timeTakenString;
     int timeTakenInt;
@@ -809,10 +809,10 @@ public class VsVideoQuiz extends AppCompatActivity {
                 if(second==0){
                     timeTakenString="0"+String.valueOf(2-minutes+1)+":00";
                 }else{
-                    timeTakenString="0"+String.valueOf(2-minutes)+":"+String.valueOf(60-second);
+                    timeTakenString="0"+String.valueOf(2-minutes)+":"+String.valueOf(60-minutes);
                 }
             }else{
-                timeTakenString="0"+String.valueOf(2-minutes)+":0"+String.valueOf(60-second);
+                timeTakenString="0"+String.valueOf(2-minutes)+":0"+String.valueOf(60-minutes);
             }
 
             timeTakenInt=((2-minutes)*60)+(60-second);
@@ -850,7 +850,7 @@ public class VsVideoQuiz extends AppCompatActivity {
         SupportAlertDialog supportAlertDialog =new SupportAlertDialog(loadingDialog,VsVideoQuiz.this);
         supportAlertDialog.showLoadingDialog();
 
-
+        pauseVideo();
 
 
         vsRematchListener=new ValueEventListener() {
@@ -868,7 +868,7 @@ public class VsVideoQuiz extends AppCompatActivity {
                         }else{
 
 
-                            //TODO
+
 
 
                             table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").removeValue();
@@ -946,7 +946,7 @@ public class VsVideoQuiz extends AppCompatActivity {
         table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                table_user.child("VS_PLAY").child("IsDone").child(oppoUID).addValueEventListener(new ValueEventListener() {
+                table_user.child("VS_PLAY").child("IsDone").child(oppoUID).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 

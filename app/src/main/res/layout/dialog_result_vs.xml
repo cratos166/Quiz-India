@@ -905,7 +905,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="15dp"
-                        android:background="@drawable/single_color_2"
+                        android:background="@drawable/single_color_3"
                         android:padding="20dp">
 
                         <TextView

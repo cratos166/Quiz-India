@@ -120,8 +120,8 @@ public class TournamentVideoActivity extends AppCompatActivity {
     ValueEventListener playerInfoGetterListener;
     RecyclerView recyclerView;
 
-    int minutes=2;
-    int second=59;
+    int minutes=3;
+    int second=0;
     String minutestext;
     String secondtext,hostName;
 
@@ -191,6 +191,15 @@ public class TournamentVideoActivity extends AppCompatActivity {
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
+
+
+        if(time==270){
+            minutes=4;
+            second=30;
+        }else if(time==360){
+            minutes=6;
+            second=0;
+        }
 
 
         if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentVideoActivity.this)){
@@ -523,12 +532,25 @@ public class TournamentVideoActivity extends AppCompatActivity {
         int minutesLeft=minutes;
         int secondsLeft=second;
 
+
+
         String timeTakenString;
+
         if((60-secondsLeft)>=10){
-            timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
+            if(secondsLeft==0){
+                timeTakenString="0"+String.valueOf(2-minutesLeft+1)+":00";
+            }else{
+                timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
+            }
         }else{
             timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
         }
+
+//        if((60-secondsLeft)>=10){
+//            timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
+//        }else{
+//            timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
+//        }
 
         int timeTakenInt=((2-minutesLeft)*60)+(60-secondsLeft);
 
@@ -553,6 +575,8 @@ public class TournamentVideoActivity extends AppCompatActivity {
         Dialog dialog=null;
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentVideoActivity.this);
         supportAlertDialog.showLoadingDialog();
+
+
 
 
         table_user.child("TOURNAMENT").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -657,23 +681,32 @@ public class TournamentVideoActivity extends AppCompatActivity {
         }else {
             textTitle.setText("You really want to quit ?");
         }
-        MobileAds.initialize(TournamentVideoActivity.this);
-        AdLoader adLoader = new AdLoader.Builder(TournamentVideoActivity.this, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentVideoActivity.this)){
+
+            MobileAds.initialize(TournamentVideoActivity.this);
+            AdLoader adLoader = new AdLoader.Builder(TournamentVideoActivity.this, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+        }
+
+
 
 
 

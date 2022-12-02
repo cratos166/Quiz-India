@@ -370,7 +370,7 @@ public class BuzzerScoreActivity extends AppCompatActivity {
 
 
 
-                dis.setText("Number of players completed the quiz : "+numberOfActivePlayer+"/"+playerDataArrayList.size());
+                dis.setText("Number of players completed the quiz : "+playerDataArrayList.size()+"/"+numberOfActivePlayer);
 
                 try {
 
@@ -591,23 +591,30 @@ public class BuzzerScoreActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
-        MobileAds.initialize(BuzzerScoreActivity.this);
-        AdLoader adLoader = new AdLoader.Builder(BuzzerScoreActivity.this, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, BuzzerScoreActivity.this)){
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
+            MobileAds.initialize(BuzzerScoreActivity.this);
+            AdLoader adLoader = new AdLoader.Builder(BuzzerScoreActivity.this, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+        }
+
+
 
 
         LottieAnimationView anim = (LottieAnimationView) viewRemove1.findViewById(R.id.imageIcon);

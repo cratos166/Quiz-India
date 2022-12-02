@@ -81,6 +81,7 @@ public class ScoreActivity extends AppCompatActivity {
     Boolean winnerDeclared = false, isHostActive;
     TextView dis;
     AdView mAdView;
+    Boolean isDone=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,9 +145,13 @@ public class ScoreActivity extends AppCompatActivity {
                         if (winnerDeclared) {
                             if (isHostActive) {
                                 reMatch.setEnabled(true);
+                                reMatch.setVisibility(View.VISIBLE);
+                                quitButton.setVisibility(View.VISIBLE);
                             } else {
                                 reMatch.setEnabled(true);
                                 joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
+                                reMatch.setVisibility(View.VISIBLE);
+                                quitButton.setVisibility(View.VISIBLE);
                             }
                         }
 
@@ -163,7 +168,8 @@ public class ScoreActivity extends AppCompatActivity {
 
                         reMatch.setEnabled(true);
                         joinOrCreateOtherRoom.setVisibility(View.VISIBLE);
-
+                        reMatch.setVisibility(View.VISIBLE);
+                        quitButton.setVisibility(View.VISIBLE);
 
                     }
                 }
@@ -177,6 +183,10 @@ public class ScoreActivity extends AppCompatActivity {
             table_user.child("TOURNAMENT").child("ROOM").child(roomCode).child("hostActive").addValueEventListener(hostActiveEventListener);
         }
 
+
+
+        quitButton.setVisibility(View.GONE);
+        reMatch.setVisibility(View.GONE);
 
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,7 +354,7 @@ public class ScoreActivity extends AppCompatActivity {
                     }
                 }
 
-                dis.setText("Number of players completed the quiz : "+numberOfActivePlayer+"/"+playerDataArrayList.size());
+                dis.setText("Number of players completed the quiz : "+playerDataArrayList.size()+"/"+numberOfActivePlayer);
 
                 try {
 
@@ -468,7 +478,9 @@ public class ScoreActivity extends AppCompatActivity {
         winnerDeclared = true;
 
         reMatch.setEnabled(true);
-
+        reMatch.setVisibility(View.VISIBLE);
+        quitButton.setVisibility(View.VISIBLE);
+        isDone=true;
 
         try {
             table_user.child("TOURNAMENT").child("PLAYERS").child(roomCode).removeEventListener(numberOfActivePlayerEventListener);
@@ -563,23 +575,31 @@ public class ScoreActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
-        MobileAds.initialize(ScoreActivity.this);
-        AdLoader adLoader = new AdLoader.Builder(ScoreActivity.this, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, ScoreActivity.this)){
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+            MobileAds.initialize(ScoreActivity.this);
+            AdLoader adLoader = new AdLoader.Builder(ScoreActivity.this, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
+
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+
+
+        }
+
 
 
         LottieAnimationView anim = (LottieAnimationView) viewRemove1.findViewById(R.id.imageIcon);
@@ -682,7 +702,12 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        quitScoreActivityActivity();
+        if(isDone){
+            quitScoreActivityActivity();
+        }else{
+            Toast.makeText(this, "Please wait until the result has been shown.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override

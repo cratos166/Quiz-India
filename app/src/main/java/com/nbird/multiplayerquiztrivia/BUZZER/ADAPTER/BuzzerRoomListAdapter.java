@@ -135,7 +135,7 @@ public class BuzzerRoomListAdapter extends RecyclerView.Adapter<BuzzerRoomListAd
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         try{
                                             int player=snapshot.getValue(Integer.class);
-                                            if(player<AppString.TOURNAMENT_MAX_PLAYERS){
+                                            if(player<AppString.BUZZER_MAX_PLAYERS){
 
 
                                                 joiner(position,supportAlertDialog);

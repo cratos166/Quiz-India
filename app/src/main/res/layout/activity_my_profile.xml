@@ -81,9 +81,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/ubuntu"
-                            android:text="AAKASH CHANGE THESE TEXT. A NORMAL DISCRIPTION OF WHY THIS ACTIVITY"
+                            android:text="Welcome to your profile!\nKeep a check on your progress and achievements."
                             android:textColor="@color/text_head"
-                            android:textSize="8dp" />
+                            android:textSize="12dp" />
 
                     </LinearLayout>
 
@@ -347,7 +347,8 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/ubuntu"
-                                        android:text="This data is only for single player normal quiz. It's the number of times a category is played"
+                                        android:layout_gravity="center"
+                                        android:text="Quiz category distribution chart for Single Player Mode."
                                         android:textColor="@color/text_head"
                                         android:textSize="8dp" />
                                 </LinearLayout>
@@ -396,7 +397,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:text="This data is for single mode and vs mode. Each game score is displayed in this line chart"
+                                android:layout_gravity="center"
+                                android:text="Track your recent quiz scores for Single player and VS mode"
                                 android:textColor="@color/text_head"
                                 android:textSize="8dp" />
                         </LinearLayout>
@@ -441,7 +443,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/ubuntu"
-                                android:text="this data is for both single player and vs mode. Week wise all correct vs wrong"
+                                android:layout_gravity="center"
+                                android:text="Track your 'Correct vs Wrong' accuracy week-wise for Single player and VS mode"
                                 android:textColor="@color/text_head"
                                 android:textSize="8dp" />
                         </LinearLayout>

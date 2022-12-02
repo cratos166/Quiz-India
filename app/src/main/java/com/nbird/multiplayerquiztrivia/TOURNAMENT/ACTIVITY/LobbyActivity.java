@@ -680,7 +680,7 @@ public class LobbyActivity extends AppCompatActivity {
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
-                    num=118;
+                    num=2719;
                 }
                 Random rand = new Random();
                 for(int i=0;i<=number;i++){
@@ -901,24 +901,29 @@ public class LobbyActivity extends AppCompatActivity {
         anim.playAnimation();
         anim.loop(true);
 
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, LobbyActivity.this)){
+            MobileAds.initialize(LobbyActivity.this);
+            AdLoader adLoader = new AdLoader.Builder(LobbyActivity.this, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-        MobileAds.initialize(LobbyActivity.this);
-        AdLoader adLoader = new AdLoader.Builder(LobbyActivity.this, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .build();
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+
+
 
 
 

@@ -58,13 +58,13 @@
         <entry key="app/src/main/res/layout/activity_vs_botaudio_quiz.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_vs_botnormal_quiz.xml" value="0.26358695652173914" />
         <entry key="app/src/main/res/layout/activity_vs_botpicture_quiz.xml" value="0.32708333333333334" />
-        <entry key="app/src/main/res/layout/activity_vs_botvideo_quiz.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/activity_vs_botvideo_quiz.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_vs_normal_quiz.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_vs_picture_quiz.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/activity_vs_video_quiz.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/asset_ava.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/asset_mainmenuhorizontalslide.xml" value="0.4036458333333333" />
-        <entry key="app/src/main/res/layout/buzzer_result_item.xml" value="0.5911458333333334" />
+        <entry key="app/src/main/res/layout/buzzer_result_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/cardviewmainmenu.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/chat_item.xml" value="0.5661458333333333" />
         <entry key="app/src/main/res/layout/data_placeholder_layout.xml" value="0.33" />
@@ -77,7 +77,7 @@
         <entry key="app/src/main/res/layout/dialog_facts.xml" value="0.335" />
         <entry key="app/src/main/res/layout/dialog_join_layout.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_model_1.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/dialog_model_2.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/dialog_model_2.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_online_local.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/dialog_privacy_setting.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/layout/dialog_profile_selection.xml" value="0.17346014492753623" />

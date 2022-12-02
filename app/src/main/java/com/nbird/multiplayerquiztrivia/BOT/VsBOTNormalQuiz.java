@@ -114,8 +114,8 @@ public class VsBOTNormalQuiz extends AppCompatActivity {
     int oppoScoreCounter=0;
     int oppoWrongAnsCounter=0;
 
-    int minutes=2,oppoMinute=2;
-    int second=59,oppoSecond=59;
+    int minutes=3,oppoMinute=3;
+    int second=0,oppoSecond=0;
     String minutestext,oppominutestext;
     String secondtext,opposecondtext;
 
@@ -732,10 +732,20 @@ public class VsBOTNormalQuiz extends AppCompatActivity {
 
 
         if((60-oppoSecond)>=10){
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
+            if(oppoSecond==0){
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute+1)+":00";
+            }else{
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoMinute);
+            }
         }else{
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoMinute);
         }
+
+//        if((60-oppoSecond)>=10){
+//            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
+//        }else{
+//            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
+//        }
 
         Log.i("oppoTimeTakenString" , String.valueOf(oppoTimeTakenString));
 
@@ -924,9 +934,6 @@ public class VsBOTNormalQuiz extends AppCompatActivity {
                 }catch (Exception e){
                    e.printStackTrace();
                 }
-
-
-
 
             }
         }.start();

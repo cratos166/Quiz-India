@@ -320,7 +320,7 @@ public class DialogJoinVS {
 
                         }
                     });
-                    //TODO POP UP THE WAITER ALERT DIALOG
+
 
 
 

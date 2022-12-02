@@ -100,8 +100,8 @@ public class NormalPictureQuiz extends AppCompatActivity {
     HighestScore highestScore;
 
 
-    int minutes=2;
-    int second=59;
+    int minutes=3;
+    int second=0;
     String minutestext;
     String secondtext;
 

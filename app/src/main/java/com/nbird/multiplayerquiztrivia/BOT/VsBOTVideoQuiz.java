@@ -109,8 +109,8 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     int oppoScoreCounter=0;
     int oppoWrongAnsCounter=0;
 
-    int minutes=2,oppoMinute=2;
-    int second=59,oppoSecond=59;
+    int minutes=3,oppoMinute=3;
+    int second=0,oppoSecond=0;
     String minutestext,oppominutestext;
     String secondtext,opposecondtext;
 
@@ -341,7 +341,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
-                    num=118;
+                    num=2719;
                 }
                 for(int i=0;i<11;i++){
                     // create instance of Random class
@@ -679,7 +679,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
 
 
 
-
+        pauseVideo();
 
 
         if(binaryPosition<10){
@@ -781,9 +781,13 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
 
 
         if((60-oppoSecond)>=10){
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
+            if(oppoSecond==0){
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute+1)+":00";
+            }else{
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoMinute);
+            }
         }else{
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoMinute);
         }
 
         Log.i("oppoTimeTakenString" , String.valueOf(oppoTimeTakenString));
@@ -880,7 +884,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(9) + 4};
+        final int[] jk = {r.nextInt(8) + 10};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -904,7 +908,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
                     animManupulation(ans,binaryPosition);
                     marker[0] =false;
 
-                    jk[0] =r.nextInt(9)+4;
+                    jk[0] =r.nextInt(8)+10;
 
                     if(binaryPosition<10){
 
@@ -1017,9 +1021,19 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
                     float screenRatio = videoView.getWidth() / (float) videoView.getHeight();
                     float scaleX = videoRatio / screenRatio;
                     if (scaleX >= 1f) {
-                        videoView.setScaleX(scaleX);
+                        try{
+                            videoView.setScaleX(scaleX);
+                        }catch (Exception e){
+
+                        }
+
                     } else {
-                        videoView.setScaleY(1f / scaleX);
+                        try{
+                            videoView.setScaleY(1f / scaleX);
+                        }catch (Exception e){
+
+                        }
+
                     }
                     mp.setLooping(true);
                     loadingvideo.setVisibility(View.GONE);
@@ -1134,7 +1148,12 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     }
 
     public void pauseVideo(){
-        videoView.pause();
+        try{
+            videoView.pause();
+        }catch (Exception e){
+
+        }
+
     }
 
     public void resumeVideo(){

@@ -162,7 +162,7 @@ public class BuzzerJoinWithPasswordDialog {
 
 
 
-                    if (room.getNumberOfPlayers() < AppString.TOURNAMENT_MAX_PLAYERS) {
+                    if (room.getNumberOfPlayers() < AppString.BUZZER_MAX_PLAYERS) {
 
 
                         table_user.child("LeaderBoard").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

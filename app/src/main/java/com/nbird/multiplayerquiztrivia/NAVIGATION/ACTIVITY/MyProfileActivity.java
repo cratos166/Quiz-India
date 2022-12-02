@@ -36,6 +36,7 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -47,6 +48,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.renderer.YAxisRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -714,13 +716,24 @@ public class MyProfileActivity extends AppCompatActivity {
                 LineDataSet lineDataSet = new LineDataSet(entryList,"Quiz Score");
                 lineDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
                 lineDataSet.setFillAlpha(110);
+
+                lineDataSet.setValueTextColor(Color.parseColor("#98A8D0"));
                 lineData = new LineData(lineDataSet);
                 lineChart.getDescription().setEnabled(false);
                 lineChart.setData(lineData);
+
                 lineChart.setVisibleXRangeMaximum(10);
                 lineChart.moveViewToX(lineChart.getXChartMax());
                 lineChart.invalidate();
 
+                XAxis xAxis = lineChart.getXAxis();
+                xAxis.setTextColor(Color.parseColor("#98A8D0"));
+
+                YAxis leftAxis = lineChart.getAxisLeft();
+                YAxis rightAxis = lineChart.getAxisRight();
+
+                leftAxis.setTextColor(Color.parseColor("#98A8D0"));
+                rightAxis.setTextColor(Color.parseColor("#98A8D0"));
 
 
             }
@@ -805,18 +818,19 @@ public class MyProfileActivity extends AppCompatActivity {
         pieDataSet.setValueTextColor(Color.BLACK);
         pieDataSet.setValueTextSize(10f);
         pieDataSet.setValueLineColor(R.color.black);
-        pieDataSet.setFormSize(2);
-
+        pieDataSet.setFormSize(4);
 
 
         PieData pieData=new PieData(pieDataSet);
 
         pieChart.setData(pieData);
+
         pieChart.invalidate();         //Imporatant line showing pie chart
-        pieChart.setEntryLabelTextSize(5);
+        pieChart.setEntryLabelTextSize(6);
         pieChart.setEntryLabelColor(R.color.button_color);
         pieChart.getDescription().setEnabled(false);
         pieChart.setCenterText("Times Played");
+        pieChart.setCenterTextColor(Color.parseColor("#2E323C"));
         pieChart.animate();
     }
 
@@ -894,9 +908,11 @@ public class MyProfileActivity extends AppCompatActivity {
     public void barGroupChart(){
 
         barDataSet1 = new BarDataSet(correctBar, "Correct");
-        barDataSet1.setColor(getApplicationContext().getResources().getColor(R.color.black));
+        barDataSet1.setValueTextColor(Color.parseColor("#98A8D0"));
+        barDataSet1.setColor(Color.parseColor("#98A8D0"));
         barDataSet2 = new BarDataSet(wrongBar, "Wrong");
-        barDataSet2.setColor(Color.BLUE);
+        barDataSet2.setValueTextColor(Color.parseColor("#98A8D0"));
+        barDataSet2.setColor(Color.parseColor("#98A8D0"));
 
 
 
@@ -912,12 +928,22 @@ public class MyProfileActivity extends AppCompatActivity {
         xAxis.setGranularity(1);
         xAxis.setGranularityEnabled(true);
         xAxis.setTextSize(5f);
+        xAxis.setTextColor(Color.parseColor("#98A8D0"));
+
+
+        YAxis leftAxis = barChart.getAxisLeft();
+        YAxis rightAxis = barChart.getAxisRight();
+
+        leftAxis.setTextColor(Color.parseColor("#98A8D0"));
+        rightAxis.setTextColor(Color.parseColor("#98A8D0"));
+
         barChart.setDragEnabled(true);
         barChart.setVisibleXRangeMaximum(7);
         float barSpace = 0.1f;
         float groupSpace = 0.5f;
         data.setBarWidth(0.15f);
         data.setValueTextSize(5f);
+        data.setValueTextColor(Color.parseColor("#98A8D0"));
         barChart.getXAxis().setAxisMinimum(0);
         barChart.animate();
         barChart.groupBars(0, groupSpace, barSpace);

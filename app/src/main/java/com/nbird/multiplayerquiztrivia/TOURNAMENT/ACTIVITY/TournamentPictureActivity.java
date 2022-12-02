@@ -127,8 +127,8 @@ public class TournamentPictureActivity extends AppCompatActivity {
     ValueEventListener playerInfoGetterListener;
     RecyclerView recyclerView;
 
-    int minutes=2;
-    int second=59;
+    int minutes=3;
+    int second=0;
     String minutestext;
     String secondtext,hostName;
     ImageView questionImage;
@@ -187,6 +187,14 @@ public class TournamentPictureActivity extends AppCompatActivity {
         appData=new AppData();
         animationList=new ArrayList<>();
         animList=new ArrayList<>();
+
+        if(time==270){
+            minutes=4;
+            second=30;
+        }else if(time==360){
+            minutes=6;
+            second=0;
+        }
 
 
         if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentPictureActivity.this)){
@@ -546,18 +554,20 @@ public class TournamentPictureActivity extends AppCompatActivity {
         int secondsLeft=second;
 
         String timeTakenString;
-        if((60-secondsLeft)>=10){
 
+
+        if((60-secondsLeft)>=10){
             if(secondsLeft==0){
                 timeTakenString="0"+String.valueOf(2-minutesLeft+1)+":00";
             }else{
                 timeTakenString="0"+String.valueOf(2-minutesLeft)+":"+String.valueOf(60-secondsLeft);
             }
-            
-
         }else{
             timeTakenString="0"+String.valueOf(2-minutesLeft)+":0"+String.valueOf(60-secondsLeft);
         }
+
+
+
 
 
 
@@ -718,23 +728,28 @@ public class TournamentPictureActivity extends AppCompatActivity {
             textTitle.setText("You really want to quit ?");
         }
 
-        MobileAds.initialize(TournamentPictureActivity.this);
-        AdLoader adLoader = new AdLoader.Builder(TournamentPictureActivity.this, AppString.NATIVE_ID)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(NativeAd nativeAd) {
-                        ColorDrawable cd = new ColorDrawable(0x393F4E);
+        AppData appData=new AppData();
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, TournamentPictureActivity.this)){
+            MobileAds.initialize(TournamentPictureActivity.this);
+            AdLoader adLoader = new AdLoader.Builder(TournamentPictureActivity.this, AppString.NATIVE_ID)
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                        @Override
+                        public void onNativeAdLoaded(NativeAd nativeAd) {
+                            ColorDrawable cd = new ColorDrawable(0x393F4E);
 
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
-                        TemplateView template = viewRemove1.findViewById(R.id.my_template);
-                        template.setStyles(styles);
-                        template.setNativeAd(nativeAd);
-                        template.setVisibility(View.VISIBLE);
-                    }
-                })
-                .build();
+                            NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(cd).build();
+                            TemplateView template = viewRemove1.findViewById(R.id.my_template);
+                            template.setStyles(styles);
+                            template.setNativeAd(nativeAd);
+                            template.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .build();
 
-        adLoader.loadAd(new AdRequest.Builder().build());
+            adLoader.loadAd(new AdRequest.Builder().build());
+        }
+
+
 
 
         LottieAnimationView anim=(LottieAnimationView)  viewRemove1.findViewById(R.id.imageIcon);

@@ -106,6 +106,7 @@ public class DialogModel_1 {
         button.setText(buttonString);
 
 
+
         AppData appData=new AppData();
         if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
             MobileAds.initialize(context);
