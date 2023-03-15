@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
+import com.nbird.multiplayerquiztrivia.EXTRA.MarksSetter;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.LeaderBoardHolder;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.GENERATORS.BatchGenerator;
@@ -186,7 +187,12 @@ public class ResultHandling {
         animationList.add(anim7); animationList.add(anim8); animationList.add(anim9);
         animationList.add(anim10);
 
+        TextView marksCorrectAnswer=(TextView) viewRemove1.findViewById(R.id.marksCorrectAnswer);
+        TextView marksTimeTaken=(TextView) viewRemove1.findViewById(R.id.marksTimeTaken);
+        TextView marksLifeLineUsed=(TextView) viewRemove1.findViewById(R.id.marksLifeLineUsed);
 
+        MarksSetter marksSetter=new MarksSetter(marksCorrectAnswer,marksTimeTaken,marksLifeLineUsed,correctAnsInt,timeTakenInt,lifeLineUsedInt);
+        marksSetter.start();
 
         correctAnswer.setText("Correct/Wrong : "+correctAnsInt+"/"+String.valueOf(10-correctAnsInt));
         timeTaken.setText("Time Taken : "+timeTakenString);

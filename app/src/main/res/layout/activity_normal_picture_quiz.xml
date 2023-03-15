@@ -457,7 +457,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitXY"
                         app:layout_constraintBottom_toBottomOf="@+id/imageView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

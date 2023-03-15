@@ -67,6 +67,7 @@ import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
+import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
@@ -401,15 +402,32 @@ public class NormalAudioQuiz extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int num;
+
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
                     num=3464;
                 }
-                for(int i=0;i<11;i++){
+
+                Boolean isIndianSongInclude=appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_INDIAN_AUDIO, NormalAudioQuiz.this);
+
+                for(int i=0;i<11;){
                     final Random rand = new Random();
                     final int setNumber = rand.nextInt(num)+1;
-                    fireBaseData(setNumber);
+
+                    if(isIndianSongInclude){
+                        i++;
+                        fireBaseData(setNumber);
+                    }else{
+                        if((setNumber>=836&&setNumber<=1255)||(setNumber>=1286&&setNumber<=2000)||(setNumber>=2186&&setNumber<=2562)){
+
+                        }else{
+                            i++;
+                            fireBaseData(setNumber);
+                        }
+                    }
+
+
                 }
             }
             @Override

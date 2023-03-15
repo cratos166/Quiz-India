@@ -41,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
+import com.nbird.multiplayerquiztrivia.EXTRA.MarksSetter;
 import com.nbird.multiplayerquiztrivia.FIREBASE.AnswerUploaderAndReceiver;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
@@ -89,6 +90,11 @@ public class DataExchange {
     public boolean rematchButtonEnable;
 
     public Button reMatch;
+
+    TextView marksCorrectAnswerOppo;
+    TextView marksTimeTakenOppo;
+    TextView marksLifeLineUsedOppo;
+
 
     public DataExchange(Context context, HashMap<String, Integer> llMap, ArrayList<Boolean> animList, int correctAnsInt, String timeTakenString, int lifeLineUsedInt, long totalScoreInt, int higestScoreInt, int scoreInt, CardView view, String myNameString, String myPicURL, int category, int intentInt, int timeTakenInt, String oppoUID, String oppoName, String oppoImgStr, ArrayList<LottieAnimationView> animationList, int mode, ValueEventListener lisnerForConnectionStatus, AnswerUploaderAndReceiver answerUploaderAndReceiver,ValueEventListener vsRematchListener,ValueEventListener isCompletedListener,CountDownTimer countDownTimer,LottieAnimationView party_popper,boolean rematchButtonEnable) {
         this.context = context;
@@ -289,6 +295,20 @@ public class DataExchange {
 
 
         totalScore.setText("Total Score : "+scoreInt);
+
+
+        TextView marksCorrectAnswer=(TextView) viewRemove1.findViewById(R.id.marksCorrectAnswer);
+        TextView marksTimeTaken=(TextView) viewRemove1.findViewById(R.id.marksTimeTaken);
+        TextView marksLifeLineUsed=(TextView) viewRemove1.findViewById(R.id.marksLifeLineUsed);
+
+        MarksSetter marksSetter=new MarksSetter(marksCorrectAnswer,marksTimeTaken,marksLifeLineUsed,correctAnsInt,timeTakenInt,lifeLineUsedInt);
+        marksSetter.start();
+
+
+         marksCorrectAnswerOppo=(TextView) viewRemove1.findViewById(R.id.marksCorrectAnswerOppo);
+         marksTimeTakenOppo=(TextView) viewRemove1.findViewById(R.id.marksTimeTakenOppo);
+         marksLifeLineUsedOppo=(TextView) viewRemove1.findViewById(R.id.marksLifeLineUsedOppo);
+
 
         myName.setText(myNameString);
         Glide.with(context).load(myPicURL).apply(RequestOptions
@@ -699,6 +719,12 @@ public class DataExchange {
                             timeTakenOppo.setText("Time Taken : "+oppoHolder.getTimeTakenString());
                             lifeLineUsedOppo.setText("Life-Line Used : "+oppoHolder.getLifeLineUsedInt());
                             totalScoreOppo.setText("Total Score : "+oppoHolder.getScoreInt());
+
+
+                            MarksSetter marksSetterOppo=new MarksSetter(marksCorrectAnswerOppo,marksTimeTakenOppo,marksLifeLineUsedOppo,oppoHolder.getCorrectAnsInt(),oppoHolder.getTimeTakenInt(),oppoHolder.getLifeLineUsedInt());
+                            marksSetterOppo.start();
+
+
 
                             table_user.child("VS_PLAY").child("DataExchange").child(oppoUID).removeEventListener(valueEventListener);
                      //       table_user.child("VS_PLAY").child("DataExchange").child(oppoUID).removeValue();

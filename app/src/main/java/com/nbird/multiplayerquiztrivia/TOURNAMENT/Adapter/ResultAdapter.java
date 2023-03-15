@@ -8,13 +8,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.nbird.multiplayerquiztrivia.EXTRA.MarksSetter;
 import com.nbird.multiplayerquiztrivia.Model.DataExchangeHolder;
 import com.nbird.multiplayerquiztrivia.R;
 
@@ -24,11 +24,13 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
     private Context mContext;
     ArrayList<DataExchangeHolder> dataExchangeHolderArrayList;
     int maxQuestion;
-
-    public ResultAdapter(Context mContext, ArrayList<DataExchangeHolder> chatListArray,int maxQuestion){
+    int timeInt;
+    MarksSetter marksSetter;
+    public ResultAdapter(Context mContext, ArrayList<DataExchangeHolder> chatListArray, int maxQuestion, int timeInt){
         this.mContext=mContext;
         this.dataExchangeHolderArrayList =chatListArray;
         this.maxQuestion=maxQuestion;
+        this.timeInt=timeInt;
     }
 
 
@@ -47,6 +49,8 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
 
         holder.setIsRecyclable(false);
 
+        marksSetter=new MarksSetter(holder.marksCorrectAnswer,holder.marksTimeTaken,holder.marksLifeLineUsed,dataExchangeHolderArrayList.get(position).getCorrectAnsInt(),dataExchangeHolderArrayList.get(position).getScoreInt(),dataExchangeHolderArrayList.get(position).getLifeLineUsedInt());
+        marksSetter.startForTournament(timeInt);
 
         if(dataExchangeHolderArrayList.get(position).getTotalScoreInt()==1){
             holder.rank.setText(String.valueOf(dataExchangeHolderArrayList.get(position).getTotalScoreInt())+"st");
@@ -96,20 +100,25 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
         list.add(holder.anim6);list.add(holder.anim7);list.add(holder.anim8);list.add(holder.anim9);list.add(holder.anim10);
 
 
-        for(int i = 0; i< dataExchangeHolderArrayList.get(position).getAnimList().size(); i++){
-            try{
-                if(dataExchangeHolderArrayList.get(position).getAnimList().get(i)){
-                    list.get(i).setAnimation(R.raw.tickanim);
-                    list.get(i).playAnimation();
-                    list.get(i).loop(false);
-                }else{
-                    list.get(i).setAnimation(R.raw.wronganim);
-                    list.get(i).playAnimation();
-                    list.get(i).loop(false);
+        try{
+            for(int i = 0; i< dataExchangeHolderArrayList.get(position).getAnimList().size(); i++){
+                try{
+                    if(dataExchangeHolderArrayList.get(position).getAnimList().get(i)){
+                        list.get(i).setAnimation(R.raw.tickanim);
+                        list.get(i).playAnimation();
+                        list.get(i).loop(false);
+                    }else{
+                        list.get(i).setAnimation(R.raw.wronganim);
+                        list.get(i).playAnimation();
+                        list.get(i).loop(false);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
+
+        }catch (Exception e){
+
         }
 
 
@@ -131,6 +140,10 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
 
         LinearLayout linearLayoutexpert,linearLayoutAudience,linearLayoutSwap,linearLayoutfiftyfifty;
         LottieAnimationView anim1,anim2,anim3,anim4,anim5,anim6,anim7,anim8,anim9,anim10,anim11,anim12,anim13,anim14,anim15,anim16,anim17,anim18,anim19,anim20;
+
+        TextView marksCorrectAnswer;
+        TextView marksTimeTaken;
+        TextView marksLifeLineUsed;
 
         public MyViewHolder(View itemView){
             super(itemView);
@@ -176,6 +189,10 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
              anim10=(LottieAnimationView) itemView.findViewById(R.id.anim20);
 
 
+
+             marksCorrectAnswer=(TextView) itemView.findViewById(R.id.marksCorrectAnswer);
+             marksTimeTaken=(TextView) itemView.findViewById(R.id.marksTimeTaken);
+             marksLifeLineUsed=(TextView) itemView.findViewById(R.id.marksLifeLineUsed);
 
 
 

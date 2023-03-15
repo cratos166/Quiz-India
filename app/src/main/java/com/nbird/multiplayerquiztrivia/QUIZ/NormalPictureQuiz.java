@@ -361,7 +361,12 @@ public class NormalPictureQuiz extends AppCompatActivity {
 
                         if (swapnum == 0) { if (position == 10) { quizFinishDialog();return; } } else { if (position == 11) { quizFinishDialog();return; } }
                         count = 0;
-                        playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
+                        try{
+                            playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
+                        }catch (Exception e){
+
+                        }
+
                     }
                 });
             } else {

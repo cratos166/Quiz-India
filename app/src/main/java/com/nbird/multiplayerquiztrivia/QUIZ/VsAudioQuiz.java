@@ -864,11 +864,21 @@ public class VsAudioQuiz extends AppCompatActivity {
     }
 
     public void pauseMusic(){
-        music.pause();
+        try{
+            music.pause();
+        }catch (Exception e){
+
+        }
+
     }
 
     public void startMusic(){
-        music.start();
+        try{
+            music.start();
+        }catch (Exception e){
+
+        }
+
     }
 
 

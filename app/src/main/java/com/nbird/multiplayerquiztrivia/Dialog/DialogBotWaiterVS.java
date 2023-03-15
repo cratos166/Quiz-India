@@ -333,7 +333,7 @@ public class DialogBotWaiterVS {
 
         int tt=r.nextInt(20)+1;
 
-        if(tt<9){
+        if(tt<16){
 
 
             oppoURL= avatarLink.getArr().get(tom);
@@ -343,7 +343,7 @@ public class DialogBotWaiterVS {
                     .into(oppoImage);
 
         }
-        else if(tt==13){
+        else if(tt==17){
 
 
             oppoURL= "https://i.pravatar.cc/100";

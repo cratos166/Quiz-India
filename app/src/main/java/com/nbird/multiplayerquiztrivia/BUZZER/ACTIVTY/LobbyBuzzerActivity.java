@@ -797,9 +797,9 @@ public class LobbyBuzzerActivity extends AppCompatActivity {
                     try{countDownTimer.cancel();}catch (Exception e){}
 
 
-                    Intent intent=new Intent(LobbyBuzzerActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent=new Intent(LobbyBuzzerActivity.this,MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
 
 
                 }

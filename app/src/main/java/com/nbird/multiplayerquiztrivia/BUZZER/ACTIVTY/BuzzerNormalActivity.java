@@ -575,11 +575,6 @@ public class BuzzerNormalActivity extends AppCompatActivity {
                         }
 
 
-
-
-
-
-
                     }
                 });
 

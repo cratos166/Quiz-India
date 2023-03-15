@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,6 +88,7 @@ import com.nbird.multiplayerquiztrivia.Model.FirstTime;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.AboutUsActivity;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.ACTIVITY.MyProfileActivity;
 import com.nbird.multiplayerquiztrivia.NAVIGATION.MODEL.UpdateInfo;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalSingleQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
@@ -188,13 +191,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-    public static final int APP_UPDATE_VERSION_CODE = 1;
+    public static final int APP_UPDATE_VERSION_CODE = 2;
 
 
     AdView mAdView;
 
 
 
+    Switch switchForAudio;
 
 
 
@@ -207,12 +211,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         isShowAds();
 
 
+        switchForAudio=(Switch) findViewById(R.id.switchForAudio);
+
 
 
         mAuth = FirebaseAuth.getInstance();
 
         createRequest();
         appData = new AppData();
+
+
+        switchForAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(switchForAudio.isChecked()){
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN, AppString.SP_INDIAN_AUDIO, MainActivity.this, true);
+                    Log.i("ACTIVE","1");
+                }else{
+                    appData.setSharedPreferencesBoolean(AppString.SP_MAIN, AppString.SP_INDIAN_AUDIO, MainActivity.this, false);
+                    Log.i("INACTIVE","2");
+                }
+            }
+        });
+
+        try{
+            if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_INDIAN_AUDIO, MainActivity.this)){
+                switchForAudio.setChecked(true);
+            }else{
+                switchForAudio.setChecked(false);
+            }
+        }catch (Exception e){
+            appData.setSharedPreferencesBoolean(AppString.SP_MAIN, AppString.SP_INDIAN_AUDIO, MainActivity.this, false);
+            switchForAudio.setChecked(false);
+        }
+
 
         list=new ArrayList<>();
 
@@ -373,13 +405,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             table_user.child("VS_PLAY").child("IsDone").child(mAuth.getCurrentUser().getUid()).removeValue();
 
 
+            table_user.child("BOT_TOURNAMENT").child("ANSWERS").child(mAuth.getCurrentUser().getUid()).removeValue();
+            table_user.child("BOT_TOURNAMENT").child("INFO").child(mAuth.getCurrentUser().getUid()).removeValue();
+            table_user.child("BOT_TOURNAMENT").child("RESULT").child(mAuth.getCurrentUser().getUid()).removeValue();
 
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        noInternet();
+
+        try{
+            noInternet();
+        }catch (Exception e){
+
+        }
+
 
 
 
@@ -609,10 +650,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         AppData appData=new AppData();
-        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, context)){
+        if(appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_IS_SHOW_ADS, MainActivity.this)){
 
-            MobileAds.initialize(context);
-            AdLoader adLoader = new AdLoader.Builder(context, AppString.NATIVE_ID)
+            MobileAds.initialize(MainActivity.this);
+            AdLoader adLoader = new AdLoader.Builder(MainActivity.this, AppString.NATIVE_ID)
                     .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
                         @Override
                         public void onNativeAdLoaded(NativeAd nativeAd) {
@@ -903,7 +944,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
                             String personEmail = account.getEmail();
                             appData.setSharedPreferencesString(AppString.SP_MAIN, AppString.SP_MY_MAIL, MainActivity.this, personEmail);
-
+                            appData.setSharedPreferencesBoolean(AppString.SP_MAIN, AppString.SP_INDIAN_AUDIO, MainActivity.this, false);
+                            switchForAudio.setChecked(false);
                             table_user.child("User").child(mAuth.getCurrentUser().getUid()).child("personal").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1571,7 +1613,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
                 break;
             case R.id.nav_ps:
-                Intent browserIntenttos2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://firebasestorage.googleapis.com/v0/b/mindscape-3a832.appspot.com/o/LegalFiles%2FMULTIPLAYER%20TRIVIA%2FPrivacy_policy_MULTIPLAYER%20TRIVIA%20QUIZ.pdf?alt=media&token=cef533fc-94b8-4155-b1bd-b52bde245ce8"));
+                Intent browserIntenttos2 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://app.termly.io/document/privacy-policy/6ad75b6b-6a5f-41a8-b74b-605cfe25144b"));
                 startActivity(browserIntenttos2);
                 overridePendingTransition(R.anim.fadeinmain, R.anim.fadeoutmain);
                 break;

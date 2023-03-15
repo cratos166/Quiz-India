@@ -449,6 +449,7 @@
                 android:scaleX="0.9"
                 android:scaleY="0.9"
                 android:weightSum="2"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textTitle">
@@ -495,6 +496,7 @@
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:clickable="true"
+                    android:visibility="gone"
                     android:foreground="?selectableItemBackground">
 
                     <LinearLayout

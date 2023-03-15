@@ -82,6 +82,7 @@ public class ScoreActivity extends AppCompatActivity {
     TextView dis;
     AdView mAdView;
     Boolean isDone=false;
+    int timeInt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +103,7 @@ public class ScoreActivity extends AppCompatActivity {
         maxQuestions = getIntent().getIntExtra("maxQuestions", 10);
         myPlayerNum = getIntent().getIntExtra("playerNum", 1);
         hostName= getIntent().getStringExtra("hostName");
+        timeInt=getIntent().getIntExtra("time",1);
 
 
 
@@ -114,7 +116,7 @@ public class ScoreActivity extends AppCompatActivity {
 
         playerDataArrayList = new ArrayList<>();
 
-        resultAdapter = new ResultAdapter(ScoreActivity.this, playerDataArrayList, maxQuestions);
+        resultAdapter = new ResultAdapter(ScoreActivity.this, playerDataArrayList, maxQuestions,timeInt);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(resultAdapter);
 
@@ -419,7 +421,7 @@ public class ScoreActivity extends AppCompatActivity {
 
                 }
 
-                dis.setText("Number of players completed the quiz : "+numberOfActivePlayer+"/"+playerDataArrayList.size());
+                dis.setText("Number of players completed the quiz : "+playerDataArrayList.size()+"/"+numberOfActivePlayer);
 
 
                 if (numberOfActivePlayer == playerDataArrayList.size()) {

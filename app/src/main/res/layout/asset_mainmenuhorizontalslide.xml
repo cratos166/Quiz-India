@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
         android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toEndOf="@+id/cardView123">
 
 
         <TextView
@@ -85,7 +85,7 @@
             android:gravity="left"
             android:text="This is to inform you that i the great will never quit in this brutal world .. i can win any game any battle at any time. i am the legend oomar bin soleman."
             android:textColor="@color/text_dis"
-            android:textSize="7dp"
+            android:textSize="9dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

@@ -114,8 +114,30 @@ tools:openDrawer="start">
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@id/slideViewPager"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
     </LinearLayout>
+
+    <Switch
+        android:id="@+id/switchForAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:fontFamily="@font/ubuntu"
+        android:checked="false"
+        android:text="Include Indian Audio Questions"
+        android:textColor="@color/text_head"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slideViewPager" />
+
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="8dp"
+        android:textColor="@color/text_head"
+        android:fontFamily="@font/ubuntu"
+        android:layout_marginLeft="15dp"
+        android:text="Opponents will be filtered according to the above preference."
+        app:layout_constraintTop_toBottomOf="@+id/switchForAudio"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -129,7 +151,7 @@ tools:openDrawer="start">
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/slideViewPager" />
+        app:layout_constraintTop_toBottomOf="@+id/tt" />
 
 
 

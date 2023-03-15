@@ -240,7 +240,12 @@ public class LifeLine {
 
     public void expertAdviceLL(){
         linearLayoutexpert.setBackgroundResource(R.drawable.usedicon);
-        String answerByExpert=list.get(position).getCorrectAnswer();
+        String answerByExpert="";
+        try{
+             answerByExpert=list.get(position).getCorrectAnswer();
+        }catch (Exception e){
+        }
+
 
 
         AlertDialog.Builder builder=new AlertDialog.Builder(context,R.style.AlertDialogTheme);

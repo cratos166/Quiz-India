@@ -35,6 +35,11 @@ public class PlayerDisplayInBuzzerAdapter extends RecyclerView.Adapter<PlayerDis
         this.size=size;
     }
 
+    public PlayerDisplayInBuzzerAdapter(Context mContext, ArrayList<PlayerDisplayBuzzerHolder> arrayList,int size){
+        this.mContext=mContext;
+        this.arrayList=arrayList;
+        this.size=size;
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
