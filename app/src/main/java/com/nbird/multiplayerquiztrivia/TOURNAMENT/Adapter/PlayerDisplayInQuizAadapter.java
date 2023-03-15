@@ -67,7 +67,7 @@ public class PlayerDisplayInQuizAadapter extends RecyclerView.Adapter<PlayerDisp
                 list.add(holder.anim16);list.add(holder.anim17);list.add(holder.anim18);list.add(holder.anim19);list.add(holder.anim20);
             }
         }catch (Exception e){
-
+            e.printStackTrace();
         }
 
         try{
@@ -87,6 +87,10 @@ public class PlayerDisplayInQuizAadapter extends RecyclerView.Adapter<PlayerDisp
                 }else if(arr.get(i)==2){
                     Log.i("position", String.valueOf(position)+arrayList.get(position).getArrayList().get(i));
                     animationView.setBackgroundResource(R.drawable.red_cross);
+                    Log.i("imagevIEW", String.valueOf(animationView.getId()));
+                }else{
+                    Log.i("position", String.valueOf(position)+arrayList.get(position).getArrayList().get(i));
+                    animationView.setBackgroundResource(R.drawable.not_ans);
                     Log.i("imagevIEW", String.valueOf(animationView.getId()));
                 }
 

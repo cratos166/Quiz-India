@@ -45,7 +45,12 @@ public class OneVSOneOpponentDataSetter {
     public void start(){
 
 
-        Glide.with(mContext).load(leaderBoardHolder.getImageUrl()).into(oppoImage);
+        try{
+            Glide.with(mContext).load(leaderBoardHolder.getImageUrl()).into(oppoImage);
+        }catch (Exception e){
+
+        }
+
         oppoName.setText(leaderBoardHolder.getUsername());
         highestScore.setText("Highest Score : "+leaderBoardHolder.getScore());
 

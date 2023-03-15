@@ -157,13 +157,18 @@ public class QuizCancelDialog {
                             countDownTimer.cancel();
                         }
 
-                        alertDialog.cancel();
+                        try{
+                            alertDialog.cancel();
+                        }catch (Exception e){
+
+                        }
+
 
                         try {NATIVE_ADS.destroy();}catch (Exception e){}
 
-                        Intent intent=new Intent(context,MainActivity.class);
-                        context.startActivity(intent);
-                        ((Activity) context).finish();
+//                        Intent intent=new Intent(context,MainActivity.class);
+//                        context.startActivity(intent);
+                    //    ((Activity) context).finish();
 
                     }
                 });

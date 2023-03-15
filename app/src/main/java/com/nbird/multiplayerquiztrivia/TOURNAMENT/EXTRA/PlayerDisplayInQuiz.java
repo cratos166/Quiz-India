@@ -65,8 +65,13 @@ public class PlayerDisplayInQuiz {
 
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
 
+                    try{
                         PlayerDisplayInQuizHolder playerDisplayInQuizHolder=dataSnapshot.getValue(PlayerDisplayInQuizHolder.class);
                         arrayList.add(playerDisplayInQuizHolder);
+                    }catch (Exception e){
+
+                    }
+
 
                 }
 

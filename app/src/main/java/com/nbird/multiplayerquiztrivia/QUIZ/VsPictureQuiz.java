@@ -414,7 +414,12 @@ public class VsPictureQuiz extends AppCompatActivity {
                     nextButton.setEnabled(false);nextButton.setAlpha(0.7f);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { enableOption(true); }
                     position++;llManupulator.True();count = 0;
-                    playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
+                    try{
+                        playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
+                    }catch (Exception e){
+                        playAnim(questionTextView, 0, list.get(1).getQuestionTextView());
+                    }
+
                 }else{ lifeLine.LLUsed("SWAP"); }
             }
         });

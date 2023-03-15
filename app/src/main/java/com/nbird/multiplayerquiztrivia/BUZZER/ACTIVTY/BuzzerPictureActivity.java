@@ -202,7 +202,12 @@ public class BuzzerPictureActivity extends AppCompatActivity {
         }
 
         if(myPlayerNum==1){
-            table_user.child("BUZZER").child("RESULT").child(roomCode).removeValue();
+            try{
+                table_user.child("BUZZER").child("RESULT").child(roomCode).removeValue();
+            }catch (Exception e){
+
+            }
+
         }
 
         songStopperAndResumer();

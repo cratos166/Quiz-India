@@ -41,6 +41,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.R;
 import com.nbird.multiplayerquiztrivia.SharePreferene.AppData;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.Adapter.PlayerDataAdapter;
@@ -641,6 +642,9 @@ public class LobbyActivity extends AppCompatActivity {
 
     public void audioQuizNumberUploader(ArrayList<Integer> listAns, int number){
 
+
+
+
         myRef.child("QUIZNUMBERS").child("AudioQuestionQuantity").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -650,10 +654,25 @@ public class LobbyActivity extends AppCompatActivity {
                 }catch (Exception e){
                     num=3464;
                 }
+
+
+                Boolean isIndianSongInclude=appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_INDIAN_AUDIO, LobbyActivity.this);
+
+
                 Random rand = new Random();
-                for(int i=0;i<=number;i++){
+                for(int i=0;i<=number;){
                     final int setNumber = rand.nextInt(num)+1;
-                    listAns.add(setNumber);
+                    if(isIndianSongInclude){
+                        i++;
+                        listAns.add(setNumber);
+                    }else{
+                        if((setNumber>=836&&setNumber<=1255)||(setNumber>=1286&&setNumber<=2000)||(setNumber>=2186&&setNumber<=2562)){
+
+                        }else{
+                            i++;
+                            listAns.add(setNumber);
+                        }
+                    }
                 }
                 table_user.child("TOURNAMENT").child("QUESTIONS").child(roomCode).setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -718,7 +737,7 @@ public class LobbyActivity extends AppCompatActivity {
                 try{
                     privacy=snapshot.getValue(Boolean.class);
                     if(privacy){
-                        privacyTextView.setText("PUBLIC");
+                        privacyTextView.setText("PRIVATE");
                     }else{
                         privacyTextView.setText("PRIVATE");
                     }
@@ -852,9 +871,9 @@ public class LobbyActivity extends AppCompatActivity {
                     try{countDownTimer.cancel();}catch (Exception e){}
 
 
-                    Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent=new Intent(LobbyActivity.this,MainActivity.class);
+//                    startActivity(intent);
+//                    finish();
 
 
                 }

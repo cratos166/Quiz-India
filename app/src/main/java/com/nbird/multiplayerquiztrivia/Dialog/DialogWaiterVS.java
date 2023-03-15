@@ -307,7 +307,14 @@ public class DialogWaiterVS {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         FirstTime firstTime = snapshot.getValue(FirstTime.class);
-                                                        leaderBoardHolder = new LeaderBoardHolder(firstTime.getUserName(), 0, 0, 0, 0, firstTime.getImageURL(), 0);
+
+                                                        try{
+                                                            leaderBoardHolder = new LeaderBoardHolder(firstTime.getUserName(), 0, 0, 0, 0, firstTime.getImageURL(), 0);
+                                                        }catch (Exception e){
+                                                            leaderBoardHolder = new LeaderBoardHolder("Player", 0, 0, 0, 0, AppString.IMAGE_URL, 0);
+                                                        }
+
+
                                                         OneVSOneOpponentDataSetter oneVSOneOpponentDataSetter = new OneVSOneOpponentDataSetter(leaderBoardHolder, oppoImage, oppoName, highestScore, totalTime, oppoRatio, oppoAccu, shimmerOppo, context, mainlinearLayout, oppoBatchCardView, oppoBatch, oppoLevelText);
                                                         oneVSOneOpponentDataSetter.start();
 
@@ -494,9 +501,32 @@ public class DialogWaiterVS {
                 }catch (Exception e){
                     num=3464;
                 }
-                for(int i=0;i<11;i++){
+
+
+
+
+
+
+
+                Boolean isIndianSongInclude=appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_INDIAN_AUDIO, context);
+
+                for(int i=0;i<11;){
                     int setNumber = random.nextInt(num)+1;
-                    listAns.add(setNumber);
+
+                    if(isIndianSongInclude){
+                        i++;
+                        listAns.add(setNumber);
+                    }else{
+                        if((setNumber>=836&&setNumber<=1255)||(setNumber>=1286&&setNumber<=2000)||(setNumber>=2186&&setNumber<=2562)){
+
+                        }else{
+                            i++;
+                            listAns.add(setNumber);
+                        }
+                    }
+
+
+
                 }
 
                 table_user.child("VS_PLAY").child(mAuth.getCurrentUser().getUid()).child("Answers").setValue(listAns).addOnSuccessListener(new OnSuccessListener<Void>() {

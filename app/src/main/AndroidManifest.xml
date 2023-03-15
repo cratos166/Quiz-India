@@ -10,8 +10,37 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".NAVIGATION.ACTIVITY.AboutUsActivity"
+            android:name=".BUZZER.BOT.ACTIVITY.BOTBuzzerScoreActivity"
             android:exported="false" />
+        <activity
+            android:name=".BUZZER.BOT.ACTIVITY.BOTBuzzerPictureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BUZZER.BOT.ACTIVITY.BOTBuzzerNormalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BUZZER.BOT.ACTIVITY.BOTLobbyBuzzerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TOURNAMENT.BOT.BOTScoreActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TOURNAMENT.ACTIVITY.BOTTournamentAudioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TOURNAMENT.ACTIVITY.BOTTournamentPictureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TOURNAMENT.ACTIVITY.BOTTournamentNormalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TOURNAMENT.ACTIVITY.BOTLobbyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".NAVIGATION.ACTIVITY.AboutUsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".NAVIGATION.ACTIVITY.MyProfileActivity"
             android:exported="false"
@@ -111,17 +140,14 @@
 
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
-        <!--REAL ca-app-pub-2384938955607297~6022480346-->
-        <!--DEMO ca-app-pub-3940256099942544~3347511713-->
+            android:resource="@array/preloaded_fonts" /> <!-- REAL ca-app-pub-2384938955607297~6022480346 -->
+        <!-- DEMO ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
-
-        <meta-data android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
+            android:value="ca-app-pub-2384938955607297~6022480346" />
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
             android:value="true" />
-
     </application>
 
 </manifest>

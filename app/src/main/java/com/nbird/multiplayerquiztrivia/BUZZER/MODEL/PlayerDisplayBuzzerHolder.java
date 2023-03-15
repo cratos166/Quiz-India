@@ -19,6 +19,12 @@ public class PlayerDisplayBuzzerHolder {
         this.score = score;
     }
 
+    public PlayerDisplayBuzzerHolder(String name, String imageURL, int score) {
+        this.name = name;
+        this.imageURL = imageURL;
+        this.score = score;
+    }
+
 
     public String getName() {
         return name;

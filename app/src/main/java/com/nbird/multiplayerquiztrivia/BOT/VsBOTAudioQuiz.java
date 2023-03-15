@@ -64,6 +64,7 @@ import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
 import com.nbird.multiplayerquiztrivia.LL.LifeLine;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.Model.questionHolder;
+import com.nbird.multiplayerquiztrivia.QUIZ.NormalAudioQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.NormalVideoQuiz;
 import com.nbird.multiplayerquiztrivia.QUIZ.VsAudioQuiz;
 import com.nbird.multiplayerquiztrivia.R;
@@ -454,7 +455,12 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         ActivityManager.getMyMemoryState(myProcess);
         Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
         if (isInBackground) {
-            music.pause();
+            try{
+                music.pause();
+            }catch (Exception e){
+
+            }
+
         } else {
             try{
                 if (!music.isPlaying()) {
@@ -487,7 +493,11 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         ActivityManager.getMyMemoryState(myProcess);
         Boolean isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
         if (isInBackground) {
-            music.pause();
+            try{
+                music.pause();
+            }catch (Exception e){
+
+            }
         } else {
             try{
                 if (!music.isPlaying()) {
@@ -535,15 +545,32 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int num;
+
                 try{
                     num=snapshot.getValue(Integer.class);
                 }catch (Exception e){
                     num=3464;
                 }
-                for(int i=0;i<11;i++){
+
+                Boolean isIndianSongInclude=appData.getSharedPreferencesBoolean(AppString.SP_MAIN,AppString.SP_INDIAN_AUDIO, VsBOTAudioQuiz.this);
+
+                for(int i=0;i<11;){
                     final Random rand = new Random();
                     final int setNumber = rand.nextInt(num)+1;
-                    fireBaseData(setNumber);
+
+                    if(isIndianSongInclude){
+                        i++;
+                        fireBaseData(setNumber);
+                    }else{
+                        if((setNumber>=836&&setNumber<=1255)||(setNumber>=1286&&setNumber<=2000)||(setNumber>=2186&&setNumber<=2562)){
+
+                        }else{
+                            i++;
+                            fireBaseData(setNumber);
+                        }
+                    }
+
+
                 }
             }
             @Override
@@ -918,6 +945,10 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
         Random random=new Random();
         oppoLifelineSum=random.nextInt(5);
 
+        if(oppoLifelineSum==3||oppoLifelineSum==4||oppoLifelineSum==2){
+            oppoLifelineSum=random.nextInt(5);
+        }
+
         Log.i("oppoLifelineSum" , String.valueOf(oppoLifelineSum));
 
 
@@ -999,10 +1030,10 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
             if(oppoSecond==0){
                 oppoTimeTakenString="0"+String.valueOf(2-oppoMinute+1)+":00";
             }else{
-                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoMinute);
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
             }
         }else{
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoMinute);
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
         }
 
 
@@ -1121,7 +1152,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(8) + 6};
+        final int[] jk = {r.nextInt(10) + 4};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -1149,7 +1180,7 @@ public class VsBOTAudioQuiz extends AppCompatActivity {
                     animManupulation(ans,binaryPosition);
                     marker[0] =false;
 
-                    jk[0] =r.nextInt(8)+6;
+                    jk[0] =r.nextInt(10)+4;
 
                     if(binaryPosition<10){
 

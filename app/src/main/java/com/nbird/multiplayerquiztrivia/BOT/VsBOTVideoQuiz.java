@@ -784,10 +784,10 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
             if(oppoSecond==0){
                 oppoTimeTakenString="0"+String.valueOf(2-oppoMinute+1)+":00";
             }else{
-                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoMinute);
+                oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":"+String.valueOf(60-oppoSecond);
             }
         }else{
-            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoMinute);
+            oppoTimeTakenString="0"+String.valueOf(2-oppoMinute)+":0"+String.valueOf(60-oppoSecond);
         }
 
         Log.i("oppoTimeTakenString" , String.valueOf(oppoTimeTakenString));
@@ -884,7 +884,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
     public void countBot(){
         Random r=new Random();
         final boolean[] marker = {false};
-        final int[] jk = {r.nextInt(8) + 10};
+        final int[] jk = {r.nextInt(7) + 10};
         countDownTimerForBot=new CountDownTimer(1000*180,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -908,7 +908,7 @@ public class VsBOTVideoQuiz extends AppCompatActivity {
                     animManupulation(ans,binaryPosition);
                     marker[0] =false;
 
-                    jk[0] =r.nextInt(8)+10;
+                    jk[0] =r.nextInt(7)+10;
 
                     if(binaryPosition<10){
 

@@ -38,6 +38,7 @@ import com.nbird.multiplayerquiztrivia.BOT.VsBOTAudioQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTNormalQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTPictureQuiz;
 import com.nbird.multiplayerquiztrivia.BOT.VsBOTVideoQuiz;
+import com.nbird.multiplayerquiztrivia.EXTRA.MarksSetter;
 import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.MAIN.MainActivity;
 import com.nbird.multiplayerquiztrivia.R;
@@ -219,22 +220,31 @@ public class DialogBotResult {
         animationListOppo.add(anim20);
 
 
+        TextView marksCorrectAnswer=(TextView) viewRemove1.findViewById(R.id.marksCorrectAnswer);
+        TextView marksTimeTaken=(TextView) viewRemove1.findViewById(R.id.marksTimeTaken);
+        TextView marksLifeLineUsed=(TextView) viewRemove1.findViewById(R.id.marksLifeLineUsed);
+
+        TextView marksCorrectAnswerOppo=(TextView) viewRemove1.findViewById(R.id.marksCorrectAnswerOppo);
+        TextView marksTimeTakenOppo=(TextView) viewRemove1.findViewById(R.id.marksTimeTakenOppo);
+        TextView marksLifeLineUsedOppo=(TextView) viewRemove1.findViewById(R.id.marksLifeLineUsedOppo);
+
+        MarksSetter marksSetter=new MarksSetter(marksCorrectAnswer,marksTimeTaken,marksLifeLineUsed,correctAnsInt,timeTakenInt,lifeLineUsedInt);
+        marksSetter.start();
+
+        MarksSetter marksSetterOppo=new MarksSetter(marksCorrectAnswerOppo,marksTimeTakenOppo,marksLifeLineUsedOppo,oppoCorrectAnsInt,oppoTimeTakenInt,oppoLifeLineUsedInt);
+        marksSetterOppo.start();
 
         correctAnswer.setText("Correct/Wrong : "+correctAnsInt+"/"+String.valueOf(10-correctAnsInt));
         timeTaken.setText("Time Taken : "+timeTakenString);
         lifeLineUsed.setText("Life-Line Used : "+lifeLineUsedInt);
 
-
         correctAnswerOppo.setText("Correct/Wrong : "+oppoCorrectAnsInt+"/"+String.valueOf(10-oppoCorrectAnsInt));
         timeTakenOppo.setText("Time Taken : "+oppoTimeTakenString);
         lifeLineUsedOppo.setText("Life-Line Used : "+oppoLifeLineUsedInt);
 
-
-
         totalScore.setText("Total Score : "+scoreInt);
 
         totalScoreOppo.setText("Total Score : "+oppoScoreInt);
-
 
         if(scoreInt>oppoScoreInt){
             result.setText(myNameString+" Won");

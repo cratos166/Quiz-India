@@ -5,15 +5,21 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 32
+//    buildToolsVersion "32.0.0"
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
 
     defaultConfig {
         applicationId "com.nbird.multiplayerquiztrivia"
         minSdkVersion 22
-        targetSdkVersion 31
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 32
+        versionCode 12
+        versionName "1.1"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,6 +60,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads:20.4.0'
     implementation project(':nativetemplates')
 
+    implementation 'androidx.work:work-runtime:2.7.0-alpha05'
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
 }

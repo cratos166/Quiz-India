@@ -65,6 +65,7 @@ import com.nbird.multiplayerquiztrivia.AppString;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
@@ -393,7 +394,12 @@ public class TournamentPictureActivity extends AppCompatActivity {
 
                         if (swapnum == 0) { if (position == listAns.size()-1) { quizFinishDialog();return; } } else { if (position == listAns.size()) { quizFinishDialog();return; } }
                         count = 0;
-                        playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
+                        try{
+                            playAnim(questionTextView, 0, list.get(position).getQuestionTextView());
+                        }catch (Exception e){
+
+                        }
+
                     }
                 });
             } else {
@@ -595,6 +601,11 @@ public class TournamentPictureActivity extends AppCompatActivity {
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentPictureActivity.this);
         supportAlertDialog.showLoadingDialog();
 
+        Record record =new Record(scoreGenerator.start(),score,1,TournamentPictureActivity.this,audienceLL,timeTakenInt,myName,myPicURL);
+        record.startLineGraph();
+        record.startBarGroup();
+        record.setLeaderBoard();
+
 
         table_user.child("TOURNAMENT").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -656,6 +667,13 @@ public class TournamentPictureActivity extends AppCompatActivity {
         intent.putExtra("maxQuestions",list.size()-1);
         intent.putExtra("playerNum",myPlayerNum);
         intent.putExtra("hostName",hostName);
+        if(time==180){
+            intent.putExtra("time",1);
+        }else if(time==270){
+            intent.putExtra("time",2);
+        }else if(time==360){
+            intent.putExtra("time",3);
+        }
         startActivity(intent);
         finish();
     }

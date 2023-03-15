@@ -10,6 +10,7 @@ public class AppString {
     public static final String SP_MY_NAME="MyName";
     public static final String SP_SONG="SongStatus";
     public static final String SP_IS_SHOW_ADS="isShowAds";
+    public static final String SP_INDIAN_AUDIO="IndianAudio";
 
     public static final int TOURNAMENT_MAX_PLAYERS=10;
     public static final int BUZZER_MAX_PLAYERS=4;
@@ -25,9 +26,9 @@ public class AppString {
     //Main SP String
     public static final String SP_MAIN="MainSP";
 
-    public static final int ADS_FREQUENCY_AUIO=3;
-    public static final int ADS_FREQUENCY_PICTURE=4;
-    public static final int ADS_FREQUENCY_NORMAL=5;
+    public static final int ADS_FREQUENCY_AUIO=2;
+    public static final int ADS_FREQUENCY_PICTURE=2;
+    public static final int ADS_FREQUENCY_NORMAL=2;
     public static final int ADS_FREQUENCY_VIDEO=2;
 
 
@@ -36,5 +37,6 @@ public class AppString {
 
 
     //NATIVE REAL : ca-app-pub-2384938955607297/6744249665
+    //INTERSTITIAL_ID REAL : ca-app-pub-2384938955607297/6876029453
 
 }

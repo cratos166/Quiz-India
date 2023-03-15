@@ -434,7 +434,7 @@ public class BuzzerScoreActivity extends AppCompatActivity {
 
                 }
 
-                dis.setText("Number of players completed the quiz : "+numberOfActivePlayer+"/"+playerDataArrayList.size());
+                dis.setText("Number of players completed the quiz : "+playerDataArrayList.size()+"/"+numberOfActivePlayer);
 
                 if (numberOfActivePlayer == playerDataArrayList.size()) {
 
@@ -442,7 +442,12 @@ public class BuzzerScoreActivity extends AppCompatActivity {
                     TextView title=(TextView) findViewById(R.id.title);
                     title.setText("All the members completed the quiz.");
                     Collections.reverse(playerDataArrayList);
-                    winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
+                    try{
+                        winnerDialog(playerDataArrayList.get(0).getMyPicURL(), playerDataArrayList.get(0).getMyNameString());
+                    }catch (Exception e){
+
+                    }
+
 
                     for (int i = 0; i < playerDataArrayList.size(); i++) {
                         playerDataArrayList.get(i).setPosition(i + 1);

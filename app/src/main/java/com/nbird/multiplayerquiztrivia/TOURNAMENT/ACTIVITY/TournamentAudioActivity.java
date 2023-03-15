@@ -67,6 +67,7 @@ import com.nbird.multiplayerquiztrivia.BUZZER.ACTIVTY.BuzzerNormalActivity;
 import com.nbird.multiplayerquiztrivia.Dialog.SupportAlertDialog;
 import com.nbird.multiplayerquiztrivia.EXTRA.SongActivity;
 import com.nbird.multiplayerquiztrivia.FIREBASE.HighestScore;
+import com.nbird.multiplayerquiztrivia.FIREBASE.RECORD_SAVER.Record;
 import com.nbird.multiplayerquiztrivia.FIREBASE.TotalScore;
 import com.nbird.multiplayerquiztrivia.GENERATORS.ScoreGenerator;
 import com.nbird.multiplayerquiztrivia.LL.LLManupulator;
@@ -633,6 +634,11 @@ public class TournamentAudioActivity extends AppCompatActivity {
         SupportAlertDialog supportAlertDialog=new SupportAlertDialog(dialog,TournamentAudioActivity.this);
         supportAlertDialog.showLoadingDialog();
 
+        Record record =new Record(scoreGenerator.start(),score,1,TournamentAudioActivity.this,audienceLL,timeTakenInt,myName,myPicURL);
+        record.startLineGraph();
+        record.startBarGroup();
+        record.setLeaderBoard();
+
         table_user.child("TOURNAMENT").child("RESULT").child(roomCode).child(mAuth.getCurrentUser().getUid()).setValue(dataExchangeHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -698,6 +704,13 @@ public class TournamentAudioActivity extends AppCompatActivity {
         intent.putExtra("maxQuestions",list.size()-1);
         intent.putExtra("playerNum",myPlayerNum);
         intent.putExtra("hostName",hostName);
+        if(time==180){
+            intent.putExtra("time",1);
+        }else if(time==270){
+            intent.putExtra("time",2);
+        }else if(time==360){
+            intent.putExtra("time",3);
+        }
         startActivity(intent);
         finish();
     }

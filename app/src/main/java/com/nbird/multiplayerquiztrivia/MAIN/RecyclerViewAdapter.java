@@ -10,10 +10,13 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.nbird.multiplayerquiztrivia.BUZZER.BOT.DIALOG.BOTBuzzerOnlineLocalDialog;
 import com.nbird.multiplayerquiztrivia.BUZZER.DIALOG.BuzzerJoinCreateTournamentDialoge;
 import com.nbird.multiplayerquiztrivia.Dialog.DialogQuizMode;
 import com.nbird.multiplayerquiztrivia.R;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.BOTJoinCreateTournamentDialog;
 import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.JoinCreateTournamentDialoge;
+import com.nbird.multiplayerquiztrivia.TOURNAMENT.DIALOG.OnlineLocalDialog;
 
 import java.util.List;
 
@@ -65,12 +68,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         dialogQuizMode1.start(mContext,holder.cardView,1);
                        break;
                     case 2:
-                        JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
-                        joinCreateTournamentDialoge.start(mContext,holder.cardView);
+                        OnlineLocalDialog onlineLocalDialog=new OnlineLocalDialog();
+                        onlineLocalDialog.start(mContext,holder.cardView);
                         break;
+//                        JoinCreateTournamentDialoge joinCreateTournamentDialoge=new JoinCreateTournamentDialoge();
+//                        joinCreateTournamentDialoge.start(mContext,holder.cardView);
+//                        break;
                     case 4:
-                        BuzzerJoinCreateTournamentDialoge buzzerJoinCreateTournamentDialoge=new BuzzerJoinCreateTournamentDialoge();
-                        buzzerJoinCreateTournamentDialoge.start(mContext,holder.cardView);
+                        BOTBuzzerOnlineLocalDialog botBuzzerOnlineLocalDialog=new BOTBuzzerOnlineLocalDialog();
+                        botBuzzerOnlineLocalDialog.start(mContext,holder.cardView);
+//                        BuzzerJoinCreateTournamentDialoge buzzerJoinCreateTournamentDialoge=new BuzzerJoinCreateTournamentDialoge();
+//                        buzzerJoinCreateTournamentDialoge.start(mContext,holder.cardView);
                         break;
 
 

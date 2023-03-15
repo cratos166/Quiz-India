@@ -64,7 +64,7 @@ public class BotDetails {
         getName();
 
         Random r=new Random();
-        int score123=r.nextInt(90)+60;
+        int score123=r.nextInt(120)+100;
         int timeHolder=r.nextInt(30000)+140;
         int y = 1;
 
