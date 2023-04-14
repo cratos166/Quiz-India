@@ -34,5 +34,5 @@ Our app is regularly updated with new questions and features, so you'll never ru
 
 So what are you waiting for? Download India GK Quiz - Online today and start expanding your knowledge of this amazing country. With our app, you'll have fun while learning and become an expert on all things India in no time!
 ### ***PUBLISHED SAMPLE***
-Experience the power of Paper Wind on your own!
+Experience the power of India Quiz on your own!
 [Download now](https://play.google.com/store/apps/details?id=com.nbird.quiz_india) at Google Play Store
