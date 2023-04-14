@@ -1,0 +1,43 @@
+# **India Quiz - Indian UPSC Quiz**
+> India Quiz - Indian UPSC Quiz
+
+![Logo](https://play-lh.googleusercontent.com/PIkk_DrhlQjGimDrVwpE1tBO7uh8APycctzhcZap2mht7Demss8ZWmENuwj0GXJjFA=s48-rw)
+
+## ***INTRODUCTION***  <img src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif" width="30px">
+
+Welcome! ❤
+
+NIFTY NILE presents the ultimate All-In-One student package.
+
+Education is one of the most important aspects of a student's life and the bridge to this immense castle is the ultimate need of the hour. 🌍
+The Project aims to help students across the country by providing them easy access to a wide range of features. 📰📊
+
+<img src="https://play-lh.googleusercontent.com/F3dRzI4IE3jo6eTrRIUQal8yG297aKjHMYe2PSIyjk6sP5c2KoDYIuyAVwEUfOFrLyQ=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/yisT1DIvWhQvSH-JxifhHrdLhYrHWnlASGI3YWDD5NeAQXqE_DyexzEqRK0ihX1ka0LM=w526-h296-rw" width="150px">
+<img src="https://play-lh.googleusercontent.com/4vDrAAvtoM_sR-7OYIlyx54no17Eo2XAImzxBGnwqZvgHJntFS1JH2IovRmV5TNhJw=w526-h296-rw" width="150px">
+<img src="https://play-lh.googleusercontent.com/aR-uMI2FbQawGhD065Xu0PewoChVaizK-DxCJOfXzmffYC16K_Ss0e69wyzXNQMnXcio=w526-h296-rw" width="150px">
+<img src="https://play-lh.googleusercontent.com/1QKx9-dajiJ6qWcGKpl3m09CfXsZ9GkrnVK0CUppPWLj91e9I9vvUYJtaO63c4QdhnU=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/qpr7v5dR-F_foNA20205QKFEpuNzq7GEOw1yPCeZ2v0DTLKEVMU24sUu_DZu7Locew=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/AzhkTyad7-ZIH1hm9WFI2GBam0c3fkQoK0M2jJ8YAY3cbaC_BWTHyabmHN5zmsyzLQ=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/SNukclj8qwqbCt26X9iIIo3IZlyNT_Ww8TMb6Kl5mVd_XugeVy8fDQz8Q8CsdiKjrw=w526-h296-rw" width="150px">
+
+
+
+⭐⭐🌟⭐⭐
+
+# **MULTIPLAYER QUIZ**
+
+Looking to expand your knowledge of India's rich history, geography, and culture? Look no further than the India GK Quiz - Online app!
+
+Our app is designed to help you challenge yourself and learn more about one of the most fascinating countries in the world. With hundreds of questions covering a range of topics, you'll have plenty of opportunities to test your knowledge and discover new facts about India.
+
+Our user-friendly interface and intuitive controls make it easy to jump right in and start playing. Whether you're a seasoned trivia buff or a newcomer to the world of quizzing, our app has something for everyone.
+
+Some of the topics covered in our quizzes include Indian history, geography, politics, literature, music, art, and culture. We've worked hard to create a diverse range of questions that will keep you engaged and entertained for hours on end.
+
+One of the best things about our app is that you can play it online with other players from around the world. Compete with friends, family, and strangers to see who knows India best. You can even track your progress over time and see how you stack up against other players.
+
+In addition to our regular quizzes, we also offer special challenges and competitions that give you the chance to win prizes and earn bragging rights. Keep an eye out for our special events and promotions, which we update regularly.
+
+Our app is regularly updated with new questions and features, so you'll never run out of content. We also welcome feedback from our users and are constantly working to improve the app based on your suggestions.
+
+So what are you waiting for? Download India GK Quiz - Online today and start expanding your knowledge of this amazing country. With our app, you'll have fun while learning and become an expert on all things India in no time!
+### ***PUBLISHED SAMPLE***
+Experience the power of Paper Wind on your own!
+[Download now](https://play.google.com/store/apps/details?id=com.nbird.multiplayerquiztrivia) at Google Play Store
