@@ -7,11 +7,6 @@
 
 Welcome! ❤
 
-NIFTY NILE presents the ultimate All-In-One student package.
-
-Education is one of the most important aspects of a student's life and the bridge to this immense castle is the ultimate need of the hour. 🌍
-The Project aims to help students across the country by providing them easy access to a wide range of features. 📰📊
-
 <img src="https://play-lh.googleusercontent.com/F3dRzI4IE3jo6eTrRIUQal8yG297aKjHMYe2PSIyjk6sP5c2KoDYIuyAVwEUfOFrLyQ=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/yisT1DIvWhQvSH-JxifhHrdLhYrHWnlASGI3YWDD5NeAQXqE_DyexzEqRK0ihX1ka0LM=w526-h296-rw" width="150px">
 <img src="https://play-lh.googleusercontent.com/4vDrAAvtoM_sR-7OYIlyx54no17Eo2XAImzxBGnwqZvgHJntFS1JH2IovRmV5TNhJw=w526-h296-rw" width="150px">
 <img src="https://play-lh.googleusercontent.com/XWLsYsG9HNGIQ44wGPmSPA6SVdMqIje08PQA81y4doDkZwknEdnSxCyEvtMUkoPFAA=w526-h296-rw" width="150px">
