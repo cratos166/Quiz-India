@@ -15,7 +15,7 @@ The Project aims to help students across the country by providing them easy acce
 <img src="https://play-lh.googleusercontent.com/F3dRzI4IE3jo6eTrRIUQal8yG297aKjHMYe2PSIyjk6sP5c2KoDYIuyAVwEUfOFrLyQ=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/yisT1DIvWhQvSH-JxifhHrdLhYrHWnlASGI3YWDD5NeAQXqE_DyexzEqRK0ihX1ka0LM=w526-h296-rw" width="150px">
 <img src="https://play-lh.googleusercontent.com/4vDrAAvtoM_sR-7OYIlyx54no17Eo2XAImzxBGnwqZvgHJntFS1JH2IovRmV5TNhJw=w526-h296-rw" width="150px">
 <img src="https://play-lh.googleusercontent.com/XWLsYsG9HNGIQ44wGPmSPA6SVdMqIje08PQA81y4doDkZwknEdnSxCyEvtMUkoPFAA=w526-h296-rw" width="150px">
-<img src="https://play-lh.googleusercontent.com/Xg5gJ4PO7ORdyYjF63_12djTJRfRZUUJbcaq5VZ7O7ucMSSuIR5nnckRdjU72Y4jMg=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/qpr7v5dR-F_foNA20205QKFEpuNzq7GEOw1yPCeZ2v0DTLKEVMU24sUu_DZu7Locew=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/vBK3smV0XM5TorBEA17yZm1y4f1MoMvgnjkpsSoaVMPyxDVAWZwVKCeD24QVack6Gsk=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/SNukclj8qwqbCt26X9iIIo3IZlyNT_Ww8TMb6Kl5mVd_XugeVy8fDQz8Q8CsdiKjrw=w526-h296-rw" width="150px">
+<img src="https://play-lh.googleusercontent.com/Xg5gJ4PO7ORdyYjF63_12djTJRfRZUUJbcaq5VZ7O7ucMSSuIR5nnckRdjU72Y4jMg=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/vBK3smV0XM5TorBEA17yZm1y4f1MoMvgnjkpsSoaVMPyxDVAWZwVKCeD24QVack6Gsk=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/9wAGb_OUBdRW2heTWqYEdr4Ys2AGkkhn_uFNYoZIND1fJQ8iUS03Bw-XmMP5NpXXBo7Z=w526-h296-rw" width="150px"><img src="https://play-lh.googleusercontent.com/t0fe5gn4tFOE9XzmRv2PkhSa95vjUEE7M_EQgq7m4rPcwCFpm_A3LQeXvbz7zACF0A=w526-h296-rw" width="150px">
 
 
 
@@ -40,4 +40,4 @@ Our app is regularly updated with new questions and features, so you'll never ru
 So what are you waiting for? Download India GK Quiz - Online today and start expanding your knowledge of this amazing country. With our app, you'll have fun while learning and become an expert on all things India in no time!
 ### ***PUBLISHED SAMPLE***
 Experience the power of Paper Wind on your own!
-[Download now](https://play.google.com/store/apps/details?id=com.nbird.multiplayerquiztrivia) at Google Play Store
+[Download now](https://play.google.com/store/apps/details?id=com.nbird.quiz_india) at Google Play Store
